@@ -83,8 +83,8 @@ class hamiltonClient():
                 ultimate_wash_purchases = 0
                 dash_wash_purchases =0
 
-                with open(data2,'w') as f:
-                    json.dump(json_data,f,indent=4)
+                # with open(data2,'w') as f:
+                #     json.dump(json_data,f,indent=4)
                 total_wash_purchases = 0
                 for item in items :
                     
