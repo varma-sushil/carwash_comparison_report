@@ -4,7 +4,10 @@ import json
 import pandas as pd 
 
 from sitewatch4 import sitewatchClient
-
+import sys
+# Add the carwash directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from tg_sender.telegram import telegramBot
 
 
 tg_message=[]
@@ -107,13 +110,19 @@ for client_name in client_names:
         new_value =final_data.get(client_name,0)
         absolute_difference = abs(old_value-new_value)
         difference_dictionary[client_name] = absolute_difference
-        tg_message.append({"location":client_name,"new_value":new_value,"diff":absolute_difference})
+        message=f"Location : {client_name} Previous count : {old_value} New count :{new_value} Difference : {absolute_difference}"
+        # tg_message.append({"location":client_name,"new_value":new_value,"diff":absolute_difference})
+        tg_message.append(message)
     
     elif (client_name in final_data): #not found in old data
-        tg_message.append({"location":client_name,"new_value":new_value,"diff":0})
+        message=f"Location : {client_name} Previous count : 0 New count :{new_value} Difference : 0"
+        # tg_message.append({"location":client_name,"new_value":new_value,"diff":0})
+        tg_message.append(message)
     
     else: #error data nof found 
-        tg_message.append(tg_message.append({"location":client_name,"msg":"This location is offline "}))
+        message=f"Location : {client_name} Message : This location is offline"
+        # tg_message.append(tg_message.append({"location":client_name,"msg":"This location is offline "}))
+        tg_message.append(message)
 
 with open(differenec_json,'w') as f:
     json.dump(difference_dictionary,f,indent=4)
@@ -123,5 +132,10 @@ with open(site_watch_latest_json,'w') as f:
     json.dump(final_data,f,indent=4)
 
 if tg_message:
-    print(tg_message)
+    # print(tg_message)
+    tg = telegramBot()
+    tg.send_message(tg_message)
+    # for msg in tg_message:
+    #     tg = telegramBot()
+    #     tg.send_message(msg)
     

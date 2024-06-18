@@ -9,7 +9,7 @@ cookies_path = os.path.join(current_file_path,"cookies")
 
 cookie_file_path = os.path.join(cookies_path,"cookie.json")
 
-
+data2=os.path.join(current_file_path,"data2.json")
 
 class hamiltonClient():
     def __init__(self) -> None:
@@ -83,7 +83,7 @@ class hamiltonClient():
                 ultimate_wash_purchases = 0
                 dash_wash_purchases =0
 
-                with open("data2.json",'w') as f:
+                with open(data2,'w') as f:
                     json.dump(json_data,f,indent=4)
                 total_wash_purchases = 0
                 for item in items :
@@ -114,7 +114,7 @@ class hamiltonClient():
         
 
 if __name__=="__main__":
-    proxy_url="http://relu;country=US:7d35d7-123852-7e371e-8a2bf4-8e8ad8@private.residential.proxyrack.net:10003"
+    proxy_url=None
 
     proxy = {
         "http":proxy_url,

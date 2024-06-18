@@ -11,7 +11,7 @@ cookies_path = os.path.join(current_file_path,"cookies")
 cookie_file_path = os.path.join(cookies_path,"cookie.json")
 print(cookies_path)
 
-proxy_url="http://relu;country=US:7d35d7-123852-7e371e-8a2bf4-8e8ad8@private.residential.proxyrack.net:10003"
+proxy_url=None
 
 proxy = {
     "http":proxy_url,

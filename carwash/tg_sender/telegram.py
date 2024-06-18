@@ -29,9 +29,13 @@ class telegramBot():
         new_value = message.get("new_value")
         diff      = message.get("diff")
         
-        message_str = f""""{location_name}  current : {new_value} change : {diff}"""
+        message_str = f"""{location_name}  current : {new_value} change : {diff}"""
         
         return message_str
+    
+    def single_message(self,msg_list):
+        
+        return "\n".join([single_msg for single_msg in msg_list])
     
     def send_api(self,message_str)->bool:
         status=False
@@ -52,15 +56,17 @@ class telegramBot():
         
         return status
     
-    def send_message(self,message:dict):
+    def send_message(self,msg_lst:list):
         "This function will send message"
         status =False
-        is_msg = message.get("msg")
+        # is_msg = message.get("msg")
         
-        if is_msg:
-            message_str = self.formt_with_msg_info(message)
-        else:
-            message_str= self.update_messgage_format(message)
+        # if is_msg:
+        #     message_str = self.formt_with_msg_info(message)
+        # else:
+        #     message_str= self.update_messgage_format(message)
+        
+        message_str = self.single_message(msg_lst)
 
         return self.send_api(message_str)
         

@@ -1,12 +1,17 @@
 from hamilton import hamiltonClient
 import json
 import os
+import sys
+# Add the carwash directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from tg_sender.telegram import telegramBot
+
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 
 hamilton_latest_file = os.path.join(current_file_path,"hamilton_latest.json")
 
-proxy_url="http://relu;country=US:7d35d7-123852-7e371e-8a2bf4-8e8ad8@private.residential.proxyrack.net:10003"
+proxy_url=None
 
 proxy = {
     "http":proxy_url,
@@ -40,13 +45,22 @@ if daily_report:
         new_value = daily_report.get("East Peoria",0)
         diff = abs(old_diff-new_value)
     print(f"difference : {diff}")
-    tg_message.append({"location":"East Peoria","new_value":new_value,"diff":diff})
+    # tg_message.append({"location":"East Peoria","new_value":new_value,"diff":diff})
+    message=f"Location : East Peoria  Previous count: {old_diff} New count: {new_value} Difference: {diff} "
+    tg_message.append(message)
 else:
-    tg_message.append(tg_message.append({"location":"East Peoria","msg":"This location is offline"}))
+    message=f"Location : East Peoria Message: This location is offline"
+    # tg_message.append(tg_message.append({"location":"East Peoria","msg":"This location is offline"}))
     
 with open(hamilton_latest_file,"w") as f:
     json.dump(daily_report,f)
 
 
 if tg_message:
-    print(tg_message)
+    # print(tg_message)
+    tg = telegramBot()
+    tg.send_message(tg_message)
+    
+    # for msg in tg_message:
+        # tg = telegramBot()
+        # tg.send_message(msg)
