@@ -4,6 +4,7 @@ import requests
 import pickle
 import os
 from datetime import datetime, timedelta
+import json
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
@@ -202,8 +203,8 @@ class sitewatchClient():
         # Format both times
         one_hour_before_formatted = one_hour_before.strftime(format_string)
         current_time_formatted = current_time.strftime(format_string)
-        # one_hour_before_formatted = "2024-06-14T00:00:00"
-        # current_time_formatted ="2024-06-14T23:59:59"
+        one_hour_before_formatted = "2024-06-14T00:00:00"
+        current_time_formatted ="2024-06-14T23:59:59"
         
         json_data = {
             'startDate':  one_hour_before_formatted,
@@ -287,8 +288,11 @@ class sitewatchClient():
             response = session.get('https://sitewatch.cloud/api/request/results', params=params,timeout=timeout)
             if response.status_code==200:
                 data = response.json()
+            print("response:",response)
             # print("headers:",session.headers)
             # print(response.json())
+            # with open(f"{requestID}.json","w") as f:
+            #     #json.dump(response.json(),f,indent=4)
         except Exception as e:
             print(f"Exception in get_report: {e} ")
         
