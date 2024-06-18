@@ -6,6 +6,7 @@ import pandas as pd
 from sitewatch4 import sitewatchClient
 
 
+
 tg_message=[]
 
 current_folder_path = os.path.dirname(os.path.abspath(__file__))
@@ -123,3 +124,4 @@ with open(site_watch_latest_json,'w') as f:
 
 if tg_message:
     print(tg_message)
+    
