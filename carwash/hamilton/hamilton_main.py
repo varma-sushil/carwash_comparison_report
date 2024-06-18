@@ -42,7 +42,7 @@ if daily_report:
     print(f"difference : {diff}")
     tg_message.append({"location":"East Peoria","new_value":new_value,"diff":diff})
 else:
-    tg_message.append(tg_message.append({"location":"East Peoria","msg":"This location is offline message"}))
+    tg_message.append(tg_message.append({"location":"East Peoria","msg":"This location is offline"}))
     
 with open(hamilton_latest_file,"w") as f:
     json.dump(daily_report,f)
