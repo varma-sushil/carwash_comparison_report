@@ -198,13 +198,13 @@ class sitewatchClient():
         one_hour_before = current_time - timedelta(hours=1)
 
         # Define the desired format
-        format_string = '%Y-%m-%dT%H:%M:%S'
+        format_string = '%Y-%m-%d'
 
         # Format both times
-        one_hour_before_formatted = one_hour_before.strftime(format_string)
-        current_time_formatted = current_time.strftime(format_string)
-        one_hour_before_formatted = "2024-06-14T00:00:00"
-        current_time_formatted ="2024-06-14T23:59:59"
+        one_hour_before_formatted = f"{one_hour_before.strftime(format_string)}T00:00:00"
+        current_time_formatted = f"{current_time.strftime(format_string)}T23:59:59"
+        #one_hour_before_formatted = "2024-06-14T00:00:00"
+        #current_time_formatted ="2024-06-14T23:59:59"
         
         json_data = {
             'startDate':  one_hour_before_formatted,
