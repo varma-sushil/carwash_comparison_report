@@ -55,7 +55,7 @@ for location,car_cnt in final_data.items():
     diff = abs(old_cnt-new_cnt)
     diff_dictionary[location] = diff
     # tg_messages.append({"location":location,"new_value":new_cnt,"diff":diff})
-    message=f"Location : East Peoria  Previous count: {old_cnt} New count: {new_cnt} Difference: {diff} "
+    message=f"Location : {location}  Previous count: {old_cnt} New count: {new_cnt} Difference: {diff} "
     tg_messages.append(message)
 with open(diff_json,"w") as f:
     json.dump(diff_dictionary,f,indent=4)
