@@ -115,6 +115,7 @@ for client_name in client_names:
         tg_message.append(message)
     
     elif (client_name in final_data): #not found in old data
+        new_value =final_data.get(client_name,0)
         message=f"Location : {client_name} Previous count : 0 New count :{new_value} Difference : 0"
         # tg_message.append({"location":client_name,"new_value":new_value,"diff":0})
         tg_message.append(message)
