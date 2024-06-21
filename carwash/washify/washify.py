@@ -352,6 +352,67 @@ class washifyClient():
             
         return data
 
+    def GetRevenuReportFinancialWashPackage_formatter(self,data):
+        "WASH PACKAGES formatter"
+        wash_packages_all = []
+        Wash_Packages_Unlimited_total = 0
+        Wash_Packages_Virtual_Wash_total = 0
+        Wash_Packages_Non_Unlimited_total = 0
+        Wash_Packages_Total_total  = 0
+        Wash_Packages_Amount_total = 0
+        Wash_Packages_Total_Amount_total = 0
+        try:
+            data = data.get("data")
+            financialWashPackage = data.get("financialWashPackage")
+            for wash_package in financialWashPackage:
+                wash_package_structure={}
+                
+                cUnlimited  = wash_package.get("cUnlimited")
+                Wash_Packages_Unlimited_total+=cUnlimited
+                
+                virtualWashNumber  = wash_package.get("virtualWashNumber")
+                Wash_Packages_Virtual_Wash_total+=virtualWashNumber
+                
+                nonUnlimited    =   wash_package.get("nonUnlimited")
+                Wash_Packages_Non_Unlimited_total+=nonUnlimited
+                
+                total    =   wash_package.get("total")
+                Wash_Packages_Total_total += total
+                
+                price  =  wash_package.get("price")
+                Wash_Packages_Amount_total +=price
+                
+                amount   =  wash_package.get("amount")
+                Wash_Packages_Total_Amount_total +=amount
+                
+                wash_package_structure['Wash_Packages_ServiceName'] = wash_package.get("serviceName")
+                wash_package_structure["Wash_Packages_Unlimited"]   = cUnlimited
+                wash_package_structure["Wash_Packages_Virtual_Wash"] = virtualWashNumber
+                wash_package_structure["Wash_Packages_Non_Unlimited"]  = nonUnlimited
+                wash_package_structure["Wash_Packages_Total"]   =   total
+                wash_package_structure["Wash_Packages_Amount"]   =    price
+                wash_package_structure["Wash_Packages_Total_Amount"]  =amount
+                # print(type(wash_package.get("amount")))
+                wash_packages_all.append(wash_package_structure)
+            
+                wash_package_total_structure={
+                    "Wash_Packages_ServiceName":"Total:",
+                    "Wash_Packages_Unlimited":Wash_Packages_Unlimited_total,
+                    "Wash_Packages_Virtual_Wash":Wash_Packages_Virtual_Wash_total,
+                    "Wash_Packages_Non_Unlimited":Wash_Packages_Non_Unlimited_total,
+                    "Wash_Packages_Total":Wash_Packages_Total_total,
+                    "Wash_Packages_Amount":Wash_Packages_Amount_total,
+                    "Wash_Packages_Total_Amount":Wash_Packages_Total_Amount_total   
+                }
+                
+                wash_packages_all.append(wash_package_total_structure) #last ALl total row
+                   
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
+        return wash_packages_all
+
+
+
     def GetRevenuReportFinancialWashDiscounts(self):
         "DISCOUNTS"
         data=None
@@ -404,6 +465,98 @@ class washifyClient():
 
         return data
     
+    def  GetRevenuReportFinancialWashDiscounts_formatter(self,data):
+        "DISCOUNTS formatter"
+        discount_all =[]
+        Wash_Packages_Discount_Number_total  = 0
+        Wash_Packages_Discount_Service_Price_total = 0
+        Wash_Packages_Discount_Total_Discount = 0
+        
+        try:
+            data = data.get("data")
+            financialWashDiscounts = data.get("financialWashDiscounts")
+            
+            for wash_discount in financialWashDiscounts:
+                wash_discount_structure = {}
+                
+                number   =  wash_discount.get("number")
+                Wash_Packages_Discount_Number_total+=number
+                
+                discountPrice  = wash_discount.get("discountPrice")
+                Wash_Packages_Discount_Service_Price_total+=discountPrice
+                
+                totalAmt   =  wash_discount.get("totalAmt")
+                Wash_Packages_Discount_Total_Discount+=totalAmt
+                
+                
+                wash_discount_structure["Wash_Packages_Discount_ServiceName"] = wash_discount.get("discountName")
+                wash_discount_structure["Wash_Packages_Discount_Number"]      = number
+                wash_discount_structure["Wash_Packages_Discount_Service Price ($)"] = discountPrice
+                wash_discount_structure["Wash_Packages_Discount_Total Discount ($)"] = totalAmt
+                
+                discount_all.append(wash_discount_structure)
+                
+            #appending Grand total
+            discounts_all_total_structure = {
+                "Wash_Packages_Discount_ServiceName":"Total:",
+                "Wash_Packages_Discount_Number":Wash_Packages_Discount_Number_total,
+                "Wash_Packages_Discount_Service Price ($)":Wash_Packages_Discount_Service_Price_total,
+                "Wash_Packages_Discount_Total Discount ($)":Wash_Packages_Discount_Total_Discount
+            }
+            discount_all.append(discounts_all_total_structure)
+            
+            
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialWashDiscounts_formatter() {e}")
+          
+        return discount_all
+
+    def GetRevenuReportFinancialWashDiscounts_formatter2(self,data):
+        "DISCOUNTS DISCOUNTS formatter2"
+        discount_discount_all =[]
+        DISCOUNTS_Number_total = 0
+        DISCOUNTS_Price_total = 0
+        DISCOUNTS_Revenue_total = 0
+        
+        try:
+            
+            data = data.get("data")
+
+            financialWashDiscounts = data.get("financialWashDiscounts")     
+            
+            for wash_discount in financialWashDiscounts:
+                
+                number  = int(wash_discount.get("number",0))
+                DISCOUNTS_Number_total+=number
+                
+                discountPrice  = float(wash_discount.get("discountPrice",0.0))
+                DISCOUNTS_Price_total+=discountPrice
+                
+                totalAmt  =  float(wash_discount.get("totalAmt",0.0))
+                DISCOUNTS_Revenue_total+=totalAmt
+                
+                discount_discount_structure = {}                                                             # Discount Discount
+                discount_discount_structure["DISCOUNTS_Discount"] = wash_discount.get("discountName")
+                discount_discount_structure["DISCOUNTS_Number"]      = number
+                discount_discount_structure["DISCOUNTS_Price ($)"] = discountPrice
+                discount_discount_structure["DISCOUNTS_Revenue"] = totalAmt
+                
+                discount_discount_all.append(discount_discount_structure)
+                
+            #Total table Discount discount
+            discount_discount_total={
+                "DISCOUNTS_Discount":"Total:",
+                "DISCOUNTS_Number":DISCOUNTS_Number_total,
+                "DISCOUNTS_Price ($)":DISCOUNTS_Price_total,
+                "DISCOUNTS_Revenue":DISCOUNTS_Revenue_total
+            }
+            
+            discount_discount_all.append(discount_discount_total)
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialWashDiscounts_fromatter2 {e}")
+            
+        return discount_discount_all
+
     # def GetRevenuReportFinancialWashDiscounts(self):
         
     #     data = None
@@ -452,6 +605,10 @@ class washifyClient():
     #         print(f"Exception in GetRevenuReportFinancialWashDiscounts() {e}")
 
     #     return data
+   
+ 
+ 
+   
     
     def GetRevenuReportFinancialPackagesDiscount(self):
         "WASH EXTRAS"
@@ -501,6 +658,55 @@ class washifyClient():
             print(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
             
         return data
+
+    def GetRevenuReportFinancialPackagesDiscount_formatter(self,data):
+        "WASH EXTRAS formatter"
+        wash_extras_all = []
+        Wash_Extras_Number_total=0
+        Wash_Extras_Amount_total = 0
+        Wash_Extras_Total_Amount_total = 0
+        
+        try:
+            data = data.get("data")
+            financialPackagesDiscount = data.get("financialPackagesDiscount") 
+            
+            for wash_extra in financialPackagesDiscount:
+                wash_extra_structure={}
+                
+                number = int(wash_extra.get("number",0))
+                # print("number:",type(number))
+                Wash_Extras_Number_total+=number
+                
+                servicePrice = float(wash_extra.get("servicePrice",0.0))
+                Wash_Extras_Amount_total+=servicePrice
+                
+                totalAmount = float(wash_extra.get("totalAmount",0.0))
+                Wash_Extras_Total_Amount_total+=totalAmount
+                
+                wash_extra_structure["Wash_Extras_ServiceName"] = wash_extra.get("serviceName")
+                wash_extra_structure["Wash_Extras_Number"]      = number
+                wash_extra_structure["Wash_Extras_Amount ($)"]  = servicePrice
+                wash_extra_structure["Wash_Extras_Total_Amount ($)"] = totalAmount
+                
+                wash_extras_all.append(wash_extra_structure)
+            #adding final total value 
+            wash_extras_total_structure = {
+                "Wash_Extras_ServiceName":"Total:",
+                "Wash_Extras_Number":Wash_Extras_Number_total,
+                "Wash_Extras_Amount ($)":Wash_Extras_Amount_total,
+                "Wash_Extras_Total_Amount ($)":Wash_Extras_Total_Amount_total
+            }   
+            
+            wash_extras_all.append(wash_extras_total_structure)
+                
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialPackagesDiscount_formatter()  {e}")
+
+        return wash_extras_all
+
+
+
+
 
     def GetRevenuReportFinancialUnlimitedSales(self):
         "UNLIMITED SALES"
@@ -552,7 +758,52 @@ class washifyClient():
             print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
 
         return data
-    
+
+    def GetRevenuReportFinancialUnlimitedSales_formatter(self,data):
+        "UNLIMITED SALES formatter"
+        
+        unlimited_sales_all =[]
+        
+        Unlimited_Sales_Number_total = 0
+        Unlimited_Sales_Revenue_total =0
+        try:
+            data = data.get("data")
+            financialUnlimitedSales  = data.get("financialUnlimitedSales")
+            
+            for sales_data in financialUnlimitedSales:
+                sales_data_structure ={}
+                # print(sales_data)
+                number  = int(sales_data.get("number",0))
+                Unlimited_Sales_Number_total+=number
+                
+                price  =  float(sales_data.get("price",0.0))
+                Unlimited_Sales_Revenue_total+=price
+                
+                sales_data_structure["Unlimited_Sales"] = sales_data.get("unlimited_Sales")
+                sales_data_structure["Unlimited_Sales_Service"] = sales_data.get("serviceName")
+                sales_data_structure["Unlimited_Sales_Number"]  = number
+                sales_data_structure["Unlimited_Sales_Revenue ($)"] = price 
+                
+                unlimited_sales_all.append(sales_data_structure)
+              
+            #final table total
+            unlimited_sales__total = {
+                "Unlimited_Sales":"Total:",
+                "Unlimited_Sales_Service":"",
+                "Unlimited_Sales_Number":Unlimited_Sales_Number_total,
+                "Unlimited_Sales_Revenue ($)":Unlimited_Sales_Revenue_total
+            }    
+            
+            unlimited_sales_all.append(unlimited_sales__total)
+            
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialUnlimitedSales_formatter() {e}")
+            
+        return unlimited_sales_all
+
+ 
+ 
+ 
 
     def GetRevenuReportFinancialGiftcardsale(self):
         "GIFT CARD SALES"
@@ -605,6 +856,45 @@ class washifyClient():
             print("Exception in GetRevenuReportFinancialGiftcardsale() {e}")
             
         return data
+
+    def GetRevenuReportFinancialGiftcardsale_formatter(self,data):
+        "GIFT CARD SALES formatter "
+        
+        gift_card_sale_all =[]
+        GIFT_CARD_SALESr_Amount_total = 0
+        try:
+            data = data.get("data")
+
+            financialGiftcardsale = data.get("financialGiftcardsale")
+            
+            for gift_card in financialGiftcardsale:
+                gift_card_sale_structure = {}
+                
+                price   =  float(gift_card.get("price",0.0))
+                GIFT_CARD_SALESr_Amount_total+=price
+                
+                gift_card_sale_structure["GIFT_CARD_REDEEMED_DATE"] = gift_card.get("date")  #giftcarsd sales
+                gift_card_sale_structure["GIFT_CARD_REDEEMED_TIME"] = gift_card.get("time")
+                gift_card_sale_structure["GIFT_CARD_SALES_Card_Number"] = gift_card.get("coupanNumber")
+                gift_card_sale_structure["GIFT_CARD_SALESr_Amount ($)"] = gift_card.get("price")
+                gift_card_sale_structure["GIFT_CARD_SALES_Source"]      = gift_card.get("transactionFrom")
+                
+                gift_card_sale_all.append(gift_card_sale_structure)
+                
+            #final total table 
+            giftcard_sale_total = {
+                "GIFT_CARD_REDEEMED_DATE":"Total:",
+                "GIFT_CARD_REDEEMED_TIME":"",
+                "GIFT_CARD_SALES_Card_Number":"",
+                "GIFT_CARD_SALESr_Amount ($)":GIFT_CARD_SALESr_Amount_total,
+                "GIFT_CARD_SALES_Source":""
+            }
+            gift_card_sale_all.append(giftcard_sale_total)
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialGiftcardsale_formatter() {e}")
+            
+        return gift_card_sale_all
+
 
 
     # def GetRevenuReportFinancialWashDiscounts(self):
@@ -715,6 +1005,48 @@ class washifyClient():
             print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
 
         return data
+    
+    def GetRevenuReportFinancialRevenueSummary_formatted(self,data):
+        "GIFT CARD REDEEMED formatter"
+        
+        reedemed_giftcard_all =[]
+        GIFT_CARD_REDEEMED_Amount_total = 0
+        try:
+            data = data.get("data")
+
+            financialGiftcardRedeemed = data.get("financialGiftcardRedeemed")
+            
+            
+            for reedemed_giftcard in financialGiftcardRedeemed:
+                reedemed_giftcard_structure = {}
+                # print(reedemed_giftcard)
+                
+                price = float(reedemed_giftcard.get("price",0.0))
+                GIFT_CARD_REDEEMED_Amount_total+=price
+                
+                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_DATE"] = reedemed_giftcard.get("date")
+                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_TIME"] = reedemed_giftcard.get("time")
+                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_CARD_NUMBER"] = reedemed_giftcard.get("coupanNumber")
+                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_Amount ($)"]  = price
+                
+                reedemed_giftcard_all.append(reedemed_giftcard_structure)
+            #reedem giftcard total
+            
+            reedem_total_structure ={
+                "GIFT_CARD_REDEEMED_DATE":"Total:",
+                "GIFT_CARD_REDEEMED_TIME":"",
+                "GIFT_CARD_REDEEMED_CARD_NUMBER":"",
+                "GIFT_CARD_REDEEMED_Amount ($)":GIFT_CARD_REDEEMED_Amount_total
+            }    
+            reedemed_giftcard_all.append(reedem_total_structure)
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialRevenueSummary_formatter()  {e}")
+            
+        return reedemed_giftcard_all
+
+
+
+
 
     def GetRevenuReportFinancialPaymentNew(self):
         "Payment"
@@ -765,8 +1097,71 @@ class washifyClient():
             
         return data
 
+    def GetRevenuReportFinancialPaymentNew_formatter(self,data):
+        "Payment formatter"
+        
+        payment_data_all =[]
+        Payment_Cash_total = 0
+        Payment_Credit_Card_total = 0
+        Payment_Check_total = 0
+        Payment_Invoice_total = 0
+        Payment_ACH_total = 0
+        Payment_Total_total = 0
+        try:
+            data = data.get('data')
+            financialPaymentNew = data.get("financialPaymentNew")
+            
+            for payment in financialPaymentNew:
+                payment_structure = {}
+                # print(payment)
+
+                cash = float(payment.get("cash",0.0))
+                Payment_Cash_total+=cash
+                
+                creditCard = float(payment.get("creditCard",0.0))
+                Payment_Credit_Card_total +=creditCard
+                
+                checkpayment  = float(payment.get("checkpayment",0.0))
+                Payment_Check_total+=checkpayment
+                
+                invoiceCustomer = float(payment.get("invoiceCustomer",0.0))
+                Payment_Invoice_total+=invoiceCustomer
+                
+                
+                ach = float(payment.get("ach",0.0))
+                Payment_ACH_total +=ach
+                
+                total_payment = sum([cash,creditCard,checkpayment,invoiceCustomer,ach])
+                Payment_Total_total+=total_payment
+                
+                payment_structure["Payment_Location"] = payment.get("locationName")
+                payment_structure["Payment_Cash"]     = cash
+                payment_structure["Payment_Credit_Card"]  = creditCard
+                payment_structure["Payment_Check"]     = checkpayment
+                payment_structure["Payment_Invoice"]   = invoiceCustomer
+                payment_structure["Payment_ACH"]       = ach
+                payment_structure["Payment_Total ($)"] = total_payment  ##payment
+                
+                payment_data_all.append(payment_structure)
+                  
+            #total payments row 
+            payment_total_structure = {
+                "Payment_Location":"Total Payments:",
+                "Payment_Cash":Payment_Cash_total,
+                "Payment_Credit_Card":Payment_Credit_Card_total,
+                "Payment_Check":Payment_Check_total,
+                "Payment_Invoice":Payment_Invoice_total,
+                "Payment_ACH":Payment_ACH_total,
+                "Payment_Total ($)":Payment_Total_total
+            }
+            
+            payment_data_all.append(payment_total_structure)
+                  
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialPaymentNew_formatter()  {e}")
 
 
+        return payment_data_all
 
     
     
@@ -817,13 +1212,44 @@ if __name__=="__main__":
         # with open(f"{data_path}\GetRevenuReportFinancialRevenueSummary.json","w") as f:  #for Unlimited sales
         #     json.dump(response_reneue,f,indent=4)
         
-        response_reneue = client.GetRevenuReportFinancialPaymentNew()
-        with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","w") as f:  #for Payment
-            json.dump(response_reneue,f,indent=4)
+        # response_reneue = client.GetRevenuReportFinancialPaymentNew()
+        # with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","w") as f:  #for Payment
+        #     json.dump(response_reneue,f,indent=4)
             
+        # response = client.GetRevenuReportFinancialWashPackage()
+        # formatted_response = client.GetRevenuReportFinancialWashPackage_formatter(response)  #first table 
+        # print(json.dumps(formatted_response,indent=4))
 
+        # response = client.GetRevenuReportFinancialWashDiscounts()
+        # formatted_response = client.GetRevenuReportFinancialWashDiscounts_formatter(response)  #secound table 
+        # print(json.dumps(formatted_response,indent=4))
 
+        # response = client.GetRevenuReportFinancialPackagesDiscount()
+        # formatted_response = client.GetRevenuReportFinancialPackagesDiscount_formatter(response)  #3rd table 
+        # print(json.dumps(formatted_response,indent=4))
 
             
+        # response = client.GetRevenuReportFinancialGiftcardsale()
+        # formatted_response = client.GetRevenuReportFinancialGiftcardsale_formatter(response)  #4rd table  gift card sale 
+        # print(json.dumps(formatted_response,indent=4))
         
         
+        # response = client.GetRevenuReportFinancialWashDiscounts()
+        # formatted_response = client.GetRevenuReportFinancialWashDiscounts_formatter2(response)  #5rd table    Discount discount
+        # print(json.dumps(formatted_response,indent=4))
+        
+        
+        # response = client.GetRevenuReportFinancialRevenueSummary()
+        # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #6rd table   Discount discount
+        # print(json.dumps(formatted_response,indent=4))
+        
+        
+        
+        # response = client.GetRevenuReportFinancialRevenueSummary()
+        # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #8rd table  gift card reedem
+        # print(json.dumps(formatted_response,indent=4))
+        
+        
+        response = client.GetRevenuReportFinancialPaymentNew()
+        formatted_response = client.GetRevenuReportFinancialPaymentNew_formatter(response)  #8rd table payment location
+        print(json.dumps(formatted_response,indent=4))
