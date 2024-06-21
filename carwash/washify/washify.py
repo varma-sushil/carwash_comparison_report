@@ -9,6 +9,8 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 cookies_path = os.path.join(current_file_path,"cookies")
 
 cookie_file_path = os.path.join(cookies_path,"cookie.json")
+
+data_path = os.path.join(current_file_path,"data")
 print(cookies_path)
 
 proxy_url=None
@@ -253,6 +255,416 @@ class washifyClient():
             print(f"Exception : {e}")
 
         return data
+    
+    def get_financal_revenue_summary(self):
+        data =None
+        headers = {
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        'content-type': 'application/json',
+        'dnt': '1',
+        'origin': 'https://washifyapi.com:1000',
+        'priority': 'u=1, i',
+        'referer': 'https://washifyapi.com:1000/',
+        'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+            'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
+            headers=headers,
+            json=json_data,
+        )
+            if response.status_code==200:
+                data = response.json()
+        
+        except Exception as e:
+            print(f"Error in get_financal_revenue_summary() {e}")
+
+        return data
+    
+    def GetRevenuReportFinancialWashPackage(self):
+        "WASH PACKAGES"
+        data = None
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashPackage',
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f" Exception in GetRevenuReportFinancialWashPackage()  {e}")
+            
+        return data
+
+    def GetRevenuReportFinancialWashDiscounts(self):
+        "DISCOUNTS"
+        data=None
+        
+
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashDiscounts',
+                headers=headers,
+                json=json_data,
+            )
+
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialWashDiscounts()  {e}")
+
+        return data
+    
+    # def GetRevenuReportFinancialWashDiscounts(self):
+        
+    #     data = None
+        
+    #     headers = {
+    #         'accept': 'application/json, text/plain, */*',
+    #         'accept-language': 'en-US,en;q=0.9',
+    #         'content-type': 'application/json',
+    #         'dnt': '1',
+    #         'origin': 'https://washifyapi.com:1000',
+    #         'priority': 'u=1, i',
+    #         'referer': 'https://washifyapi.com:1000/',
+    #         'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+    #         'sec-ch-ua-mobile': '?0',
+    #         'sec-ch-ua-platform': '"Windows"',
+    #         'sec-fetch-dest': 'empty',
+    #         'sec-fetch-mode': 'cors',
+    #         'sec-fetch-site': 'same-site',
+    #         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    #     }
+
+    #     json_data = {
+    #         'Locations': [
+    #             88,
+    #             89,
+    #             87,
+    #             90,
+    #         ],
+    #         'StartDate': '06/10/2024 12:00 AM',
+    #         'EndDate': '06/21/2024 11:59 PM',
+    #         'LogOutDate': '06/21/2024 11:59 PM',
+    #         'locationName': '',
+    #         'ReportBy': '',
+    #         'CommonCompanySettings': self.get_common_data(),
+    #     }
+    #     try:
+    #         response = requests.post(
+    #             'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashDiscounts',
+    #             headers=headers,
+    #             json=json_data,
+    #         )
+            
+    #         if response.status_code==200:
+    #             data = response.json()
+    #     except Exception as e:
+    #         print(f"Exception in GetRevenuReportFinancialWashDiscounts() {e}")
+
+    #     return data
+    
+    def GetRevenuReportFinancialPackagesDiscount(self):
+        "WASH EXTRAS"
+        data = None
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialPackagesDiscount',
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
+            
+        return data
+
+    def GetRevenuReportFinancialUnlimitedSales(self):
+        "UNLIMITED SALES"
+        data = None
+        
+
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings':self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialUnlimitedSales',
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
+
+        return data
+    
+
+    def GetRevenuReportFinancialGiftcardsale(self):
+        "GIFT CARD SALES"
+        data = None
+        
+
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialGiftcardsale',
+                headers=headers,
+                json=json_data,
+            )
+            
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print("Exception in GetRevenuReportFinancialGiftcardsale() {e}")
+            
+        return data
+
+
+    # def GetRevenuReportFinancialWashDiscounts(self):
+    #     "DISCOUNTS"
+    #     data = None
+        
+
+    #     headers = {
+    #         'accept': 'application/json, text/plain, */*',
+    #         'accept-language': 'en-US,en;q=0.9',
+    #         'content-type': 'application/json',
+    #         'dnt': '1',
+    #         'origin': 'https://washifyapi.com:1000',
+    #         'priority': 'u=1, i',
+    #         'referer': 'https://washifyapi.com:1000/',
+    #         'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+    #         'sec-ch-ua-mobile': '?0',
+    #         'sec-ch-ua-platform': '"Windows"',
+    #         'sec-fetch-dest': 'empty',
+    #         'sec-fetch-mode': 'cors',
+    #         'sec-fetch-site': 'same-site',
+    #         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    #     }
+
+    #     json_data = {
+    #         'Locations': [
+    #             88,
+    #             89,
+    #             87,
+    #             90,
+    #         ],
+    #         'StartDate': '06/10/2024 12:00 AM',
+    #         'EndDate': '06/21/2024 11:59 PM',
+    #         'LogOutDate': '06/21/2024 11:59 PM',
+    #         'locationName': '',
+    #         'ReportBy': '',
+    #         'CommonCompanySettings': {
+    #             'commonCompanyID': 'WWhtk4RrRQ8KymvwT0BMaw==',
+    #             'commonServerID': '+iMYUwYx079az+3TrcOsag==',
+    #             'commonUserRoleID': 'Hud67uIVSx9QDTsSrUCfjg==',
+    #             'commonUserID': 'bKN5Lonb9871/yWYGAEuAQ==',
+    #             'authKey': 'jF9inrLiZCOgWlXjXi0Z13m4qUvjpsZcQujn6kXp6iE=',
+    #             'commonTimeoffset': '120',
+    #         },
+    #     }
+
+    #     try:
+    #         response = requests.post(
+    #             'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashDiscounts',
+    #             headers=headers,
+    #             json=json_data,
+    #         )
+    #         if response.status_code==200:
+    #             data = response.json()
+    #     except Exception as e:
+    #         print(f"Exception in GetRevenuReportFinancialWashDiscounts() {e}")
+            
+    #     return data
+
+
 if __name__=="__main__":
     
 # json_data = {
@@ -274,8 +686,30 @@ if __name__=="__main__":
     print(f"is logged in :{is_logged_in}")
     print(f"user lcoations : {client_locations}")
     if client_locations:
-        for location_name,location_id in client_locations.items():
-            print(location_name,":",client.get_car_count_report([location_id,]))
+        # for location_name,location_id in client_locations.items():
+        #     print(location_name,":",client.get_car_count_report([location_id,]))
+        print(client_locations)
+        
+        # response_reneue = client.GetRevenuReportFinancialWashPackage()
+        # with open(f"{data_path}\GetRevenuReportFinancialWashPackage.json","w") as f:  #for wah package
+        #     json.dump(response_reneue,f,indent=4)
+        
+        # response_reneue = client.GetRevenuReportFinancialWashDiscounts()
+        # with open(f"{data_path}\GetRevenuReportFinancialWashDiscounts.json","w") as f:  #for Discount
+        #     json.dump(response_reneue,f,indent=4)
+            
+        # response_reneue = client.GetRevenuReportFinancialPackagesDiscount()
+        # with open(f"{data_path}\GetRevenuReportFinancialPackagesDiscount.json","w") as f:  #for Discount
+        #     json.dump(response_reneue,f,indent=4)
+        # response_reneue = client.GetRevenuReportFinancialUnlimitedSales()
+        # with open(f"{data_path}\GetRevenuReportFinancialUnlimitedSales.json","w") as f:  #for Unlimited sales
+        #     json.dump(response_reneue,f,indent=4)
+            
+        response_reneue = client.GetRevenuReportFinancialGiftcardsale()
+        with open(f"{data_path}\GetRevenuReportFinancialGiftcardsale.json","w") as f:  #for Unlimited sales
+            json.dump(response_reneue,f,indent=4)
+        
+            
 
 
 
