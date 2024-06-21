@@ -2,6 +2,45 @@ import json
 import os 
 import datetime
 import requests
+import openpyxl
+import openpyxl
+from openpyxl import Workbook
+from openpyxl.styles import Font
+
+file_path="washift.xlsx"
+
+def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
+    try:
+        # Try to load an existing workbook
+        workbook = openpyxl.load_workbook(file_path)
+    except FileNotFoundError:
+        # If the file does not exist, create a new workbook
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = 'Sheet1'
+    else:
+        # If the file exists, get the active sheet
+        sheet = workbook.active
+
+    # Append blank lines
+    for _ in range(num_lines):
+        sheet.append([])
+
+    if add_headers:
+        # Append the header row with bold keys
+        bold_font = Font(bold=True)
+        header_row = list(data.keys())
+        sheet.append(header_row)
+        for cell in sheet[sheet.max_row]:
+            cell.font = bold_font
+
+    # Append the data row
+    data_row = list(data.values())
+    sheet.append(data_row)
+
+    # Save the workbook
+    workbook.save(file_path)
+
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
@@ -395,18 +434,18 @@ class washifyClient():
                 # print(type(wash_package.get("amount")))
                 wash_packages_all.append(wash_package_structure)
             
-                wash_package_total_structure={
-                    "Wash_Packages_ServiceName":"Total:",
-                    "Wash_Packages_Unlimited":Wash_Packages_Unlimited_total,
-                    "Wash_Packages_Virtual_Wash":Wash_Packages_Virtual_Wash_total,
-                    "Wash_Packages_Non_Unlimited":Wash_Packages_Non_Unlimited_total,
-                    "Wash_Packages_Total":Wash_Packages_Total_total,
-                    "Wash_Packages_Amount":Wash_Packages_Amount_total,
-                    "Wash_Packages_Total_Amount":Wash_Packages_Total_Amount_total   
-                }
+            wash_package_total_structure={
+                "Wash_Packages_ServiceName":"Total:",
+                "Wash_Packages_Unlimited":Wash_Packages_Unlimited_total,
+                "Wash_Packages_Virtual_Wash":Wash_Packages_Virtual_Wash_total,
+                "Wash_Packages_Non_Unlimited":Wash_Packages_Non_Unlimited_total,
+                "Wash_Packages_Total":Wash_Packages_Total_total,
+                "Wash_Packages_Amount":Wash_Packages_Amount_total,
+                "Wash_Packages_Total_Amount":Wash_Packages_Total_Amount_total   
+            }
+            
+            wash_packages_all.append(wash_package_total_structure) #last ALl total row
                 
-                wash_packages_all.append(wash_package_total_structure) #last ALl total row
-                   
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
         return wash_packages_all
@@ -1216,8 +1255,17 @@ if __name__=="__main__":
         # with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","w") as f:  #for Payment
         #     json.dump(response_reneue,f,indent=4)
             
-        # response = client.GetRevenuReportFinancialWashPackage()
-        # formatted_response = client.GetRevenuReportFinancialWashPackage_formatter(response)  #first table 
+            
+        ## Formatter logic
+        wash_packages_response = client.GetRevenuReportFinancialWashPackage()
+        wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
+        
+        for index,data in enumerate(wash_packages_data):
+            # if index == 0:
+            #     append_dict_to_excel(file_path,data,0)
+            # else:
+            #     append_dict_to_excel(file_path,data,0,False)
+            print(data)
         # print(json.dumps(formatted_response,indent=4))
 
         # response = client.GetRevenuReportFinancialWashDiscounts()
@@ -1250,6 +1298,12 @@ if __name__=="__main__":
         # print(json.dumps(formatted_response,indent=4))
         
         
-        response = client.GetRevenuReportFinancialPaymentNew()
-        formatted_response = client.GetRevenuReportFinancialPaymentNew_formatter(response)  #8rd table payment location
-        print(json.dumps(formatted_response,indent=4))
+        # response = client.GetRevenuReportFinancialPaymentNew()
+        # formatted_response = client.GetRevenuReportFinancialPaymentNew_formatter(response)  #8rd table payment location
+        # print(json.dumps(formatted_response,indent=4))
+        
+        
+        
+        
+        
+## need to chanege site locations dynamic and and time stamp also dynamic and need to use type casting and need to write xl conversion code
