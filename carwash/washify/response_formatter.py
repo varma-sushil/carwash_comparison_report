@@ -173,7 +173,7 @@ data = data.get("data")
 financialWashDiscounts = data.get("financialWashDiscounts")
 
 for wash_discount in financialWashDiscounts:
-    discount_discount_structure = {}
+    discount_discount_structure = {}                                                             # Discount Discount
     discount_discount_structure["DISCOUNTS_Discount"] = wash_discount.get("discountName")
     discount_discount_structure["DISCOUNTS_Number"]      = wash_discount.get("number")
     discount_discount_structure["DISCOUNTS_Price ($)"] = wash_discount.get("discountPrice")
@@ -181,5 +181,64 @@ for wash_discount in financialWashDiscounts:
     
     discount_discount_all.append(discount_discount_structure)
     
-print(json.dumps(discount_discount_all,indent=4))
+# print(json.dumps(discount_discount_all,indent=4))
     
+## Gift card reedemed 
+
+reedemed_giftcard_all =[]
+
+with open(f"{data_path}\done\GetRevenuReportFinancialRevenueSummary.json","r") as f:
+            data =json.load(f)
+            
+data = data.get("data")
+
+financialGiftcardRedeemed = data.get("financialGiftcardRedeemed")
+
+for reedemed_giftcard in financialGiftcardRedeemed:
+    reedemed_giftcard_structure = {}
+    # print(reedemed_giftcard)
+    
+    reedemed_giftcard_structure["GIFT_CARD_REDEEMED_DATE"] = reedemed_giftcard.get("date")
+    reedemed_giftcard_structure["GIFT_CARD_REDEEMED_TIME"] = reedemed_giftcard.get("time")
+    reedemed_giftcard_structure["GIFT_CARD_REDEEMED_CARD_NUMBER"] = reedemed_giftcard.get("coupanNumber")
+    reedemed_giftcard_structure["GIFT_CARD_REDEEMED_Amount ($)"]  = reedemed_giftcard.get("price")
+    
+    reedemed_giftcard_all.append(reedemed_giftcard_structure)
+    
+
+# print(json.dumps(reedemed_giftcard_all,indent=4))
+
+# payment
+
+payment_data_all =[]
+
+with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","r") as f:
+            data =json.load(f)
+            
+data = data.get('data')
+# print(data.keys())
+
+financialPaymentNew = data.get("financialPaymentNew")
+
+for payment in financialPaymentNew:
+    payment_structure = {}
+    print(payment)
+
+    cash = payment.get("cash")
+    creditCard = payment.get("creditCard")
+    checkpayment  = payment.get("checkpayment")
+    invoiceCustomer = payment.get("invoiceCustomer")
+    ach = payment.get("ach")
+    
+    payment_structure["Payment_Location"] = payment.get("locationName")
+    payment_structure["Payment_Cash"]     = cash
+    payment_structure["Payment_Credit_Card"]  = creditCard
+    payment_structure["Payment_Check"]     = checkpayment
+    payment_structure["Payment_Invoice"]   = invoiceCustomer
+    payment_structure["Payment_ACH"]       = ach
+    payment_structure["Payment_Total ($)"] = sum([cash,creditCard,checkpayment,invoiceCustomer,ach])  ##payment
+    
+    payment_data_all.append(payment_structure)
+    
+
+# print(json.dumps(payment_data_all,indent=4))

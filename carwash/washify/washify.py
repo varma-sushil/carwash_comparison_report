@@ -664,7 +664,112 @@ class washifyClient():
             
     #     return data
 
+    def GetRevenuReportFinancialRevenueSummary(self):
+        "GIFT CARD REDEEMED"
+        
+        data = None
+        
 
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
+                headers=headers,
+                json=json_data,
+            )
+            
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
+
+        return data
+
+    def GetRevenuReportFinancialPaymentNew(self):
+        "Payment"
+        data = None
+
+        headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'dnt': '1',
+            'origin': 'https://washifyapi.com:1000',
+            'priority': 'u=1, i',
+            'referer': 'https://washifyapi.com:1000/',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'Locations': [
+                88,
+                89,
+                87,
+                90,
+            ],
+            'StartDate': '06/10/2024 12:00 AM',
+            'EndDate': '06/21/2024 11:59 PM',
+            'LogOutDate': '06/21/2024 11:59 PM',
+            'locationName': '',
+            'ReportBy': '',
+            'CommonCompanySettings': self.get_common_data(),
+        }
+
+        try:
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialPaymentNew',
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                data = response.json()
+        except Exception as e:
+            print(f"Exception in GetRevenuReportFinancialPaymentNew() {e}")
+            
+        return data
+
+
+
+
+    
+    
 if __name__=="__main__":
     
 # json_data = {
@@ -705,10 +810,16 @@ if __name__=="__main__":
         # with open(f"{data_path}\GetRevenuReportFinancialUnlimitedSales.json","w") as f:  #for Unlimited sales
         #     json.dump(response_reneue,f,indent=4)
             
-        response_reneue = client.GetRevenuReportFinancialGiftcardsale()
-        with open(f"{data_path}\GetRevenuReportFinancialGiftcardsale.json","w") as f:  #for Unlimited sales
-            json.dump(response_reneue,f,indent=4)
+        # response_reneue = client.GetRevenuReportFinancialGiftcardsale()
+        # with open(f"{data_path}\GetRevenuReportFinancialGiftcardsale.json","w") as f:  #for Gift card sale
+        #     json.dump(response_reneue,f,indent=4)
+        # response_reneue = client.GetRevenuReportFinancialRevenueSummary()
+        # with open(f"{data_path}\GetRevenuReportFinancialRevenueSummary.json","w") as f:  #for Unlimited sales
+        #     json.dump(response_reneue,f,indent=4)
         
+        response_reneue = client.GetRevenuReportFinancialPaymentNew()
+        with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","w") as f:  #for Payment
+            json.dump(response_reneue,f,indent=4)
             
 
 
