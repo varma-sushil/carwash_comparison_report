@@ -912,8 +912,8 @@ class washifyClient():
                 price   =  float(gift_card.get("price",0.0))
                 GIFT_CARD_SALESr_Amount_total+=price
                 
-                gift_card_sale_structure["GIFT_CARD_REDEEMED_DATE"] = gift_card.get("date")  #giftcarsd sales
-                gift_card_sale_structure["GIFT_CARD_REDEEMED_TIME"] = gift_card.get("time")
+                gift_card_sale_structure["GIFT_CARD_SALES_DATE"] = gift_card.get("date")  #giftcarsd sales
+                gift_card_sale_structure["GIFT_CARD_SALES_TIME"] = gift_card.get("time")
                 gift_card_sale_structure["GIFT_CARD_SALES_Card_Number"] = gift_card.get("coupanNumber")
                 gift_card_sale_structure["GIFT_CARD_SALESr_Amount ($)"] = gift_card.get("price")
                 gift_card_sale_structure["GIFT_CARD_SALES_Source"]      = gift_card.get("transactionFrom")
@@ -922,8 +922,8 @@ class washifyClient():
                 
             #final total table 
             giftcard_sale_total = {
-                "GIFT_CARD_REDEEMED_DATE":"Total:",
-                "GIFT_CARD_REDEEMED_TIME":"",
+                "GIFT_CARD_SALES_DATE":"Total:",
+                "GIFT_CARD_SALES_TIME":"",
                 "GIFT_CARD_SALES_Card_Number":"",
                 "GIFT_CARD_SALESr_Amount ($)":GIFT_CARD_SALESr_Amount_total,
                 "GIFT_CARD_SALES_Source":""
@@ -1260,47 +1260,90 @@ if __name__=="__main__":
         wash_packages_response = client.GetRevenuReportFinancialWashPackage()
         wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
         
-        for index,data in enumerate(wash_packages_data):
-            # if index == 0:
-            #     append_dict_to_excel(file_path,data,0)
-            # else:
-            #     append_dict_to_excel(file_path,data,0,False)
-            print(data)
+        # for index,data in enumerate(wash_packages_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,0)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
+            # print(data)
         # print(json.dumps(formatted_response,indent=4))
 
-        # response = client.GetRevenuReportFinancialWashDiscounts()
-        # formatted_response = client.GetRevenuReportFinancialWashDiscounts_formatter(response)  #secound table 
+        wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts()
+        washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table 
         # print(json.dumps(formatted_response,indent=4))
+        
+        # for index,data in enumerate(washpack_discount_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
 
-        # response = client.GetRevenuReportFinancialPackagesDiscount()
-        # formatted_response = client.GetRevenuReportFinancialPackagesDiscount_formatter(response)  #3rd table 
+        wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount()
+        wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table 
         # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate(wash_extra_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
 
+        unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales()
+        unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) #unlimited sales
+        # print(unlimited_sales_data)
+        # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate( unlimited_sales_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
             
-        # response = client.GetRevenuReportFinancialGiftcardsale()
-        # formatted_response = client.GetRevenuReportFinancialGiftcardsale_formatter(response)  #4rd table  gift card sale 
+        giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale()
+        giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response)  #4rd table  gift card sale
+        # print(formatted_response) 
         # print(json.dumps(formatted_response,indent=4))
         
+        # for index,data in enumerate(giftcards_sales_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
-        # response = client.GetRevenuReportFinancialWashDiscounts()
-        # formatted_response = client.GetRevenuReportFinancialWashDiscounts_formatter2(response)  #5rd table    Discount discount
+        
+        discount_discount_response = client.GetRevenuReportFinancialWashDiscounts()
+        discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response)  #5rd table    Discount discount
         # print(json.dumps(formatted_response,indent=4))
         
+        # for index,data in enumerate(discount_discount_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
-        # response = client.GetRevenuReportFinancialRevenueSummary()
-        # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #6rd table   Discount discount
+        
+        giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary()
+        giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)  #6rd table   Discount discount
         # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate(giftcard_reedemed_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
         
         
-        # response = client.GetRevenuReportFinancialRevenueSummary()
+        # response = client.GetRevenuReportFinancialRevenueSummary()   #duplicate
         # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #8rd table  gift card reedem
         # print(json.dumps(formatted_response,indent=4))
         
         
-        # response = client.GetRevenuReportFinancialPaymentNew()
-        # formatted_response = client.GetRevenuReportFinancialPaymentNew_formatter(response)  #8rd table payment location
-        # print(json.dumps(formatted_response,indent=4))
+        payment_response  = client.GetRevenuReportFinancialPaymentNew()
+        payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response)  #8rd table payment location
+        # print(json.dumps(payment_data,indent=4))
+        for index,data in enumerate(payment_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
         
         
         
