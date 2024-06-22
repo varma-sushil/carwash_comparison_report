@@ -75,6 +75,47 @@ def write_dictionary_to_xlshet(dictionary_data,file_name,is_first_dictionary=Tru
                     append_dict_to_excel(file_name,data,column_gap)
                 else:
                     append_dict_to_excel(file_name,data,0,False)
+                    
+def write_place_report(file_path,client,client_locations_number_codes,monday,sunday):
+        wash_packages_response = client.GetRevenuReportFinancialWashPackage(client_locations_number_codes, monday,sunday)
+        wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
+        # print(wash_packages_response)
+        write_dictionary_to_xlshet(wash_packages_data,file_path) #first dictionary
+        
+        wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts(client_locations_number_codes,monday,sunday)
+        washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)
+        
+        write_dictionary_to_xlshet(washpack_discount_data,file_path,False)
+        
+        wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount(client_locations_number_codes,monday,sunday)
+        wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)
+        
+        write_dictionary_to_xlshet(wash_extra_data,file_path,False)
+        
+        unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales(client_locations_number_codes,monday,sunday)
+        unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) 
+        
+        write_dictionary_to_xlshet(unlimited_sales_data,file_path,False)
+        
+        giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale(client_locations_number_codes,monday,sunday)
+        giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response) 
+        
+        write_dictionary_to_xlshet(giftcards_sales_data,file_path,False)
+
+        discount_discount_response = client.GetRevenuReportFinancialWashDiscounts(client_locations_number_codes,monday,sunday)
+        discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response) 
+        
+        write_dictionary_to_xlshet(discount_discount_data,file_path,False)       
+        
+        giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary(client_locations_number_codes,monday,sunday)
+        giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)
+        
+        write_dictionary_to_xlshet(giftcard_reedemed_data,file_path,False)
+        
+        payment_response  = client.GetRevenuReportFinancialPaymentNew(client_locations_number_codes,monday,sunday)
+        payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response) 
+        
+        write_dictionary_to_xlshet(payment_data,file_path,False)
 
 def generate_weekly_report(file_path, monday,sunday):
     "This will generate weekly report"
@@ -88,48 +129,15 @@ def generate_weekly_report(file_path, monday,sunday):
             print(f"doing relogin : {login}")
         client_locations = client.get_user_locations()
         
-        client_locations_number_codes =list(client_locations.values())
+        # client_locations_number_codes =list(client_locations.values())
         
-        if client_locations_number_codes:
-            wash_packages_response = client.GetRevenuReportFinancialWashPackage(client_locations_number_codes, monday,sunday)
-            wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
-            # print(wash_packages_response)
-            write_dictionary_to_xlshet(wash_packages_data,file_path) #first dictionary
+        if client_locations:
             
-            wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts(client_locations_number_codes,monday,sunday)
-            washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)
-            
-            write_dictionary_to_xlshet(washpack_discount_data,file_path,False)
-            
-            wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount(client_locations_number_codes,monday,sunday)
-            wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)
-            
-            write_dictionary_to_xlshet(wash_extra_data,file_path,False)
-            
-            unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales(client_locations_number_codes,monday,sunday)
-            unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) 
-            
-            write_dictionary_to_xlshet(unlimited_sales_data,file_path,False)
-            
-            giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale(client_locations_number_codes,monday,sunday)
-            giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response) 
-            
-            write_dictionary_to_xlshet(giftcards_sales_data,file_path,False)
-
-            discount_discount_response = client.GetRevenuReportFinancialWashDiscounts(client_locations_number_codes,monday,sunday)
-            discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response) 
-            
-            write_dictionary_to_xlshet(discount_discount_data,file_path,False)       
-            
-            giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary(client_locations_number_codes,monday,sunday)
-            giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)
-            
-            write_dictionary_to_xlshet(giftcard_reedemed_data,file_path,False)
-            
-            payment_response  = client.GetRevenuReportFinancialPaymentNew(client_locations_number_codes,monday,sunday)
-            payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response) 
-            
-            write_dictionary_to_xlshet(payment_data,file_path,False)
+            for location_name,location_code in client_locations.items():
+                location_code_lst = [location_code]
+                file_name = f"washify_{location_name}_{monday}-{sunday}.xlsx".replace('/','_')
+                file_path_full = os.path.join(file_path,file_name)
+                write_place_report(file_path_full,client,location_code_lst,monday,sunday)
         
     except Exception as e:
         print(f"Exception generate_weeklyrepoer washify {e}")

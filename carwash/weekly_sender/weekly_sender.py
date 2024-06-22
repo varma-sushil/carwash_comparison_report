@@ -80,19 +80,19 @@ if __name__=="__main__":
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
     
-    # wahsify_week_days = washify_week_dates()
-    # washify_file_name = f"washify_{wahsify_week_days[0]}-{wahsify_week_days[-1]}.xlsx".replace('/','_')
+    wahsify_week_days = washify_week_dates()
+    # washify_file_name = 
     # washify_file_path_full = os.path.join(storage_path,washify_file_name)
-    # washify_week_report(washify_file_path_full,wahsify_week_days[0],wahsify_week_days[1])
+    washify_week_report(storage_path,wahsify_week_days[0],wahsify_week_days[1])
     
     # hamilton_week_days = hamilton_week_dates()
     # hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
     # hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
     # hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
     
-    sitewatch_week_days = sitewatch_week_dates()
-    site_watch_file_path = storage_path
-    sitewatch_week_report(site_watch_file_path,sitewatch_week_days[0],sitewatch_week_days[-1])
+    # sitewatch_week_days = sitewatch_week_dates()
+    # site_watch_file_path = storage_path
+    # sitewatch_week_report(site_watch_file_path,sitewatch_week_days[0],sitewatch_week_days[-1])
     
      
 
