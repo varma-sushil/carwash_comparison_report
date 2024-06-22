@@ -2,9 +2,12 @@ import json
 import os 
 import datetime
 import requests
+import locale
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
+# Set the locale to US English
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 file_path="washift.xlsx"
 
@@ -425,8 +428,8 @@ class washifyClient():
                 wash_package_structure["Wash_Packages_Virtual_Wash"] = virtualWashNumber
                 wash_package_structure["Wash_Packages_Non_Unlimited"]  = nonUnlimited
                 wash_package_structure["Wash_Packages_Total"]   =   total
-                wash_package_structure["Wash_Packages_Amount"]   =    price
-                wash_package_structure["Wash_Packages_Total_Amount"]  =amount
+                wash_package_structure["Wash_Packages_Amount"]   =    locale.currency(float(price), grouping=True)
+                wash_package_structure["Wash_Packages_Total_Amount"]  =locale.currency(float(amount), grouping=True)
                 # print(type(wash_package.get("amount")))
                 wash_packages_all.append(wash_package_structure)
             
@@ -436,8 +439,8 @@ class washifyClient():
                 "Wash_Packages_Virtual_Wash":Wash_Packages_Virtual_Wash_total,
                 "Wash_Packages_Non_Unlimited":Wash_Packages_Non_Unlimited_total,
                 "Wash_Packages_Total":Wash_Packages_Total_total,
-                "Wash_Packages_Amount":Wash_Packages_Amount_total,
-                "Wash_Packages_Total_Amount":Wash_Packages_Total_Amount_total   
+                "Wash_Packages_Amount":locale.currency(float(Wash_Packages_Amount_total), grouping=True),
+                "Wash_Packages_Total_Amount":locale.currency(float(Wash_Packages_Total_Amount_total), grouping=True)   
             }
             
             wash_packages_all.append(wash_package_total_structure) #last ALl total row
@@ -521,8 +524,8 @@ class washifyClient():
                 
                 wash_discount_structure["Wash_Packages_Discount_ServiceName"] = wash_discount.get("discountName")
                 wash_discount_structure["Wash_Packages_Discount_Number"]      = number
-                wash_discount_structure["Wash_Packages_Discount_Service Price ($)"] = discountPrice
-                wash_discount_structure["Wash_Packages_Discount_Total Discount ($)"] = totalAmt
+                wash_discount_structure["Wash_Packages_Discount_Service Price ($)"] = locale.currency(float(discountPrice), grouping=True)
+                wash_discount_structure["Wash_Packages_Discount_Total Discount ($)"] = locale.currency(float(totalAmt), grouping=True)
                 
                 discount_all.append(wash_discount_structure)
                 
@@ -530,8 +533,8 @@ class washifyClient():
             discounts_all_total_structure = {
                 "Wash_Packages_Discount_ServiceName":"Total:",
                 "Wash_Packages_Discount_Number":Wash_Packages_Discount_Number_total,
-                "Wash_Packages_Discount_Service Price ($)":Wash_Packages_Discount_Service_Price_total,
-                "Wash_Packages_Discount_Total Discount ($)":Wash_Packages_Discount_Total_Discount
+                "Wash_Packages_Discount_Service Price ($)":locale.currency(float(Wash_Packages_Discount_Service_Price_total), grouping=True),
+                "Wash_Packages_Discount_Total Discount ($)":locale.currency(float(Wash_Packages_Discount_Total_Discount), grouping=True)
             }
             discount_all.append(discounts_all_total_structure)
             
@@ -568,8 +571,8 @@ class washifyClient():
                 discount_discount_structure = {}                                                             # Discount Discount
                 discount_discount_structure["DISCOUNTS_Discount"] = wash_discount.get("discountName")
                 discount_discount_structure["DISCOUNTS_Number"]      = number
-                discount_discount_structure["DISCOUNTS_Price ($)"] = discountPrice
-                discount_discount_structure["DISCOUNTS_Revenue"] = totalAmt
+                discount_discount_structure["DISCOUNTS_Price ($)"] = locale.currency(float(discountPrice), grouping=True)
+                discount_discount_structure["DISCOUNTS_Revenue"] = locale.currency(float(totalAmt), grouping=True)
                 
                 discount_discount_all.append(discount_discount_structure)
                 
@@ -577,8 +580,8 @@ class washifyClient():
             discount_discount_total={
                 "DISCOUNTS_Discount":"Total:",
                 "DISCOUNTS_Number":DISCOUNTS_Number_total,
-                "DISCOUNTS_Price ($)":DISCOUNTS_Price_total,
-                "DISCOUNTS_Revenue":DISCOUNTS_Revenue_total
+                "DISCOUNTS_Price ($)":locale.currency(float(DISCOUNTS_Price_total), grouping=True),
+                "DISCOUNTS_Revenue":locale.currency(float(DISCOUNTS_Revenue_total), grouping=True)
             }
             
             discount_discount_all.append(discount_discount_total)
@@ -710,16 +713,16 @@ class washifyClient():
                 
                 wash_extra_structure["Wash_Extras_ServiceName"] = wash_extra.get("serviceName")
                 wash_extra_structure["Wash_Extras_Number"]      = number
-                wash_extra_structure["Wash_Extras_Amount ($)"]  = servicePrice
-                wash_extra_structure["Wash_Extras_Total_Amount ($)"] = totalAmount
+                wash_extra_structure["Wash_Extras_Amount ($)"]  = locale.currency(float(servicePrice), grouping=True)
+                wash_extra_structure["Wash_Extras_Total_Amount ($)"] = locale.currency(float(totalAmount), grouping=True)
                 
                 wash_extras_all.append(wash_extra_structure)
             #adding final total value 
             wash_extras_total_structure = {
                 "Wash_Extras_ServiceName":"Total:",
                 "Wash_Extras_Number":Wash_Extras_Number_total,
-                "Wash_Extras_Amount ($)":Wash_Extras_Amount_total,
-                "Wash_Extras_Total_Amount ($)":Wash_Extras_Total_Amount_total
+                "Wash_Extras_Amount ($)":locale.currency(float(Wash_Extras_Amount_total), grouping=True),
+                "Wash_Extras_Total_Amount ($)":locale.currency(float(Wash_Extras_Total_Amount_total), grouping=True)
             }   
             
             wash_extras_all.append(wash_extras_total_structure)
@@ -802,7 +805,7 @@ class washifyClient():
                 sales_data_structure["Unlimited_Sales"] = sales_data.get("unlimited_Sales")
                 sales_data_structure["Unlimited_Sales_Service"] = sales_data.get("serviceName")
                 sales_data_structure["Unlimited_Sales_Number"]  = number
-                sales_data_structure["Unlimited_Sales_Revenue ($)"] = price 
+                sales_data_structure["Unlimited_Sales_Revenue ($)"] = locale.currency(float(price), grouping=True) 
                 
                 unlimited_sales_all.append(sales_data_structure)
               
@@ -811,7 +814,7 @@ class washifyClient():
                 "Unlimited_Sales":"Total:",
                 "Unlimited_Sales_Service":"",
                 "Unlimited_Sales_Number":Unlimited_Sales_Number_total,
-                "Unlimited_Sales_Revenue ($)":Unlimited_Sales_Revenue_total
+                "Unlimited_Sales_Revenue ($)":locale.currency(float(Unlimited_Sales_Revenue_total), grouping=True)
             }    
             
             unlimited_sales_all.append(unlimited_sales__total)
@@ -891,7 +894,7 @@ class washifyClient():
                 gift_card_sale_structure["GIFT_CARD_SALES_DATE"] = gift_card.get("date")  #giftcarsd sales
                 gift_card_sale_structure["GIFT_CARD_SALES_TIME"] = gift_card.get("time")
                 gift_card_sale_structure["GIFT_CARD_SALES_Card_Number"] = gift_card.get("coupanNumber")
-                gift_card_sale_structure["GIFT_CARD_SALESr_Amount ($)"] = gift_card.get("price")
+                gift_card_sale_structure["GIFT_CARD_SALESr_Amount ($)"] = locale.currency(float(price), grouping=True)
                 gift_card_sale_structure["GIFT_CARD_SALES_Source"]      = gift_card.get("transactionFrom")
                 
                 gift_card_sale_all.append(gift_card_sale_structure)
@@ -901,7 +904,7 @@ class washifyClient():
                 "GIFT_CARD_SALES_DATE":"Total:",
                 "GIFT_CARD_SALES_TIME":"",
                 "GIFT_CARD_SALES_Card_Number":"",
-                "GIFT_CARD_SALESr_Amount ($)":GIFT_CARD_SALESr_Amount_total,
+                "GIFT_CARD_SALESr_Amount ($)":locale.currency(float(GIFT_CARD_SALESr_Amount_total), grouping=True),
                 "GIFT_CARD_SALES_Source":""
             }
             gift_card_sale_all.append(giftcard_sale_total)
@@ -1037,7 +1040,7 @@ class washifyClient():
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_DATE"] = reedemed_giftcard.get("date")
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_TIME"] = reedemed_giftcard.get("time")
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_CARD_NUMBER"] = reedemed_giftcard.get("coupanNumber")
-                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_Amount ($)"]  = price
+                reedemed_giftcard_structure["GIFT_CARD_REDEEMED_Amount ($)"]  = locale.currency(float(price), grouping=True)
                 
                 reedemed_giftcard_all.append(reedemed_giftcard_structure)
             #reedem giftcard total
@@ -1046,7 +1049,7 @@ class washifyClient():
                 "GIFT_CARD_REDEEMED_DATE":"Total:",
                 "GIFT_CARD_REDEEMED_TIME":"",
                 "GIFT_CARD_REDEEMED_CARD_NUMBER":"",
-                "GIFT_CARD_REDEEMED_Amount ($)":GIFT_CARD_REDEEMED_Amount_total
+                "GIFT_CARD_REDEEMED_Amount ($)":locale.currency(float(GIFT_CARD_REDEEMED_Amount_total), grouping=True)
             }    
             reedemed_giftcard_all.append(reedem_total_structure)
         except Exception as e:
@@ -1140,24 +1143,24 @@ class washifyClient():
                 Payment_Total_total+=total_payment
                 
                 payment_structure["Payment_Location"] = payment.get("locationName")
-                payment_structure["Payment_Cash"]     = cash
-                payment_structure["Payment_Credit_Card"]  = creditCard
-                payment_structure["Payment_Check"]     = checkpayment
-                payment_structure["Payment_Invoice"]   = invoiceCustomer
-                payment_structure["Payment_ACH"]       = ach
-                payment_structure["Payment_Total ($)"] = total_payment  ##payment
+                payment_structure["Payment_Cash"]     = locale.currency(float(cash), grouping=True)
+                payment_structure["Payment_Credit_Card"]  = locale.currency(float(creditCard), grouping=True)
+                payment_structure["Payment_Check"]     = locale.currency(float(checkpayment), grouping=True)
+                payment_structure["Payment_Invoice"]   = locale.currency(float(invoiceCustomer), grouping=True)
+                payment_structure["Payment_ACH"]       = locale.currency(float(ach), grouping=True)
+                payment_structure["Payment_Total ($)"] = locale.currency(float(total_payment), grouping=True)  ##payment
                 
                 payment_data_all.append(payment_structure)
                   
             #total payments row 
             payment_total_structure = {
                 "Payment_Location":"Total Payments:",
-                "Payment_Cash":Payment_Cash_total,
-                "Payment_Credit_Card":Payment_Credit_Card_total,
-                "Payment_Check":Payment_Check_total,
-                "Payment_Invoice":Payment_Invoice_total,
-                "Payment_ACH":Payment_ACH_total,
-                "Payment_Total ($)":Payment_Total_total
+                "Payment_Cash":locale.currency(float(Payment_Cash_total), grouping=True),
+                "Payment_Credit_Card":locale.currency(float(Payment_Credit_Card_total), grouping=True),
+                "Payment_Check":locale.currency(float(Payment_Check_total), grouping=True),
+                "Payment_Invoice":locale.currency(float(Payment_Invoice_total), grouping=True),
+                "Payment_ACH":locale.currency(float(Payment_ACH_total), grouping=True),
+                "Payment_Total ($)":locale.currency(float(Payment_Total_total), grouping=True)
             }
             
             payment_data_all.append(payment_total_structure)
