@@ -1,11 +1,14 @@
 import json
 import os 
+import sys
 import datetime
 import requests
 import locale
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Set the locale to US English
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 

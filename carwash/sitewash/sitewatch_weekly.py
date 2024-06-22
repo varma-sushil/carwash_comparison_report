@@ -770,7 +770,7 @@ def get_week_dates():
     return monday_date_str, sunday_date_str
 
 
-def generate_weekly_report(monday_date_str, sunday_date_str):
+def generate_weekly_report(path,monday_date_str, sunday_date_str):
     
     
     for index,site in sites_df.iterrows():
@@ -792,6 +792,7 @@ def generate_weekly_report(monday_date_str, sunday_date_str):
         remember = 1
         file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
         
+        file_path = os.path.join(path,file_path)
         session_chek = client.check_session_auth(timeout=30)
 
         if not session_chek:

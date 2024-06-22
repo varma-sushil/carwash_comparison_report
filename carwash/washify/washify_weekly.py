@@ -9,7 +9,7 @@ from openpyxl.styles import Font
 
 
 # Add the carwash directory to the sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
 username = 'Cameron'
 password = 'Password1'
@@ -137,5 +137,7 @@ def generate_weekly_report(file_path, monday,sunday):
 
 
 if __name__=="__main__":
-    monday,sunday =  get_week_dates()
-    generate_weekly_report(file_path, monday,sunday)
+    # monday,sunday =  get_week_dates()
+    # generate_weekly_report(file_path, monday,sunday)
+    import sys
+    print(sys.path)
