@@ -26,14 +26,14 @@ def get_week_dates():
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
     
-    # Find the current week's Saturday date
-    current_week_saturday = current_week_monday + timedelta(days=5)
+    # Find the current week's Sunday date
+    current_week_sunday = current_week_monday + timedelta(days=6)
     
     # Format the dates in dd/mm/yyyy format
     monday_date_str = current_week_monday.strftime("%m/%d/%Y")
-    saturday_date_str = current_week_saturday.strftime("%m/%d/%Y")
+    sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
     
-    return monday_date_str, saturday_date_str
+    return monday_date_str, sunday_date_str
 
 def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
     try:

@@ -344,7 +344,7 @@ class washifyClient():
  
  
     
-    def GetRevenuReportFinancialWashPackage(self,client_locations:list, monday,saturday):
+    def GetRevenuReportFinancialWashPackage(self,client_locations:list, monday,sunday):
         "WASH PACKAGES"
         data = None
 
@@ -368,8 +368,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM', #'06/10/2024 12:00 AM'
-            'EndDate': f'{saturday} 11:59 PM', #'06/21/2024 11:59 PM'
-            'LogOutDate': f'{saturday} 11:59 PM', #'06/21/2024 11:59 PM'
+            'EndDate': f'{sunday} 11:59 PM', #'06/21/2024 11:59 PM'
+            'LogOutDate': f'{sunday} 11:59 PM', #'06/21/2024 11:59 PM'
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
@@ -448,7 +448,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialWashDiscounts(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialWashDiscounts(self,client_locations,monday,sunday):
         "DISCOUNTS"
         data=None
         
@@ -474,8 +474,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
@@ -640,7 +640,7 @@ class washifyClient():
  
    
     
-    def GetRevenuReportFinancialPackagesDiscount(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialPackagesDiscount(self,client_locations,monday,sunday):
         "WASH EXTRAS"
         data = None
 
@@ -664,8 +664,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
@@ -733,7 +733,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialUnlimitedSales(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialUnlimitedSales(self,client_locations,monday,sunday):
         "UNLIMITED SALES"
         data = None
         
@@ -759,8 +759,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings':self.get_common_data(),
@@ -825,7 +825,7 @@ class washifyClient():
  
  
 
-    def GetRevenuReportFinancialGiftcardsale(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialGiftcardsale(self,client_locations,monday,sunday):
         "GIFT CARD SALES"
         data = None
         
@@ -851,8 +851,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
@@ -969,7 +969,7 @@ class washifyClient():
             
     #     return data
 
-    def GetRevenuReportFinancialRevenueSummary(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialRevenueSummary(self,client_locations,monday,sunday):
         "GIFT CARD REDEEMED"
         
         data = None
@@ -996,8 +996,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
@@ -1058,7 +1058,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialPaymentNew(self,client_locations,monday,saturday):
+    def GetRevenuReportFinancialPaymentNew(self,client_locations,monday,sunday):
         "Payment"
         data = None
 
@@ -1082,8 +1082,8 @@ class washifyClient():
         json_data = {
             'Locations': client_locations,
             'StartDate': f'{monday} 12:00 AM',
-            'EndDate': f'{saturday} 11:59 PM',
-            'LogOutDate': f'{saturday} 11:59 PM',
+            'EndDate': f'{sunday} 11:59 PM',
+            'LogOutDate': f'{sunday} 11:59 PM',
             'locationName': '',
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
