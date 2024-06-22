@@ -13,6 +13,22 @@ cookies_path = os.path.join(current_file_path,"cookies")
 
 cookies_file = os.path.join(cookies_path,"sitewatch_cookies.pkl")
 
+def get_week_dates():
+    # Get the current date
+    today = datetime.today()
+    
+    # Find the current week's Monday date
+    current_week_monday = today - timedelta(days=today.weekday())
+    
+    # Find the current week's Sunday date
+    current_week_sunday = current_week_monday + timedelta(days=6)
+    
+    # Format the dates in dd/mm/yyyy format
+    monday_date_str = current_week_monday.strftime("%Y-%m-%d")
+    sunday_date_str = current_week_sunday.strftime("%Y-%m-%d")
+    
+    return monday_date_str, sunday_date_str
+
 def generate_heartbeatID():
     return round(random.random() * 1e7)
 
@@ -140,7 +156,7 @@ class sitewatchClient():
         return authenticated
 
 
-    def get_general_sales_report_request_id(self,reportOn,id,name,timeout=60):
+    def get_general_sales_report_request_id(self,reportOn,id,name,monday_date_str, sunday_date_str,timeout=60):
         data = None
 
         """This function will get general sales report
@@ -191,18 +207,11 @@ class sitewatchClient():
             'reportOn': reportOn,
         }
 
-        # Get the current time
-        current_time = datetime.now()
-
-        # Get the time one hour before the current time
-        one_hour_before = current_time - timedelta(hours=1)
-
-        # Define the desired format
-        format_string = '%Y-%m-%d'
+       
 
         # Format both times
-        one_hour_before_formatted = f"{one_hour_before.strftime(format_string)}T00:00:00"
-        current_time_formatted = f"{current_time.strftime(format_string)}T23:59:59"
+        one_hour_before_formatted = f"{monday_date_str}T00:00:00"
+        current_time_formatted = f"{sunday_date_str}T23:59:59"
         #one_hour_before_formatted = "2024-06-14T00:00:00"
         #current_time_formatted ="2024-06-14T23:59:59"
         
@@ -331,16 +340,6 @@ if __name__=="__main__":
     report_data = client.get_report(reportOn,req_id)
     # print(report_data)
 
-    try:
-        gsviews = report_data.get("gsviews")
-        gsviews_0 = gsviews[0]
-        section_1 = gsviews_0.get("sections")[1]
-        reports_0 = section_1.get("reports")[0]
-
-        saleItemCount = reports_0.get("saleItemCount")
-        print(saleItemCount)
-    except Exception as e:
-        print(f"Exception as reporting data {e}")
         
 
 #Application working flow

@@ -74,6 +74,9 @@ for index,site in sites_df.iterrows():
 
         if request_id:
             report_data = client.get_report(reportOn,request_id)
+            
+            with open(f"{locationCode}.json","w") as f:
+                json.dump(report_data,f,indent=4)
             try:
                 gsviews = report_data.get("gsviews")
                 gsviews_0 = gsviews[0]
@@ -132,10 +135,10 @@ with open(differenec_json,'w') as f:
 with open(site_watch_latest_json,'w') as f:
     json.dump(final_data,f,indent=4)
 
-if tg_message:
-    # print(tg_message)
-    tg = telegramBot()
-    tg.send_message(tg_message)
+# if tg_message:
+#     # print(tg_message)
+#     tg = telegramBot()
+#     tg.send_message(tg_message)
     # for msg in tg_message:
     #     tg = telegramBot()
     #     tg.send_message(msg)
