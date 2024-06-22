@@ -3,7 +3,6 @@ import os
 import datetime
 import requests
 import openpyxl
-import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
 
@@ -342,8 +341,10 @@ class washifyClient():
             print(f"Error in get_financal_revenue_summary() {e}")
 
         return data
+ 
+ 
     
-    def GetRevenuReportFinancialWashPackage(self):
+    def GetRevenuReportFinancialWashPackage(self,client_locations:list):
         "WASH PACKAGES"
         data = None
 
@@ -365,12 +366,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -452,7 +448,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialWashDiscounts(self):
+    def GetRevenuReportFinancialWashDiscounts(self,client_locations):
         "DISCOUNTS"
         data=None
         
@@ -476,12 +472,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -649,7 +640,7 @@ class washifyClient():
  
    
     
-    def GetRevenuReportFinancialPackagesDiscount(self):
+    def GetRevenuReportFinancialPackagesDiscount(self,client_locations):
         "WASH EXTRAS"
         data = None
 
@@ -671,12 +662,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -747,7 +733,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialUnlimitedSales(self):
+    def GetRevenuReportFinancialUnlimitedSales(self,client_locations):
         "UNLIMITED SALES"
         data = None
         
@@ -771,12 +757,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -844,7 +825,7 @@ class washifyClient():
  
  
 
-    def GetRevenuReportFinancialGiftcardsale(self):
+    def GetRevenuReportFinancialGiftcardsale(self,client_locations):
         "GIFT CARD SALES"
         data = None
         
@@ -868,12 +849,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -993,7 +969,7 @@ class washifyClient():
             
     #     return data
 
-    def GetRevenuReportFinancialRevenueSummary(self):
+    def GetRevenuReportFinancialRevenueSummary(self,client_locations):
         "GIFT CARD REDEEMED"
         
         data = None
@@ -1018,12 +994,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -1087,7 +1058,7 @@ class washifyClient():
 
 
 
-    def GetRevenuReportFinancialPaymentNew(self):
+    def GetRevenuReportFinancialPaymentNew(self,client_locations):
         "Payment"
         data = None
 
@@ -1109,12 +1080,7 @@ class washifyClient():
         }
 
         json_data = {
-            'Locations': [
-                88,
-                89,
-                87,
-                90,
-            ],
+            'Locations': client_locations,
             'StartDate': '06/10/2024 12:00 AM',
             'EndDate': '06/21/2024 11:59 PM',
             'LogOutDate': '06/21/2024 11:59 PM',
@@ -1260,11 +1226,11 @@ if __name__=="__main__":
         wash_packages_response = client.GetRevenuReportFinancialWashPackage()
         wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
         
-        # for index,data in enumerate(wash_packages_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,0)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(wash_packages_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,0)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
             # print(data)
         # print(json.dumps(formatted_response,indent=4))
 
@@ -1272,62 +1238,62 @@ if __name__=="__main__":
         washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table 
         # print(json.dumps(formatted_response,indent=4))
         
-        # for index,data in enumerate(washpack_discount_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(washpack_discount_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
 
         wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount()
         wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table 
         # print(json.dumps(formatted_response,indent=4))
-        # for index,data in enumerate(wash_extra_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(wash_extra_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
 
         unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales()
         unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) #unlimited sales
         # print(unlimited_sales_data)
         # print(json.dumps(formatted_response,indent=4))
-        # for index,data in enumerate( unlimited_sales_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate( unlimited_sales_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
             
         giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale()
         giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response)  #4rd table  gift card sale
         # print(formatted_response) 
         # print(json.dumps(formatted_response,indent=4))
         
-        # for index,data in enumerate(giftcards_sales_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(giftcards_sales_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
         
         
         discount_discount_response = client.GetRevenuReportFinancialWashDiscounts()
         discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response)  #5rd table    Discount discount
         # print(json.dumps(formatted_response,indent=4))
         
-        # for index,data in enumerate(discount_discount_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(discount_discount_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
         
         
         giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary()
         giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)  #6rd table   Discount discount
         # print(json.dumps(formatted_response,indent=4))
-        # for index,data in enumerate(giftcard_reedemed_data):
-        #     if index == 0:
-        #         append_dict_to_excel(file_path,data,2)
-        #     else:
-        #         append_dict_to_excel(file_path,data,0,False)
+        for index,data in enumerate(giftcard_reedemed_data):
+            if index == 0:
+                append_dict_to_excel(file_path,data,2)
+            else:
+                append_dict_to_excel(file_path,data,0,False)
         
         
         
