@@ -35,10 +35,13 @@ from sitewatch_weekly import generate_weekly_report as sitewatch_week_report
 from hamilton_weekly  import get_week_dates as hamilton_week_dates
 from hamilton_weekly  import generate_weekly_report as hamilton_week_report
 
+from custom_mailer import send_email,get_excel_files
+
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
 
 data_path = os.path.join(current_file_path,"data")
+
 
 # print(data_path)
 
@@ -77,6 +80,18 @@ def create_storage_directory(path):
 
 
 if __name__=="__main__":
+    
+    # Configuration
+    subject = 'Weekly reports'
+    body = 'This is the body of the email.'
+    to_email = 'vijaykumarmantheena@gmail.com'
+    from_email = 'vijaykumarmanthena@reluconsultancy.in'
+    from_name = 'Vijay'
+    smtp_server = 'smtp-mail.outlook.com'
+    smtp_port = 587
+    smtp_user = 'vijaykumarmanthena@reluconsultancy.in'
+    smtp_password = '4LdfR8qB062DCxt3'
+    
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
     
@@ -85,15 +100,21 @@ if __name__=="__main__":
     # washify_file_path_full = os.path.join(storage_path,washify_file_name)
     washify_week_report(storage_path,wahsify_week_days[0],wahsify_week_days[1])
     
-    # hamilton_week_days = hamilton_week_dates()
-    # hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
-    # hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
-    # hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
+    hamilton_week_days = hamilton_week_dates()
+    hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
+    hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
+    hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
     
-    # sitewatch_week_days = sitewatch_week_dates()
-    # site_watch_file_path = storage_path
-    # sitewatch_week_report(site_watch_file_path,sitewatch_week_days[0],sitewatch_week_days[-1])
+    sitewatch_week_days = sitewatch_week_dates()
+    site_watch_file_path = storage_path
+    sitewatch_week_report(site_watch_file_path,sitewatch_week_days[0],sitewatch_week_days[-1])
     
-     
+    # Directory containing Excel files
+    directory_path = storage_path
+    attachments = get_excel_files(directory_path)
+    
+    #Sending email to email address
+    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)
+    
 
 
