@@ -77,7 +77,7 @@ class hamiltonClient:
             "DXCallbackName": "RevenueReport",
             "__DXCallbackArgument": "c0:page=",
             "RevenueReport": "{&quot;drillDown&quot;:{},&quot;parameters&quot;:{},&quot;cacheKey&quot;:&quot;&quot;,&quot;currentPageIndex&quot;:0}",
-            "ClientTime": dt.datetime.now(dt.UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            "ClientTime": dt.datetime.now(dt.time).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
             + "Z",
         }
 

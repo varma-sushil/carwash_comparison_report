@@ -1,3 +1,8 @@
 env
 logs/*
 **/__pycache__/
+*.pyc
+carwash/weekly_sender/data/*
+
+
+

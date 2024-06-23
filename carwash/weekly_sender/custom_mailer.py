@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 from email.utils import formataddr
 import os
-from weekly_sender import get_week_dates_for_storage,create_storage_directory
+
 
 # Function to collect all .xlsx files from a directory
 def get_excel_files(directory):

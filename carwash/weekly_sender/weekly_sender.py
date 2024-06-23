@@ -100,10 +100,10 @@ if __name__=="__main__":
     # washify_file_path_full = os.path.join(storage_path,washify_file_name)
     washify_week_report(storage_path,wahsify_week_days[0],wahsify_week_days[1])
     
-    hamilton_week_days = hamilton_week_dates()
-    hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
-    hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
-    hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
+    # hamilton_week_days = hamilton_week_dates()
+    # hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
+    # hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
+    # hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
     
     sitewatch_week_days = sitewatch_week_dates()
     site_watch_file_path = storage_path
