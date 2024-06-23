@@ -1,22 +1,7 @@
-# from washify.washify_weekly import get_week_dates,generate_weekly_report
-
-# from sitewash.sitewatch_weekly import get_week_dates,generate_weekly_report
-
-# import os
-# import sys
-# # Add the root directory of your project to the PYTHONPATH
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-# current_file_path = os.path.dirname(os.path.abspath(__file__))
-
-# data_path = os.path.join(current_file_path,"data")
-
-# print(data_path)
-
-# from  carwash.hamilton
 
 import sys
 import os
+from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
 # Add the path to the parent directory of "washify" to sys.path
@@ -80,17 +65,29 @@ def create_storage_directory(path):
 
 
 if __name__=="__main__":
+
+    load_dotenv()
+
+    class emailConfig:
+        env_vars    = os.environ
+        FROM_EMAIL   = env_vars.get("FROM_EMAIL")
+        FROM_NAME      = env_vars.get("FROM_NAME")
+        SMTP_SERVER   = env_vars.get("SMTP_SERVER")
+        SMTP_PORT = env_vars.get("SMTP_PORT")
+        SMTP_USER=env_vars.get("SMTP_USER")
+        SMTP_PASSWORD=env_vars.get("SMTP_PASSWORD")
+        TO_EMAIL=env_vars.get("TO_EMAIL")
     
     # Configuration
     subject = 'Weekly reports'
     body = 'This is the body of the email.'
-    to_email = 'vijaykumarmantheena@gmail.com'
-    from_email = 'vijaykumarmanthena@reluconsultancy.in'
-    from_name = 'Vijay'
-    smtp_server = 'smtp-mail.outlook.com'
-    smtp_port = 587
-    smtp_user = 'vijaykumarmanthena@reluconsultancy.in'
-    smtp_password = '4LdfR8qB062DCxt3'
+    to_email = emailConfig.TO_EMAIL
+    from_email = emailConfig.FROM_EMAIL
+    from_name = emailConfig.FROM_NAME
+    smtp_server = emailConfig.SMTP_SERVER
+    smtp_port = emailConfig.SMTP_PORT
+    smtp_user = emailConfig.SMTP_USER
+    smtp_password = emailConfig.SMTP_PASSWORD
     
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
