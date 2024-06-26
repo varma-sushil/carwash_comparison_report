@@ -5,6 +5,7 @@ import os
 import json
 import datetime as dt
 from bs4 import BeautifulSoup
+import pandas as pd
 
 import csv
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -77,7 +78,7 @@ class hamiltonClient:
             "DXCallbackName": "RevenueReport",
             "__DXCallbackArgument": "c0:page=",
             "RevenueReport": "{&quot;drillDown&quot;:{},&quot;parameters&quot;:{},&quot;cacheKey&quot;:&quot;&quot;,&quot;currentPageIndex&quot;:0}",
-            "ClientTime": dt.datetime.now(dt.time).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            "ClientTime": dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
             + "Z",
         }
 
@@ -113,7 +114,7 @@ class hamiltonClient:
             "DXCallbackName": "RevenueReport",
             "__DXCallbackArgument": "c0:page=",
             "RevenueReport": "{&quot;drillDown&quot;:{},&quot;parameters&quot;:{},&quot;cacheKey&quot;:&quot;&quot;,&quot;currentPageIndex&quot;:1}",
-            "ClientTime": dt.datetime.now(dt.UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            "ClientTime": dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
             + "Z",
         }
 
@@ -229,7 +230,36 @@ class hamiltonClient:
             csv_writer = csv.writer(f)
             csv_writer.writerows(_return)
 
+    def to_excel(self,data, filename):
+        _return = []
         
+        for key, value in data.items():
+            if key == "Tax Detail":
+                _return.append([key, 'Rate', 'Current Amount'])
+            else:
+                _return.append([key, 'Amount', 'Ratio'])
+
+            x = 0
+
+            for item in value:
+                _return.append([item['header'], item['amount'], item['ratio']])
+                if key == "Tax Detail":
+                    x += float(item['ratio'].replace(",", '').replace("$", "").replace("%", ""))
+                else:
+                    x += float(item['amount'].replace(",", '').replace("$", "").replace("%", ""))
+            
+            if key == "Tax Detail":
+                _return.append(['Total', "", f"${x}"])
+            else:
+                _return.append(['Total', f"${x}", ""])
+
+            _return.append(['', '', ''])
+
+        # Convert the list of lists to a DataFrame
+        df = pd.DataFrame(_return)
+
+        # Write the DataFrame to an Excel file
+        df.to_excel(filename, index=False, header=False)
 
 
 
@@ -329,6 +359,7 @@ if __name__ == "__main__":
     # daily_report = client.get_daily_report(proxy)
     # print(f"daily :{daily_report}")
     rev = client.get_revenue("05/22/2024", "06/23/2024")
-    client.to_csv(rev, "revenue.csv")
+    # client.to_csv(rev, "revenue.csv")
+    client.to_excel(rev, "revenue.xlsx")
     print(rev)
 
