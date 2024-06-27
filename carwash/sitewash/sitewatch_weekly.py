@@ -104,26 +104,27 @@ client_names = ['Belair', 'Evans', 'North Augusta',
 def wash_sales(section):
     wash_sales_lst = []
     
-    reports = section.get("reports")
-    for report in reports:
-        wash_sales_structure ={
-            "Wash_sales_Description":report.get("description"),
-            "Wash_sales_price":report.get("price"),
-            "Wash_sales_quantity":report.get("quantity"),
-            "Wash_sales_amount":report.get("amount")
-        }
-        wash_sales_lst.append(wash_sales_structure)
+    # reports = section.get("reports")
+    # for report in reports:
+    #     wash_sales_structure ={
+    #         "Wash_sales_Description":report.get("description"),
+    #         "Wash_sales_price":report.get("price"),
+    #         "Wash_sales_quantity":report.get("quantity"),
+    #         "Wash_sales_amount":report.get("amount")
+    #     }
+    #     wash_sales_lst.append(wash_sales_structure)
     
-    subtotals = section.get("subtotals")
+    subtotals = section.get("subtotals")[0]
     
-    for subtotal in subtotals:
-        wash_sales_structure ={
-            "Wash_sales_Description":subtotal.get("description"),
-            "Wash_sales_price":subtotal.get("price"),
-            "Wash_sales_quantity":subtotal.get("quantity"),
-            "Wash_sales_amount":subtotal.get("amount")
-        }
-        wash_sales_lst.append(wash_sales_structure)
+    # for subtotal in subtotals:
+    #     wash_sales_structure ={
+    #         "Wash_sales_Description":subtotal.get("description"),
+    #         "Wash_sales_price":subtotal.get("price"),
+    #         "Wash_sales_quantity":subtotal.get("quantity"),
+    #         "Wash_sales_amount":subtotal.get("amount")
+    #     }
+    #     wash_sales_lst.append(wash_sales_structure)
+    return subtotals.get("quantity")
         
     return wash_sales_lst
 
@@ -264,38 +265,38 @@ def less_loyality_disc(section):
     return less_loyality_disc_lst
 
 def net_site_sales(section):
-    net_site_sales_lst = []
-    net_site_sales_structue={
-                "Net_site_sales":section.get("totalAmount")
-            }
-    net_site_sales_lst.append(net_site_sales_structue)
+    # net_site_sales_lst = []
+    # net_site_sales_structue={
+    #             "Net_site_sales":section.get("totalAmount")
+    #         }
+    # net_site_sales_lst.append(net_site_sales_structue)
 
-    return net_site_sales_lst
+    return section.get("totalAmount")
  
 def arm_plans_sold(section):
-    arm_plans_sold_lst = []
-    reports = section.get("reports")
-    subtotals  = section.get("subtotals")
+    # arm_plans_sold_lst = []
+    # reports = section.get("reports")
+    # subtotals  = section.get("subtotals")
     
-    for report in reports:
-        arm_plans_sold_structure = {
-            "Arm_plan_sold_description":report.get("description"),
-            "Arm_plan_sold_price":report.get("price"),
-            "Arm_plan_sold_quantity":report.get("quantity"),
-            "Arm_plan_sold_amount":report.get("amount")
-        }
-        arm_plans_sold_lst.append(arm_plans_sold_structure)
+    # for report in reports:
+    #     arm_plans_sold_structure = {
+    #         "Arm_plan_sold_description":report.get("description"),
+    #         "Arm_plan_sold_price":report.get("price"),
+    #         "Arm_plan_sold_quantity":report.get("quantity"),
+    #         "Arm_plan_sold_amount":report.get("amount")
+    #     }
+    #     arm_plans_sold_lst.append(arm_plans_sold_structure)
         
-    for subtotal in subtotals:
-        arm_plans_sold_structure = {
-            "Arm_plan_sold_description":subtotal.get("description"),
-            "Arm_plan_sold_price":subtotal.get("price"),
-            "Arm_plan_sold_quantity":subtotal.get("quantity"),
-            "Arm_plan_sold_amount":subtotal.get("amount")
-        }
-        arm_plans_sold_lst.append(arm_plans_sold_structure)
+    # for subtotal in subtotals:
+    #     arm_plans_sold_structure = {
+    #         "Arm_plan_sold_description":subtotal.get("description"),
+    #         "Arm_plan_sold_price":subtotal.get("price"),
+    #         "Arm_plan_sold_quantity":subtotal.get("quantity"),
+    #         "Arm_plan_sold_amount":subtotal.get("amount")
+    #     }
+    #     arm_plans_sold_lst.append(arm_plans_sold_structure)
         
-    return arm_plans_sold_lst    
+    return section.get("totalQuantity",0.0)   
 
 
 def arm_plans_recharged(section):
@@ -324,32 +325,36 @@ def arm_plans_recharged(section):
     return arm_plans_recharged_lst
 
 def arm_planes_reedemed(section):
-    arm_plans_reedemed_lst = []
-    reports  = section.get("reports")
-    subtotals = section.get("subtotals")     
+    data={}
     
-    for report in reports:
-        arm_plans_reedemed_structure = {
-            "Arm_plan_redeemed_description":report.get("description"),
-            "Arm_plan_redeemed_price":report.get("price"),
-            "Arm_plan_redeemed_quantity":report.get("quantity"),
-            "Arm_plan_redeemed_amount":report.get("amount"),
+    # arm_plans_reedemed_lst = []
+    # reports  = section.get("reports")
+    # subtotals = section.get("subtotals")     
+    
+    # for report in reports:
+    #     arm_plans_reedemed_structure = {
+    #         "Arm_plan_redeemed_description":report.get("description"),
+    #         "Arm_plan_redeemed_price":report.get("price"),
+    #         "Arm_plan_redeemed_quantity":report.get("quantity"),
+    #         "Arm_plan_redeemed_amount":report.get("amount"),
 
-        }
+    #     }
     
-        arm_plans_reedemed_lst.append(arm_plans_reedemed_structure)
-    for subtotal in subtotals:
-        arm_plans_reedemed_structure = {
-            "Arm_plan_redeemed_description":subtotal.get("description"),
-            "Arm_plan_redeemed_price":subtotal.get("price"),
-            "Arm_plan_redeemed_quantity":subtotal.get("quantity"),
-            "Arm_plan_redeemed_amount":subtotal.get("amount"),
+    #     arm_plans_reedemed_lst.append(arm_plans_reedemed_structure)
+    # for subtotal in subtotals:
+    #     arm_plans_reedemed_structure = {
+    #         "Arm_plan_redeemed_description":subtotal.get("description"),
+    #         "Arm_plan_redeemed_price":subtotal.get("price"),
+    #         "Arm_plan_redeemed_quantity":subtotal.get("quantity"),
+    #         "Arm_plan_redeemed_amount":subtotal.get("amount"),
 
-        }
+    #     }
     
-        arm_plans_reedemed_lst.append(arm_plans_reedemed_structure)    
-    
-    return arm_plans_reedemed_lst
+    #     arm_plans_reedemed_lst.append(arm_plans_reedemed_structure)    
+
+    data["arm_plans_reedemed_cnt"] = section.get("totalQuantity")
+    data["arm_plans_reedemed_amt"] = section.get("totalAmount",0.0)*(-1)
+    return data
     
     
 def arm_plans_terminated(section):
@@ -527,16 +532,16 @@ def less_paidouts(section):
     return data
 
 def total_to_account_for(section):
-    data = []
+    # data = []
     
 
-    total_to_account_for_structure = {
-        "TOTAL_TO_ACCOUNT_FOR:":section.get("totalAmount")
-    }
+    # total_to_account_for_structure = {
+    #     "TOTAL_TO_ACCOUNT_FOR:":section.get("totalAmount")
+    # }
 
-    data.append(total_to_account_for_structure)
+    # data.append(total_to_account_for_structure)
     
-    return data
+    return section.get("totalAmount",0.0)
 
 def deposits(section):
     data = []
@@ -745,6 +750,7 @@ def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
     workbook.save(file_path)
 
 def write_dictionary_to_xlshet(dictionary_data,file_name,is_first_dictionary=True):
+    return ""
     for index,data in enumerate(dictionary_data):
                 if index == 0:
                     column_gap = 0 if is_first_dictionary else 2
@@ -752,6 +758,128 @@ def write_dictionary_to_xlshet(dictionary_data,file_name,is_first_dictionary=Tru
                 else:
                     append_dict_to_excel(file_name,data,0,False)
 
+
+def report_data_extractor(report_data):
+    single_site_report = {}
+    gsviews =  report_data.get("gsviews")
+    gsviews_0 = gsviews[0]
+
+    sections = gsviews_0.get("sections")
+    for section in sections:
+        text        = section.get("text")
+        
+        
+        if text=="WASH SALES-":
+            wash_sales_ret = wash_sales(section)#,file_path
+            print(f"Washsales:{wash_sales_ret}")
+            single_site_report["car_count"] = wash_sales_ret #car count
+            
+                
+            
+        elif text=="WASH PACKAGES-":
+           wash_packages(section)
+                
+        elif text=="WASH EXTRA SERVICES-":
+            wash_extra_services(section)
+                
+        elif text=="GROSS WASH SALES-":
+            gross_wash_sales(section)
+            
+        
+        elif text=="LESS FREE WASH RDMD-":
+            less_free_wash_rdmd(section)
+                
+        
+        elif text=="LESS WASH DISCOUNTS-":
+            less_wash_discounts(section)
+                
+        elif text=="LESS LOYALTY DISC-":
+            less_loyality_disc(section)
+        
+        elif text == "NET SITE SALES:":      
+            net_site_sales_value = net_site_sales(section)
+            single_site_report['net_sales']=net_site_sales_value
+        
+        elif text=="ARM PLANS SOLD-":
+            arm_plans_sold_cnt= arm_plans_sold(section)
+            single_site_report["arm_plans_sold_cnt"] = arm_plans_sold_cnt
+            
+            
+        elif text=="ARM PLANS RECHARGED-":
+            arm_plans_recharged(section)
+            
+            
+        elif text=="ARM PLANS REDEEMED-":
+            arm_plans_reedemed_value= arm_planes_reedemed(section)
+            single_site_report["arm_plans_reedemed_cnt"] = arm_plans_reedemed_value.get("arm_plans_reedemed_cnt")
+            single_site_report["arm_plans_reedemed_amt"] =arm_plans_reedemed_value.get("arm_plans_reedemed_amt")
+                
+        elif text=="ARM PLANS TERMINATED-":
+            arm_plans_terminated(section)
+        
+        elif text=="PREPAIDS SOLD-":
+            prepaid_sold(section)
+        
+        elif text=="LESS PREPAIDS REDEEMED-":
+            less_prepaid_reedemed(section)
+            
+        elif text == "ONLINE SOLD-":
+            online_sold(section)
+            
+        elif text == "LESS ONLINE REDEEMED-":
+            less_online_reedemed(section)
+            
+        elif text=="FREE WASHES ISSUED-":
+            free_wash_issued(section)
+            
+        elif text=="LESS PAIDOUTS:":
+            less_paidouts(section)
+            
+        elif text=="TOTAL TO ACCOUNT FOR:":
+            total_revenue_val = total_to_account_for(section)
+            single_site_report['total_revenue'] = total_revenue_val
+        
+        elif text=="DEPOSITS-":
+            deposits(section)
+            
+        elif text=="TOTAL XPT CASH:":
+            total_xpt_cash(section)
+            
+        elif text=="HOUSE ACCOUNTS-":
+            house_accounts(section)
+            
+        # elif text =="OVER / SHORT (-)":
+        #     over_short_lst = over_short(section)
+        
+        elif text=="CASH:":
+            cash(section)
+            
+        elif text=="XPT ACCEPTORS:":
+            xpt_acceptors(section)
+            
+        elif text =="XPT DISPENSERS:":
+            xpt_dispensers(section)
+            
+        elif text =="TOTAL:":
+            total_function(section)
+            
+        elif text=="CREDIT CARD:":
+            credit_card(section)
+            
+            
+        elif text=="OTHER TENDERS:":
+            other_tenders(section)
+            
+        elif text=="XPT BALANCING:":
+            xpt_balancing(section)
+            
+        elif text=="REPORT BALANCE:":
+            report_balance(section)
+            
+        elif text=="PICTURE MISMATCH:":
+            picture_mismatch(section)
+            
+    return single_site_report
 
 def get_week_dates():
     # Get the current date
@@ -770,11 +898,13 @@ def get_week_dates():
     return monday_date_str, sunday_date_str
 
 
-def generate_weekly_report(path,monday_date_str, sunday_date_str):
+def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_str, sunday_date_str):
+    site_watch_report={}
     
     
     for index,site in sites_df.iterrows():
         # all_dictionaries_lst = []
+        combined_data = {}
         
         site_dict = site.to_dict()
         cookiesfile_name = f"{(site_dict.get('Organization')).strip().replace('-','_')}.pkl"
@@ -804,132 +934,93 @@ def generate_weekly_report(path,monday_date_str, sunday_date_str):
             reportOn=site_dict.get("site")
             id=site_dict.get("id")
             idname=site_dict.get("id_name")
-            request_id = client.get_general_sales_report_request_id(reportOn,id,idname,monday_date_str, sunday_date_str)
+            request_id1 = client.get_general_sales_report_request_id(reportOn,id,idname,monday_date_str,friday_date_str)
 
-            if request_id:
-                report_data = client.get_report(reportOn,request_id)
+            if request_id1:
+                report_data = client.get_report(reportOn,request_id1)
+                extracted_data1= report_data_extractor(report_data)
+                car_count_monday_to_friday = extracted_data1.get("car_count",0)
+                arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
+                arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt")
+                retail_car_count_monday_to_friday=abs(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
                 
-                # with open(f"{locationCode}.json","w") as f:
-                #     json.dump(report_data,f,indent=4)
-                gsviews =  report_data.get("gsviews")
-                gsviews_0 = gsviews[0]
-
-                sections = gsviews_0.get("sections")
-                for section in sections:
-                    text        = section.get("text")
-                    
-                    
-                    if text=="WASH SALES-":
-                        write_dictionary_to_xlshet(wash_sales(section),file_path)
-                            
-                        
-                    elif text=="WASH PACKAGES-":
-                        write_dictionary_to_xlshet(wash_packages(section),file_path,False)
-                            
-                    elif text=="WASH EXTRA SERVICES-":
-                        write_dictionary_to_xlshet(wash_extra_services(section),file_path,False)
-                            
-                    elif text=="GROSS WASH SALES-":
-                        write_dictionary_to_xlshet(gross_wash_sales(section),file_path,False)
-                        
-                    
-                    elif text=="LESS FREE WASH RDMD-":
-                        write_dictionary_to_xlshet(less_free_wash_rdmd(section),file_path,False)
-                            
-                    
-                    elif text=="LESS WASH DISCOUNTS-":
-                        write_dictionary_to_xlshet(less_wash_discounts(section),file_path,False)
-                            
-                    elif text=="LESS LOYALTY DISC-":
-                        write_dictionary_to_xlshet(less_loyality_disc(section),file_path,False)
-                    
-                    elif text == "NET SITE SALES:":
-                                
-                        write_dictionary_to_xlshet(net_site_sales(section),file_path,False)
-                    
-                    elif text=="ARM PLANS SOLD-":
-                        write_dictionary_to_xlshet(arm_plans_sold(section),file_path,False)
-                            
-                        
-                    elif text=="ARM PLANS RECHARGED-":
-                        write_dictionary_to_xlshet(arm_plans_recharged(section),file_path,False)
-                        
-                        
-                    elif text=="ARM PLANS REDEEMED-":
-                        write_dictionary_to_xlshet(arm_planes_reedemed(section),file_path,False)
-                            
-                    elif text=="ARM PLANS TERMINATED-":
-                        write_dictionary_to_xlshet(arm_plans_terminated(section),file_path,False)
-                    
-                    elif text=="PREPAIDS SOLD-":
-                        write_dictionary_to_xlshet(prepaid_sold(section),file_path,False)
-                    
-                    elif text=="LESS PREPAIDS REDEEMED-":
-                        write_dictionary_to_xlshet(less_prepaid_reedemed(section),file_path,False)
-                        
-                    elif text == "ONLINE SOLD-":
-                       write_dictionary_to_xlshet(online_sold(section),file_path,False)
-                        
-                    elif text == "LESS ONLINE REDEEMED-":
-                        write_dictionary_to_xlshet(less_online_reedemed(section),file_path,False)
-                        
-                    elif text=="FREE WASHES ISSUED-":
-                        write_dictionary_to_xlshet(free_wash_issued(section),file_path,False)
-                        
-                    elif text=="LESS PAIDOUTS:":
-                        write_dictionary_to_xlshet(less_paidouts(section),file_path,False)
-                        
-                    elif text=="TOTAL TO ACCOUNT FOR:":
-                        write_dictionary_to_xlshet(total_to_account_for(section),file_path,False)
-                    
-                    elif text=="DEPOSITS-":
-                        write_dictionary_to_xlshet(deposits(section),file_path,False)
-                        
-                    elif text=="TOTAL XPT CASH:":
-                        write_dictionary_to_xlshet(total_xpt_cash(section),file_path,False)
-                        
-                    elif text=="HOUSE ACCOUNTS-":
-                        write_dictionary_to_xlshet(house_accounts(section),file_path,False)
-                        
-                    # elif text =="OVER / SHORT (-)":
-                    #     over_short_lst = over_short(section)
-                    
-                    elif text=="CASH:":
-                        write_dictionary_to_xlshet(cash(section),file_path,False)
-                        
-                    elif text=="XPT ACCEPTORS:":
-                        write_dictionary_to_xlshet(xpt_acceptors(section),file_path,False)
-                        
-                    elif text =="XPT DISPENSERS:":
-                        write_dictionary_to_xlshet(xpt_dispensers(section),file_path,False)
-                        
-                    elif text =="TOTAL:":
-                        write_dictionary_to_xlshet(total_function(section),file_path,False)
-                        
-                    elif text=="CREDIT CARD:":
-                        write_dictionary_to_xlshet(credit_card(section),file_path,False)
-                        
-                        
-                    elif text=="OTHER TENDERS:":
-                        write_dictionary_to_xlshet(other_tenders(section),file_path,False)
-                        
-                    elif text=="XPT BALANCING:":
-                        write_dictionary_to_xlshet(xpt_balancing(section),file_path,False)
-                        
-                    elif text=="REPORT BALANCE:":
-                        write_dictionary_to_xlshet(report_balance(section),file_path,False)
-                        
-                    elif text=="PICTURE MISMATCH:":
-                        write_dictionary_to_xlshet(picture_mismatch(section),file_path,False)
+                net_sales_amt= extracted_data1.get("net_sales",0.0)
+                retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
                 
-                        
+                total_revenue_val = round(extracted_data1.get("total_revenue",0.0),2)
+                
+                arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
+                
+                mon_fri_data = {
+                    "car_count_monday_to_friday":car_count_monday_to_friday,
+                    "arm_plans_reedemed_monday_to_friday_cnt":arm_plans_reedemed_monday_to_friday_cnt,
+                    "retail_car_count_monday_to_friday":retail_car_count_monday_to_friday,
+                    "retail_revenue_monday_to_friday":retail_revenue__monday_to_friday,
+                    "total_revenue_monday_to_friday":total_revenue_val,
+                }
+                combined_data.update(mon_fri_data)
+            
+            request_id2 = client.get_general_sales_report_request_id(reportOn,id,idname,saturday_date_str,sunday_date_str)
 
+            if request_id2:
+                report_data = client.get_report(reportOn,request_id2)
+                extracted_data2= report_data_extractor(report_data)
+                car_count_saturday_sunday = extracted_data2.get("car_count",0)
+                arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
+                arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt")
+                
+                retail_car_count_saturday_sunday =abs(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
+                
+                net_sales_amt2= extracted_data2.get("net_sales",0.0)
+                retail_revenue__saturday_sunday = round((net_sales_amt2 - arm_plans_reedemed_saturday_sunday_amt),2)
+                
+                total_revenue_val2 = round(extracted_data2.get("total_revenue",0.0),2)
+                
+                arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
+                
+                sat_sun_data = {
+                    "car_count_saturday_sunday":car_count_saturday_sunday,
+                    "arm_plans_reedemed_saturday_sunday":arm_plans_reedemed_saturday_sunday_cnt,
+                    "retail_car_count_saturday_sunday":retail_car_count_saturday_sunday,
+                    "retail_revenue_saturday_sunday":retail_revenue__saturday_sunday,
+                    "total_revenue_saturday_sunday":total_revenue_val2
+                }
+                
+                combined_data.update(sat_sun_data)
+                
+                arm_plans_sold_total_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2])
+                total_arm_planmembers_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2,
+                                                                  arm_plans_reedemed_monday_to_friday_cnt,
+                                                                  arm_plans_reedemed_saturday_sunday_cnt])
+                
+                total_retail_car_cnt = sum([retail_car_count_monday_to_friday,retail_car_count_saturday_sunday])
+                conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2)
+                #combines values update 
+                #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
+                combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
+                combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
+                combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
+                combined_data["conversion_rate"]= conversion_rate
+            
+            site_watch_report[client_name]=combined_data
+                        
+    
+    return site_watch_report
 
 if __name__=="__main__":
     import pandas as pd
     monday_date_str, sunday_date_str = get_week_dates()
-    generate_weekly_report(monday_date_str, sunday_date_str)
+    print(monday_date_str,sunday_date_str)
+    monday_date_str="2024-06-03"
+    friday_date_str = "2024-06-07"
+    saturday_date_str = "2024-06-08"
+    sunday_date_str="2024-06-09"  #YMD
     
+    report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    print("\n"*6)
+    print(report)
+    with open("sitewatch_report.json","w") as f:
+        json.dump(report,f,indent=4)
     # with open("SPKLUS-002.json",'r') as f:
     #     data = json.load(f)
         
