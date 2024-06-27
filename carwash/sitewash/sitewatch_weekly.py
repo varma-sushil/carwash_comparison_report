@@ -761,123 +761,124 @@ def write_dictionary_to_xlshet(dictionary_data,file_name,is_first_dictionary=Tru
 
 def report_data_extractor(report_data):
     single_site_report = {}
-    gsviews =  report_data.get("gsviews")
-    gsviews_0 = gsviews[0]
+    if report_data:
+        gsviews =  report_data.get("gsviews")
+        gsviews_0 = gsviews[0]
 
-    sections = gsviews_0.get("sections")
-    for section in sections:
-        text        = section.get("text")
-        
-        
-        if text=="WASH SALES-":
-            wash_sales_ret = wash_sales(section)#,file_path
-            print(f"Washsales:{wash_sales_ret}")
-            single_site_report["car_count"] = wash_sales_ret #car count
+        sections = gsviews_0.get("sections")
+        for section in sections:
+            text        = section.get("text")
             
+            
+            if text=="WASH SALES-":
+                wash_sales_ret = wash_sales(section)#,file_path
+                print(f"Washsales:{wash_sales_ret}")
+                single_site_report["car_count"] = wash_sales_ret #car count
+                
+                    
+                
+            elif text=="WASH PACKAGES-":
+                wash_packages(section)
+                    
+            elif text=="WASH EXTRA SERVICES-":
+                wash_extra_services(section)
+                    
+            elif text=="GROSS WASH SALES-":
+                gross_wash_sales(section)
                 
             
-        elif text=="WASH PACKAGES-":
-           wash_packages(section)
+            elif text=="LESS FREE WASH RDMD-":
+                less_free_wash_rdmd(section)
+                    
+            
+            elif text=="LESS WASH DISCOUNTS-":
+                less_wash_discounts(section)
+                    
+            elif text=="LESS LOYALTY DISC-":
+                less_loyality_disc(section)
+            
+            elif text == "NET SITE SALES:":      
+                net_site_sales_value = net_site_sales(section)
+                single_site_report['net_sales']=net_site_sales_value
+            
+            elif text=="ARM PLANS SOLD-":
+                arm_plans_sold_cnt= arm_plans_sold(section)
+                single_site_report["arm_plans_sold_cnt"] = arm_plans_sold_cnt
                 
-        elif text=="WASH EXTRA SERVICES-":
-            wash_extra_services(section)
                 
-        elif text=="GROSS WASH SALES-":
-            gross_wash_sales(section)
-            
-        
-        elif text=="LESS FREE WASH RDMD-":
-            less_free_wash_rdmd(section)
+            elif text=="ARM PLANS RECHARGED-":
+                arm_plans_recharged(section)
                 
-        
-        elif text=="LESS WASH DISCOUNTS-":
-            less_wash_discounts(section)
                 
-        elif text=="LESS LOYALTY DISC-":
-            less_loyality_disc(section)
-        
-        elif text == "NET SITE SALES:":      
-            net_site_sales_value = net_site_sales(section)
-            single_site_report['net_sales']=net_site_sales_value
-        
-        elif text=="ARM PLANS SOLD-":
-            arm_plans_sold_cnt= arm_plans_sold(section)
-            single_site_report["arm_plans_sold_cnt"] = arm_plans_sold_cnt
+            elif text=="ARM PLANS REDEEMED-":
+                arm_plans_reedemed_value= arm_planes_reedemed(section)
+                single_site_report["arm_plans_reedemed_cnt"] = arm_plans_reedemed_value.get("arm_plans_reedemed_cnt")
+                single_site_report["arm_plans_reedemed_amt"] =arm_plans_reedemed_value.get("arm_plans_reedemed_amt")
+                    
+            elif text=="ARM PLANS TERMINATED-":
+                arm_plans_terminated(section)
             
+            elif text=="PREPAIDS SOLD-":
+                prepaid_sold(section)
             
-        elif text=="ARM PLANS RECHARGED-":
-            arm_plans_recharged(section)
-            
-            
-        elif text=="ARM PLANS REDEEMED-":
-            arm_plans_reedemed_value= arm_planes_reedemed(section)
-            single_site_report["arm_plans_reedemed_cnt"] = arm_plans_reedemed_value.get("arm_plans_reedemed_cnt")
-            single_site_report["arm_plans_reedemed_amt"] =arm_plans_reedemed_value.get("arm_plans_reedemed_amt")
+            elif text=="LESS PREPAIDS REDEEMED-":
+                less_prepaid_reedemed(section)
                 
-        elif text=="ARM PLANS TERMINATED-":
-            arm_plans_terminated(section)
-        
-        elif text=="PREPAIDS SOLD-":
-            prepaid_sold(section)
-        
-        elif text=="LESS PREPAIDS REDEEMED-":
-            less_prepaid_reedemed(section)
+            elif text == "ONLINE SOLD-":
+                online_sold(section)
+                
+            elif text == "LESS ONLINE REDEEMED-":
+                less_online_reedemed(section)
+                
+            elif text=="FREE WASHES ISSUED-":
+                free_wash_issued(section)
+                
+            elif text=="LESS PAIDOUTS:":
+                less_paidouts(section)
+                
+            elif text=="TOTAL TO ACCOUNT FOR:":
+                total_revenue_val = total_to_account_for(section)
+                single_site_report['total_revenue'] = total_revenue_val
             
-        elif text == "ONLINE SOLD-":
-            online_sold(section)
+            elif text=="DEPOSITS-":
+                deposits(section)
+                
+            elif text=="TOTAL XPT CASH:":
+                total_xpt_cash(section)
+                
+            elif text=="HOUSE ACCOUNTS-":
+                house_accounts(section)
+                
+            # elif text =="OVER / SHORT (-)":
+            #     over_short_lst = over_short(section)
             
-        elif text == "LESS ONLINE REDEEMED-":
-            less_online_reedemed(section)
-            
-        elif text=="FREE WASHES ISSUED-":
-            free_wash_issued(section)
-            
-        elif text=="LESS PAIDOUTS:":
-            less_paidouts(section)
-            
-        elif text=="TOTAL TO ACCOUNT FOR:":
-            total_revenue_val = total_to_account_for(section)
-            single_site_report['total_revenue'] = total_revenue_val
-        
-        elif text=="DEPOSITS-":
-            deposits(section)
-            
-        elif text=="TOTAL XPT CASH:":
-            total_xpt_cash(section)
-            
-        elif text=="HOUSE ACCOUNTS-":
-            house_accounts(section)
-            
-        # elif text =="OVER / SHORT (-)":
-        #     over_short_lst = over_short(section)
-        
-        elif text=="CASH:":
-            cash(section)
-            
-        elif text=="XPT ACCEPTORS:":
-            xpt_acceptors(section)
-            
-        elif text =="XPT DISPENSERS:":
-            xpt_dispensers(section)
-            
-        elif text =="TOTAL:":
-            total_function(section)
-            
-        elif text=="CREDIT CARD:":
-            credit_card(section)
-            
-            
-        elif text=="OTHER TENDERS:":
-            other_tenders(section)
-            
-        elif text=="XPT BALANCING:":
-            xpt_balancing(section)
-            
-        elif text=="REPORT BALANCE:":
-            report_balance(section)
-            
-        elif text=="PICTURE MISMATCH:":
-            picture_mismatch(section)
+            elif text=="CASH:":
+                cash(section)
+                
+            elif text=="XPT ACCEPTORS:":
+                xpt_acceptors(section)
+                
+            elif text =="XPT DISPENSERS:":
+                xpt_dispensers(section)
+                
+            elif text =="TOTAL:":
+                total_function(section)
+                
+            elif text=="CREDIT CARD:":
+                credit_card(section)
+                
+                
+            elif text=="OTHER TENDERS:":
+                other_tenders(section)
+                
+            elif text=="XPT BALANCING:":
+                xpt_balancing(section)
+                
+            elif text=="REPORT BALANCE:":
+                report_balance(section)
+                
+            elif text=="PICTURE MISMATCH:":
+                picture_mismatch(section)
             
     return single_site_report
 
