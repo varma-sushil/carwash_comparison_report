@@ -918,7 +918,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
         employCode = site_dict.get("employee")
         password = site_dict.get("password")
         locationCode = site_dict.get("Organization")
-        client_name = site_dict.get("client_name")
+        client_name = site_dict.get("client_name2")
         remember = 1
         file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
         
@@ -935,9 +935,11 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
             id=site_dict.get("id")
             idname=site_dict.get("id_name")
             request_id1 = client.get_general_sales_report_request_id(reportOn,id,idname,monday_date_str,friday_date_str)
+            request_id1_1 =client.get_activity_by_date_proft_request_id(reportOn,monday_date_str,friday_date_str) #for labour hours 
 
-            if request_id1:
+            if request_id1 and request_id1_1:
                 report_data = client.get_report(reportOn,request_id1)
+                # print(f"report data: {report_data}")
                 extracted_data1= report_data_extractor(report_data)
                 car_count_monday_to_friday = extracted_data1.get("car_count",0)
                 arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
@@ -950,6 +952,8 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 total_revenue_val = round(extracted_data1.get("total_revenue",0.0),2)
                 
                 arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
+                labour_hours_monday_to_friday=client.get_labour_hours(reportOn,request_id1_1)
+                cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2)
                 
                 mon_fri_data = {
                     "car_count_monday_to_friday":car_count_monday_to_friday,
@@ -957,13 +961,17 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     "retail_car_count_monday_to_friday":retail_car_count_monday_to_friday,
                     "retail_revenue_monday_to_friday":retail_revenue__monday_to_friday,
                     "total_revenue_monday_to_friday":total_revenue_val,
+                    "labour_hours_monday_to_friday":labour_hours_monday_to_friday,
+                    "cars_per_labour_hour_monday_to_friday":cars_per_labour_hour_monday_to_friday
                 }
                 combined_data.update(mon_fri_data)
             
             request_id2 = client.get_general_sales_report_request_id(reportOn,id,idname,saturday_date_str,sunday_date_str)
-
-            if request_id2:
+            request_id2_2 =client.get_activity_by_date_proft_request_id(reportOn,saturday_date_str,sunday_date_str) #for labour hours
+             
+            if request_id2 and request_id2_2:
                 report_data = client.get_report(reportOn,request_id2)
+                # print(f"data2:{report_data}")
                 extracted_data2= report_data_extractor(report_data)
                 car_count_saturday_sunday = extracted_data2.get("car_count",0)
                 arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
@@ -978,12 +986,17 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 
                 arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
                 
+                labour_hours_saturday_sunday=client.get_labour_hours(reportOn,request_id2_2)
+                cars_per_labour_hour_saturday_sunday = round((car_count_saturday_sunday/labour_hours_saturday_sunday),2)
+                
                 sat_sun_data = {
                     "car_count_saturday_sunday":car_count_saturday_sunday,
                     "arm_plans_reedemed_saturday_sunday":arm_plans_reedemed_saturday_sunday_cnt,
                     "retail_car_count_saturday_sunday":retail_car_count_saturday_sunday,
                     "retail_revenue_saturday_sunday":retail_revenue__saturday_sunday,
-                    "total_revenue_saturday_sunday":total_revenue_val2
+                    "total_revenue_saturday_sunday":total_revenue_val2,
+                    "labour_hours_saturday_sunday":labour_hours_saturday_sunday,
+                    "cars_per_labour_hour_saturday_sunday":cars_per_labour_hour_saturday_sunday
                 }
                 
                 combined_data.update(sat_sun_data)
@@ -1001,7 +1014,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
                 combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                 combined_data["conversion_rate"]= conversion_rate
-            
+            # print(f"combined data:{combined_data}")
             site_watch_report[client_name]=combined_data
                         
     

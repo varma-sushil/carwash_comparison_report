@@ -43,7 +43,7 @@ class sitewatchClient():
     def __init__(self,cookies_file) -> None:
         self.token = None
         self.heartbeatID =generate_heartbeatID()
-        self.cb_value  = generate_cb_value
+        self.cb_value  = generate_cb_value()
         self.cookies_file = cookies_file
 
     def login(self,employeeCode,password,locationCode,remember=0,timeout=60):
@@ -86,12 +86,12 @@ class sitewatchClient():
 
         try:
             response = session.post('https://sitewatch.cloud/api/auth/authenticate', headers=headers, data=data,timeout=timeout)
-            # print("Login response:",response)
+            print("Login response:",response)
             if response.status_code==200:
                 token = response.json().get("token")
                 self.token=token
                 # print(session.cookies)
-                # print(response.json())
+                print(response.json())
                 with open(self.cookies_file,'wb') as f:
                         pickle.dump(session.cookies,f)
             else:
@@ -150,6 +150,7 @@ class sitewatchClient():
             if response.status_code==200:
                 authenticated = response.json().get("authenticated")
                 authenticated=True
+                print("authentication success")
         except Exception as e:
             print(f"Exception in check_session_auth : {e} ")
             
@@ -245,7 +246,7 @@ class sitewatchClient():
             )
             if response.status_code==200:
                 data = response.json().get("requestID")
-            # print(data)
+            # print(f"sales id response :{response} , {response.json()}")
         except Exception as e:
             print(f"Exception in get_general_sales_report: {e} ")
         
@@ -302,15 +303,111 @@ class sitewatchClient():
             # print(response.json())
             # with open(f"{requestID}.json","w") as f:
             #     #json.dump(response.json(),f,indent=4)
+            # print(f"get report {response} , {response.json()}")
         except Exception as e:
             print(f"Exception in get_report: {e} ")
         
         return data
 
-# Note: json_data will not be serialized by requests
-# exactly as it was in the original request.
-#data = '{"startDate":"2024-06-14T00:00:00","endDate":"2024-06-14T23:59:59","shifts":[],"salesRoles":[],"terminals":[],"format":{"id":2121400001,"name":"Site Financial Detail & Chem Report-2021","title":"1","indentOffset":2,"indentSpaces":3},"employees":[],"showEachShift":false,"showEachTerminal":false,"showEachSite":false,"paperSize":"letter","paginationOffset":null}'
-#response = requests.post('https://sitewatch.cloud/api/gsreport/gsreport', params=params, cookies=cookies, headers=headers, data=data)
+
+    def get_activity_by_date_proft_request_id(self,reportOn,startDate,endDate,timeout=60):
+        requestID =None
+
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            #'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjQuMjM0Iiwic3R6IjoiLTA0OjAwOjAwIiwianRpIjoiZDA5NWNlMzUtZDBlMi00YWJlLWI3NzQtYjlhM2U3YjIzYTliIiwiZW1wIjoyMCwiZWlkIjoyMDAyMDAwMDAsImxvYyI6IlNQS0xVUy0wMDkiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMTg5NDQzN30.tn0aqhRbU6qkSbwIet7C8tgep_TW7XqHl54_fJrTKsc',
+            'Connection': 'keep-alive',
+            # 'Cookie': '_ga=GA1.2.938265008.1718553024; _gid=GA1.2.1473468462.1719290971; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjQuMjM0Iiwic3R6IjoiLTA0OjAwOjAwIiwianRpIjoiZGJhZTAzOGEtYzhmOS00NDUzLWI0OTYtNTg1NmUyYTY0NDkwIiwiZW1wIjoyMCwiZWlkIjoyMDAyMDAwMDAsImxvYyI6IlNQS0xVUy0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcxOTU2NzA1N30.TcoGK3UZ0v9enWREhpizjrGFvBw6IAHmjTpvyekXGFA; _gat=1',
+            'DNT': '1',
+            'Referer': 'https://sitewatch.cloud/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+        session  = requests.Session()
+        
+        with open(self.cookies_file,'rb') as f:
+            cookies = pickle.load(f)
+
+        session.cookies = cookies
+        session.headers = headers    
+        params = {
+            'cb': generate_cb_value(),
+            'activeView': 'custom',
+            'allowCallback': '1',
+            'endDate': endDate, # '2024-06-09'
+            'heartbeatID': generate_heartbeatID,
+            'paperSize': 'letter',
+            'reportOn': reportOn,
+            'startDate': startDate, # 2024-06-03
+        }
+
+        try:
+            response = session.get(
+            'https://sitewatch.cloud/api/activity-by-date-profit-center',
+            params=params,
+            headers=headers,timeout=timeout
+        )
+            if response.status_code==200:
+                requestID = response.json().get("requestID")
+            # print(f"response: in activity report {response}, {response.json()}")
+        except Exception as e:
+            print(f"Exception in get_activity_by_date_proft_request_id() {e}")
+
+        return requestID
+    
+    def get_labour_hours(self,reportOn,requestID,):
+        
+        laborHours=None
+
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            #'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjQuMjM0Iiwic3R6IjoiLTA0OjAwOjAwIiwianRpIjoiZDA5NWNlMzUtZDBlMi00YWJlLWI3NzQtYjlhM2U3YjIzYTliIiwiZW1wIjoyMCwiZWlkIjoyMDAyMDAwMDAsImxvYyI6IlNQS0xVUy0wMDkiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMTg5NDQzN30.tn0aqhRbU6qkSbwIet7C8tgep_TW7XqHl54_fJrTKsc',
+            'Connection': 'keep-alive',
+            # 'Cookie': '_ga=GA1.2.938265008.1718553024; _gid=GA1.2.1473468462.1719290971; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjQuMjM0Iiwic3R6IjoiLTA0OjAwOjAwIiwianRpIjoiZGJhZTAzOGEtYzhmOS00NDUzLWI0OTYtNTg1NmUyYTY0NDkwIiwiZW1wIjoyMCwiZWlkIjoyMDAyMDAwMDAsImxvYyI6IlNQS0xVUy0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcxOTU2NzA1N30.TcoGK3UZ0v9enWREhpizjrGFvBw6IAHmjTpvyekXGFA; _gat=1',
+            'DNT': '1',
+            'Referer': 'https://sitewatch.cloud/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+
+        session  = requests.Session()
+                
+        with open(self.cookies_file,'rb') as f:
+            cookies = pickle.load(f)
+
+            session.cookies = cookies
+            session.headers = headers 
+        params = {
+            'cb': self.cb_value,
+            'heartbeatID': self.heartbeatID,
+            'reportOn': reportOn,
+            'requestID': requestID,
+        }
+
+        try:
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params, headers=headers)
+            if response.status_code==200:
+                data = response.json()
+                profitCenterData = data.get("profitCenterData")[0]
+                laborHours= round(profitCenterData.get("laborHours",0.0),2)
+        except Exception as e :
+            print(f"exception in get_labour_hours() {e}")
+
+    
+        return laborHours
+
 if __name__=="__main__":
     # print("HeartBeatID :",generate_heartbeatID())
     # print("cb_value :",generate_cb_value())
@@ -335,10 +432,17 @@ if __name__=="__main__":
     print(client.token)
     reportOn  = "site-2"
     # print(client.get_requestid(reportOn=reportOn))
-    req_id = client.get_general_sales_report_request_id(reportOn=reportOn)
+    # req_id = client.get_general_sales_report_request_id(reportOn,2121400001,'Site Financial Detail & Chem Report-2021','2024-06-03','2024-06-09')
+
     
-    report_data = client.get_report(reportOn,req_id)
+    # report_data = client.get_report(reportOn,req_id)
+    
     # print(report_data)
+    print('Testing data ')
+    req_id2 = client.get_activity_by_date_proft_request_id(reportOn,'2024-06-03','2024-06-09')
+    print(req_id2)
+    print(client.get_labour_hours(reportOn,req_id2))
+    
 
         
 
