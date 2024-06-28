@@ -1044,6 +1044,252 @@ def do_sum_location(xl_map,location:list):
             total+=val
     return total
 
+def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
+                                         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):    
+    
+    result = 0
+    try:
+        Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
+        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
+    )
+        result = Average_retail_visit__GA_SC
+    except Exception as e:
+        print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
+        
+
+    return result 
+
+def Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
+        retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC,
+        total_cars_GA_SC
+        ):
+    result = 0
+    
+    try:
+        
+        Average_memeber_visit_GA_SC = (Total_revenue_GA_SC - sum([retail_revenue_monday_to_friday_GA_SC , retail_revenue_saturday_to_sunday_GA_SC]))/(total_cars_GA_SC - sum([
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC]))
+        
+        result = Average_memeber_visit_GA_SC
+        
+    except Exception as e:
+        print(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
+    
+    return result
+
+def cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC):
+    result = 0
+    try:
+        cost_per_labour_hour_monday_to_friday_GA_SC = car_count_monday_to_friday_GA_SC/staff_hours_monday_to_friday_GA_SC
+        result =cost_per_labour_hour_monday_to_friday_GA_SC
+    except Exception as e:
+        print(f"Exception in cost_per_labour_hour_monday_to_friday_GA_SC() {e}")
+
+    return result
+
+
+def cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
+    result = 0
+    
+    try:
+        cost_per_labour_hour_saturday_to_sunday_GA_SC = car_count_saturday_to_sunday_GA_SC/staff_hours_saturday_to_sunday_GA_SC
+        result = cost_per_labour_hour_saturday_to_sunday_GA_SC
+    except Exception as e:
+        print(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
+        
+    return result
+
+def Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
+    result =0 
+    try:
+            Total_cars_per_man_hour_GA_SC = total_cars_GA_SC/sum([
+            staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC])
+            result = Total_cars_per_man_hour_GA_SC
+    
+    except Exception as e:
+        print(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
+    
+    return result
+ 
+def Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
+                                   retail_car_count_saturday_to_sunday_GA_SC):
+    result = 0 
+    try:
+        Conversion_rate_GA_SC = Total_club_plans_sold_GA_SC/sum([
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC])     
+        
+        result =  Conversion_rate_GA_SC
+    except Exception as e:
+        print(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
+    
+    return result
+
+def Conversion_rate_Total_function(Total_club_plans_sold_Total,
+                                   retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total):
+    result = 0
+    
+    try:
+        
+        Conversion_rate_Total = Total_club_plans_sold_Total/sum(
+        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])  
+        
+        result = Conversion_rate_Total
+    except Exception as e:
+        print(f"Exception in Conversion_rate_Total_function()  {e}") 
+    
+    return result
+
+def Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
+                                 retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
+    result = 0
+    
+    try:
+        Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])         
+        result = Conversion_rate_ILL
+    except Exception as e:
+        print(f"Exception in Conversion_rate_ILL_function() {e}")
+        
+    return result
+
+def Total_cars_per_man_hour_total_function(Total_cars_Total,
+                                           staff_hours_monday_to_friday_Total,
+                                           staff_hours_saturday_to_sunday_Total):
+    result = 0
+    
+    try:
+        Total_cars_per_man_hour_total = Total_cars_Total/sum(
+        [staff_hours_monday_to_friday_Total,staff_hours_saturday_to_sunday_Total])
+        
+        result = Total_cars_per_man_hour_total
+    
+    except Exception as e:
+        print(f"Exception in Total_cars_per_man_hour_total_function() {e}")
+        
+    return result
+
+
+def Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
+                                         staff_hours_monday_to_friday_ILL,
+                                         staff_hours_saturday_to_sunday_ILL):
+    result = 0
+    
+    try:
+        Total_cars_per_man_hour_ILL = total_cars_in_ILL/(sum([
+        staff_hours_monday_to_friday_ILL+staff_hours_saturday_to_sunday_ILL]))
+
+        result = Total_cars_per_man_hour_ILL
+    
+    except Exception as e:
+        print(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
+    
+    return result
+
+
+def cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL):
+    result = 0
+    
+    try:
+        cost_per_labour_hour_saturday_to_sunday_ILL = car_count_saturday_to_sunday_ILL/staff_hours_saturday_to_sunday_ILL
+        
+        result = cost_per_labour_hour_saturday_to_sunday_ILL
+    
+    except Exception as e:
+        print(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
+        
+    return result
+
+
+def cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total):
+    result = 0
+    
+    try:
+        cost_per_labour_hour_monday_to_friday_Total = car_count_monday_to_friday_Total/staff_hours_monday_to_friday_Total
+        result = cost_per_labour_hour_monday_to_friday_Total
+    
+    except Exception as e:
+        print(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
+    
+    return result
+
+def cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL):
+    result = 0
+    
+    try:
+        cost_per_labour_hour_monday_to_friday_ILL = car_count_monday_to_friday_ILL/staff_hours_monday_to_friday_ILL
+        result =  cost_per_labour_hour_monday_to_friday_ILL
+    
+    except Exception as e:
+        print(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
+        
+    return result
+
+def Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
+                        ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
+                        retail_car_count_saturday_to_sunday_Total):
+    result = 0
+    
+    try:
+        Average_memeber_visit_Total = (Total_revenue_Total -sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total]))/(Total_cars_Total - sum([
+        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total]))
+        result =  Average_memeber_visit_Total
+    
+    except Exception as e:
+        print(f"Exception Average_memeber_visit_Total_function() {e}")  
+    
+    return result    
+
+def Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
+                                       retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
+                                       retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
+    result = 0
+    
+    try:
+        Average_memeber_visit_ILL = (Total_revenue_ILL - sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL]))/(total_cars_in_ILL - sum([
+        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL]))
+        
+        result = Average_memeber_visit_ILL
+    
+    except Exception as e:
+        print(f"Exception Average_memeber_visit_ILL_function() {e}")
+    
+    return result
+
+def Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
+                                        retail_revenue_saturday_to_sunday_Total,
+                                        retail_car_count_monday_to_friday_Total,
+                                        retail_car_count_saturday_to_sunday_Total):
+    result = 0
+    
+    try:
+        Average_retail_visit_Total = sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total])/sum([
+        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])
+        
+        result = Average_retail_visit_Total
+    
+    except Exception as e:
+        print(f"Exception Average_retail_visit_Total_function() {e}")
+        
+    return result
+            
+
+def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
+                                     retail_revenue_saturday_to_sunday_ILL,
+                                     retail_car_count_monday_to_friday_ILL,
+                                     retail_car_count_saturday_to_sunday_ILL):
+    result = 0
+    
+    try:
+        Average_retail_visit_IL = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL])/sum(
+        [retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
+
+        result = Average_retail_visit_IL
+    
+    except Exception as e:
+        print(f"Exception Average_retail_visit_IL_function() {e}")
+    
+    return result
+
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
     "Will return updates place dictionary"
     xl_map[2][place_index] = place_dictionary.get("car_count_monday_to_friday")
@@ -1343,43 +1589,47 @@ def prepare_xlmap(data,comment="The comment section"):
     xl_map[11][1] =Total_revenue_Total
     
     #Average Retail Visit
-    Average_retail_visit_IL = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL])/sum(
-        [retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
-    
-    
-    
-    xl_map[12][2]=round(Average_retail_visit_IL,2)
-    
-    
-    Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
-        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
-    )
 
-    xl_map[12][3] = round(Average_retail_visit__GA_SC,2)
     
-    Average_retail_visit_Total = sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total])/sum([
-        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total
-    ])
-    xl_map[12][1] = round(Average_retail_visit_Total,2)
+    
+    Average_retail_visit_IL_val =Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
+                                     retail_revenue_saturday_to_sunday_ILL,
+                                     retail_car_count_monday_to_friday_ILL,
+                                     retail_car_count_saturday_to_sunday_ILL)
+    xl_map[12][2]=round(Average_retail_visit_IL_val,2)
+    
+    
+
+    Average_retail_visit__GA_SC_val = Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC
+                                                                            ,retail_revenue_saturday_to_sunday_GA_SC,
+                                                                            retail_car_count_monday_to_friday_GA_SC,
+                                                                            retail_car_count_saturday_to_sunday_GA_SC)
+    xl_map[12][3] = round(Average_retail_visit__GA_SC_val,2)
+    
+    Average_retail_visit_Total_val =Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
+                                        retail_revenue_saturday_to_sunday_Total,
+                                        retail_car_count_monday_to_friday_Total,
+                                        retail_car_count_saturday_to_sunday_Total)
+    xl_map[12][1] = round(Average_retail_visit_Total_val,2)
     
     #Average Member visit 
     
-    Average_memeber_visit_ILL = (Total_revenue_ILL - sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL]))/(total_cars_in_ILL - sum([
-        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL
-    ]))
-    xl_map[13][2] = round(Average_memeber_visit_ILL,2)
+    Average_memeber_visit_ILL_val =Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
+                                       retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
+                                       retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL)
+    xl_map[13][2] = round(Average_memeber_visit_ILL_val,2)
     
-    Average_memeber_visit_GA_SC = (Total_revenue_GA_SC - sum([retail_revenue_monday_to_friday_GA_SC , retail_revenue_saturday_to_sunday_GA_SC]))/(total_cars_GA_SC - sum([
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC
-    ]))
+    Average_memeber_visit_GA_SC_val = Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
+        retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC,total_cars_GA_SC)
     
-    xl_map[13][3] = round(Average_memeber_visit_GA_SC,2)
+    xl_map[13][3] = round(Average_memeber_visit_GA_SC_val,2)
     
-    Average_memeber_visit_Total = (Total_revenue_Total -sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total]))/(Total_cars_Total - sum([
-        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total
-    ]))
+    Average_memeber_visit_Total_val =Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
+                        ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
+                        retail_car_count_saturday_to_sunday_Total)
     
-    xl_map[13][1] = round(Average_memeber_visit_Total,2)
+    xl_map[13][1] = round(Average_memeber_visit_Total_val,2)
     
     #Staff Hours Monday to Friday
     
@@ -1409,24 +1659,26 @@ def prepare_xlmap(data,comment="The comment section"):
     xl_map[15][1] = staff_hours_saturday_to_sunday_Total  
     
     # Cost per labour hour  Monday to friday
-    cost_per_labour_hour_monday_to_friday_ILL = car_count_monday_to_friday_ILL/staff_hours_monday_to_friday_ILL
-    xl_map[16][2] = round(cost_per_labour_hour_monday_to_friday_ILL,2)
-    cost_per_labour_hour_monday_to_friday_GA_SC = car_count_monday_to_friday_GA_SC/staff_hours_monday_to_friday_GA_SC
+    cost_per_labour_hour_monday_to_friday_ILL_val =cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL)
+    xl_map[16][2] = round(cost_per_labour_hour_monday_to_friday_ILL_val,2)
     
-    xl_map[16][3] = round(cost_per_labour_hour_monday_to_friday_GA_SC,2)
     
-    cost_per_labour_hour_monday_to_friday_Total = car_count_monday_to_friday_Total/staff_hours_monday_to_friday_Total
+    cost_per_labour_hour_monday_to_friday_GA_SC_val = cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC)
+    xl_map[16][3] = round(cost_per_labour_hour_monday_to_friday_GA_SC_val,2)
     
-    xl_map[16][1] = round(cost_per_labour_hour_monday_to_friday_Total,2)
+    
+    cost_per_labour_hour_monday_to_friday_Total_val =cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total)
+    
+    xl_map[16][1] = round(cost_per_labour_hour_monday_to_friday_Total_val,2)
     
     #Cost per laobour hour Saturday and Sunday
-    cost_per_labour_hour_saturday_to_sunday_ILL = car_count_saturday_to_sunday_ILL/staff_hours_saturday_to_sunday_ILL
-    xl_map[17][2] = round(cost_per_labour_hour_saturday_to_sunday_ILL,2)
-    
-    cost_per_labour_hour_saturday_to_sunday_GA_SC = car_count_saturday_to_sunday_GA_SC/staff_hours_saturday_to_sunday_GA_SC
+    cost_per_labour_hour_saturday_to_sunday_ILL_val = cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL)
+    xl_map[17][2] = round(cost_per_labour_hour_saturday_to_sunday_ILL_val,2)
     
     
-    xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC,2)
+    
+    cost_per_labour_hour_saturday_to_sunday_GA_SC_val = cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC)
+    xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC_val,2)
     
     cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total
     
@@ -1434,23 +1686,22 @@ def prepare_xlmap(data,comment="The comment section"):
     
     # Total cars per man hour
     
-    Total_cars_per_man_hour_ILL = total_cars_in_ILL/(sum([
-        staff_hours_monday_to_friday_ILL+staff_hours_saturday_to_sunday_ILL
-    ]))
+
+    Total_cars_per_man_hour_ILL_val =Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
+                                         staff_hours_monday_to_friday_ILL,
+                                         staff_hours_saturday_to_sunday_ILL)
+    xl_map[18][2] = round(Total_cars_per_man_hour_ILL_val,2)
     
-    xl_map[18][2] = round(Total_cars_per_man_hour_ILL,2)
+    Total_cars_per_man_hour_GA_SC_val = Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,
+                                                                               staff_hours_saturday_to_sunday_GA_SC)
     
-    Total_cars_per_man_hour_GA_SC = total_cars_GA_SC/sum([
-        staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC
-    ])
+    xl_map[18][3] = round(Total_cars_per_man_hour_GA_SC_val,2)
     
-    xl_map[18][3] = round(Total_cars_per_man_hour_GA_SC,2)
     
-    Total_cars_per_man_hour_total = Total_cars_Total/sum(
-        [staff_hours_monday_to_friday_Total,staff_hours_saturday_to_sunday_Total]
-    )
-    
-    xl_map[18][1] = round(Total_cars_per_man_hour_total,2)
+    Total_cars_per_man_hour_total_val =Total_cars_per_man_hour_total_function(Total_cars_Total,
+                                           staff_hours_monday_to_friday_Total,
+                                           staff_hours_saturday_to_sunday_Total)
+    xl_map[18][1] = round(Total_cars_per_man_hour_total_val,2)
     
     #Total club plans sold 
     Total_club_plans_sold_ILL = do_sum(xl_map,19,range(3,13))
@@ -1467,21 +1718,21 @@ def prepare_xlmap(data,comment="The comment section"):
     
     
     #Conversion Rate 
-    Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
-    xl_map[20][2] = round((Conversion_rate_ILL * 100),2)
+    Conversion_rate_ILL_val =Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
+                                                          retail_car_count_monday_to_friday_ILL,
+                                                          retail_car_count_saturday_to_sunday_ILL)
+    xl_map[20][2] = round((Conversion_rate_ILL_val * 100),2)
     
-    Conversion_rate_GA_SC = Total_club_plans_sold_GA_SC/sum([
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC
-    ])
+    Conversion_rate_GA_SC_val =Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
+                                   retail_car_count_saturday_to_sunday_GA_SC)
     
-    xl_map[20][3]= round((Conversion_rate_GA_SC * 100),2)
+    xl_map[20][3]= round((Conversion_rate_GA_SC_val * 100),2)
     
     
-    Conversion_rate_Total = Total_club_plans_sold_Total/sum(
-        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total]
-    )
 
-    xl_map[20][1] = round((Conversion_rate_Total * 100),2)
+    Conversion_rate_Total_val = Conversion_rate_Total_function(Total_club_plans_sold_Total,
+                                                               retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total)
+    xl_map[20][1] = round((Conversion_rate_Total_val * 100),2)
     
     
     #Total club plan members 
@@ -1574,7 +1825,7 @@ if __name__=="__main__":
     
     # df.to_excel("sitewatch.xlsx")
     
-    with open("sitewatch_report.json",'r') as f:
+    with open("sitewatch_report_old.json",'r') as f:
         data=json.load(f)
     
     prepare_xlmap(data)
