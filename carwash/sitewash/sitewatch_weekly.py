@@ -1023,6 +1023,28 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
     
     return site_watch_report
 
+def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
+    "Will return updates place dictionary"
+    xl_map[2][place_index] = place_dictionary.get("car_count_monday_to_friday")
+    xl_map[3][place_index]=place_dictionary.get("car_count_saturday_sunday")
+    xl_map[4][place_index]=place_dictionary.get("retail_car_count_monday_to_friday")
+    xl_map[5][place_index]=place_dictionary.get("retail_car_count_saturday_sunday")
+    
+    xl_map[7][place_index]=place_dictionary.get("retail_revenue_monday_to_friday")
+    xl_map[8][place_index]=place_dictionary.get("retail_revenue_saturday_sunday")
+    xl_map[9][place_index]=place_dictionary.get("total_revenue_monday_to_friday")
+    xl_map[10][place_index]=place_dictionary.get("total_revenue_saturday_sunday")
+    
+    xl_map[14][place_index]=place_dictionary.get("labour_hours_monday_to_friday")
+    xl_map[15][place_index]=place_dictionary.get("labour_hours_saturday_sunday")
+    xl_map[16][place_index]=place_dictionary.get("cars_per_labour_hour_monday_to_friday")
+    xl_map[17][place_index]=place_dictionary.get("cars_per_labour_hour_saturday_sunday")
+    
+    xl_map[19][place_index] = place_dictionary.get("arm_plans_sold_cnt")
+    xl_map[20][place_index]= place_dictionary.get("conversion_rate")
+    xl_map[21][place_index] = place_dictionary.get("total_arm_planmembers_cnt")
+        
+    return xl_map
 
 def prepare_xlmap(data,comment="The comment section"):
     workbook = xlsxwriter.Workbook("test.xlsx")
@@ -1090,243 +1112,99 @@ def prepare_xlmap(data,comment="The comment section"):
     
     if Fuller_Cicero:
         Fuller_Cicero_index=6
-        xl_map[2][Fuller_Cicero_index] = Fuller_Cicero.get("car_count_monday_to_friday")
-        xl_map[3][Fuller_Cicero_index]=Fuller_Cicero.get("car_count_saturday_sunday")
-        xl_map[4][Fuller_Cicero_index]=Fuller_Cicero.get("retail_car_count_monday_to_friday")
-        xl_map[5][Fuller_Cicero_index]=Fuller_Cicero.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Fuller_Cicero_index]=Fuller_Cicero.get("retail_revenue_monday_to_friday")
-        xl_map[8][Fuller_Cicero_index]=Fuller_Cicero.get("retail_revenue_saturday_sunday")
-        xl_map[9][Fuller_Cicero_index]=Fuller_Cicero.get("total_revenue_monday_to_friday")
-        xl_map[10][Fuller_Cicero_index]=Fuller_Cicero.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Fuller_Cicero_index]=Fuller_Cicero.get("labour_hours_monday_to_friday")
-        xl_map[15][Fuller_Cicero_index]=Fuller_Cicero.get("labour_hours_saturday_sunday")
-        xl_map[16][Fuller_Cicero_index]=Fuller_Cicero.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Fuller_Cicero_index]=Fuller_Cicero.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Fuller_Cicero_index] = Fuller_Cicero.get("arm_plans_sold_cnt")
-        xl_map[20][Fuller_Cicero_index]= Fuller_Cicero.get("conversion_rate")
-        xl_map[21][Fuller_Cicero_index] = Fuller_Cicero.get("total_arm_planmembers_cnt")
-        
+        update_place_to_xlmap(xl_map,Fuller_Cicero_index,Fuller_Cicero)
     Fuller_Matteson = data.get("Fuller-Matteson")
     
     if Fuller_Matteson:
         Fuller_Matteson_index=7
-        xl_map[2][Fuller_Matteson_index] = Fuller_Matteson.get("car_count_monday_to_friday")
-        xl_map[3][Fuller_Matteson_index]=Fuller_Matteson.get("car_count_saturday_sunday")
-        xl_map[4][Fuller_Matteson_index]=Fuller_Matteson.get("retail_car_count_monday_to_friday")
-        xl_map[5][Fuller_Matteson_index]=Fuller_Matteson.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Fuller_Matteson_index]=Fuller_Matteson.get("retail_revenue_monday_to_friday")
-        xl_map[8][Fuller_Matteson_index]=Fuller_Matteson.get("retail_revenue_saturday_sunday")
-        xl_map[9][Fuller_Matteson_index]=Fuller_Matteson.get("total_revenue_monday_to_friday")
-        xl_map[10][Fuller_Matteson_index]=Fuller_Matteson.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Fuller_Matteson_index]=Fuller_Matteson.get("labour_hours_monday_to_friday")
-        xl_map[15][Fuller_Matteson_index]=Fuller_Matteson.get("labour_hours_saturday_sunday")
-        xl_map[16][Fuller_Matteson_index]=Fuller_Matteson.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Fuller_Matteson_index]=Fuller_Matteson.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Fuller_Matteson_index] = Fuller_Matteson.get("arm_plans_sold_cnt")
-        xl_map[20][Fuller_Matteson_index]= Fuller_Matteson.get("conversion_rate")
-        xl_map[21][Fuller_Matteson_index] = Fuller_Matteson.get("total_arm_planmembers_cnt")
-        
+        update_place_to_xlmap(xl_map,Fuller_Matteson_index,Fuller_Matteson)
         
     Sparkle_Belair = data.get("Sparkle-Belair")
     
     if Sparkle_Belair:
         Sparkle_Belair_index=14
-        xl_map[2][Sparkle_Belair_index] = Sparkle_Belair.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Belair_index]=Sparkle_Belair.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Belair_index]=Sparkle_Belair.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Belair_index]=Sparkle_Belair.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Belair_index]=Sparkle_Belair.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Belair_index]=Sparkle_Belair.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Belair_index]=Sparkle_Belair.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Belair_index]=Sparkle_Belair.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Belair_index]=Sparkle_Belair.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Belair_index]=Sparkle_Belair.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Belair_index]=Sparkle_Belair.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Belair_index]=Sparkle_Belair.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Belair_index] = Sparkle_Belair.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Belair_index]= Sparkle_Belair.get("conversion_rate")
-        xl_map[21][Sparkle_Belair_index] = Sparkle_Belair.get("total_arm_planmembers_cnt")
+
+        update_place_to_xlmap(xl_map,Sparkle_Belair_index,Sparkle_Belair)
         
     Sparkle_Evans = data.get("Sparkle-Evans")
     
     if Sparkle_Evans:
         Sparkle_Evans_index=15
-        xl_map[2][Sparkle_Evans_index] = Sparkle_Evans.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Evans_index]=Sparkle_Evans.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Evans_index]=Sparkle_Evans.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Evans_index]=Sparkle_Evans.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Evans_index]=Sparkle_Evans.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Evans_index]=Sparkle_Evans.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Evans_index]=Sparkle_Evans.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Evans_index]=Sparkle_Evans.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Evans_index]=Sparkle_Evans.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Evans_index]=Sparkle_Evans.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Evans_index]=Sparkle_Evans.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Evans_index]=Sparkle_Evans.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Evans_index] = Sparkle_Evans.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Evans_index]= Sparkle_Evans.get("conversion_rate")
-        xl_map[21][Sparkle_Evans_index] = Sparkle_Evans.get("total_arm_planmembers_cnt")
+
+        update_place_to_xlmap(xl_map,Sparkle_Evans_index,Sparkle_Evans)
 
     Sparkle_North_Augusta = data.get("Sparkle-North Augusta")
     
     if Sparkle_North_Augusta:
         Sparkle_North_Augusta_index=20
-        xl_map[2][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_North_Augusta_index]= Sparkle_North_Augusta.get("conversion_rate")
-        xl_map[21][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("total_arm_planmembers_cnt")
+
+        update_place_to_xlmap(xl_map,Sparkle_North_Augusta_index,Sparkle_North_Augusta)
     
     Sparkle_Greenwood = data.get("Sparkle-Greenwood")
     
     if Sparkle_Greenwood:
         Sparkle_Greenwood_index=17
-        xl_map[2][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Greenwood_index]= Sparkle_Greenwood.get("conversion_rate")
-        xl_map[21][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("total_arm_planmembers_cnt")        
+
+        update_place_to_xlmap(xl_map,Sparkle_Greenwood_index,Sparkle_Greenwood)
+    
     
     Sparkle_Grovetown_1 = data.get("Sparkle-Grovetown 1")
     
     if Sparkle_Grovetown_1:
         Sparkle_Grovetown_1_index=18
-        xl_map[2][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Grovetown_1_index]= Sparkle_Grovetown_1.get("conversion_rate")
-        xl_map[21][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("total_arm_planmembers_cnt")     
+
+        update_place_to_xlmap(xl_map,Sparkle_Grovetown_1_index,Sparkle_Grovetown_1)
         
     Sparkle_Windsor_Spring = data.get("Sparkle-Windsor Spring")    
     
     if Sparkle_Windsor_Spring:
         Sparkle_Windsor_Spring_index=22 
         
-        xl_map[2][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Windsor_Spring_index]= Sparkle_Windsor_Spring.get("conversion_rate")
-        xl_map[21][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("total_arm_planmembers_cnt")  
+        update_place_to_xlmap(xl_map,Sparkle_Windsor_Spring_index,Sparkle_Windsor_Spring)
         
     Sparkle_Furrys_Ferry = data.get("Sparkle-Furrys Ferry")
     
     if Sparkle_Furrys_Ferry:
         Sparkle_Furrys_Ferry_index= 16
         
-        xl_map[2][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_car_count_saturday_sunday")
-        
-        xl_map[7][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("total_revenue_saturday_sunday")
-        
-        xl_map[14][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("cars_per_labour_hour_saturday_sunday")
-        
-        xl_map[19][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Furrys_Ferry_index]= Sparkle_Furrys_Ferry.get("conversion_rate")
-        xl_map[21][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("total_arm_planmembers_cnt")         
+        update_place_to_xlmap(xl_map,Sparkle_Furrys_Ferry_index,Sparkle_Furrys_Ferry)      
 
     Sparkle_Peach_Orchard = data.get("Sparkle-Peach Orchard")
     
     if Sparkle_Peach_Orchard:
         Sparkle_Peach_Orchard_index=21
         
-        xl_map[2][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("car_count_monday_to_friday")
-        xl_map[3][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("car_count_saturday_sunday")
-        xl_map[4][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_car_count_monday_to_friday")
-        xl_map[5][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_car_count_saturday_sunday")
+        update_place_to_xlmap(xl_map,Sparkle_Peach_Orchard_index,Sparkle_Peach_Orchard)
         
-        xl_map[7][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_revenue_monday_to_friday")
-        xl_map[8][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_revenue_saturday_sunday")
-        xl_map[9][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("total_revenue_monday_to_friday")
-        xl_map[10][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("total_revenue_saturday_sunday")
+    Sparkle_Grovetown_2 =  data.get("Sparkle-Grovetown 2")   
+      
+    if Sparkle_Grovetown_2:
+        Sparkle_Grovetown_2_index =19
         
-        xl_map[14][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("labour_hours_monday_to_friday")
-        xl_map[15][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("labour_hours_saturday_sunday")
-        xl_map[16][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("cars_per_labour_hour_monday_to_friday")
-        xl_map[17][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("cars_per_labour_hour_saturday_sunday")
+        update_place_to_xlmap(xl_map,Sparkle_Grovetown_2_index,Sparkle_Grovetown_2)
         
-        xl_map[19][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("arm_plans_sold_cnt")
-        xl_map[20][Sparkle_Peach_Orchard_index]= Sparkle_Peach_Orchard.get("conversion_rate")
-        xl_map[21][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("total_arm_planmembers_cnt")         
-
+    Fuller_Calumet = data.get("Fuller-Calumet")
+    
+    if Fuller_Calumet:
+        Fuller_Calumet_index= 5
+        
+        update_place_to_xlmap(xl_map,Fuller_Calumet_index,Fuller_Calumet)
+        
+        
+    Sudz_Beverly = data.get("Sudz - Beverly")
+    
+    if Sudz_Beverly:
+        Sudz_Beverly_index = 4
+        
+        update_place_to_xlmap(xl_map,Sudz_Beverly_index,Sudz_Beverly)
+        
     #writing to actual sheet
     #first row comment section
     worksheet.write_row(0,0,["This is comment"])   
     
     cell_format = workbook.add_format({
         'bg_color': '#0b3040',
-        'font_color': 'white'})
+        'font_color': 'white'})  #column format
 
     cell_format_index = workbook.add_format({
             'bg_color': '#ADD8E6',
@@ -1337,13 +1215,42 @@ def prepare_xlmap(data,comment="The comment section"):
             print(f"index ({row},{col})")
             val = xl_map[row][col]
             if row==1 and col!=0:
-                worksheet.write_row(row,col,[f"{val}"],cell_format)
+                worksheet.write_row(row,col,[f"{val}"],cell_format)  #col names 
             elif col==0 and row>1 and row <22:
-                worksheet.write_row(row,col,[f"{val}"],cell_format_index)
+                worksheet.write_row(row,col,[f"{val}"],cell_format_index)  #index rowes
             elif val:
-                worksheet.write_row(row,col,[val])
+                worksheet.write_row(row,col,[val])   #which has values
+                
+            elif row==6 and col>3:                   #Totals empty rowes 
+                worksheet.write_row(row,col,[""])
+                
+            elif row in [11,12,13,18] and col>3:
+                worksheet.write_row(row,col,[""]) #empty rowes 3 empty 
+            
+            elif row==22:
+                worksheet.write_row(row,col,[""]) #empty rowes 1 before legends
+            
+            elif row>22 and col>0:
+                worksheet.write_row(row,col,[""]) #empty rowes  before legends
             else:
                 worksheet.write_row(row,col,[f"This is ({row},{col})"])
+                
+    legend_start_row=23
+                
+    # Add legend or additional information below the table
+    very_concerningformat = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
+    concerningformat = workbook.add_format({'bold': True,"bg_color":"#d98484"})
+    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
+    positive_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
+    very_positive_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+
+    worksheet.write(legend_start_row, 0, 'Legend')
+    worksheet.write(legend_start_row + 1, 0, 'Very Concerning',very_concerningformat)
+    worksheet.write(legend_start_row + 2, 0, 'Concerning',concerningformat)
+    worksheet.write(legend_start_row + 3, 0, 'Neutral',neutral_format)
+    worksheet.write(legend_start_row + 4, 0, 'Positive',positive_format)
+    worksheet.write(legend_start_row + 5, 0, 'Very Positive',very_positive_format)
+            
             
 
     workbook.close() 
