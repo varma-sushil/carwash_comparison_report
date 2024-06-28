@@ -7,8 +7,10 @@ from datetime import datetime, timedelta
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
+import xlsxwriter
 
 from sitewatch4 import sitewatchClient
+
 import sys
 # Add the carwash directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -1021,23 +1023,354 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
     
     return site_watch_report
 
-if __name__=="__main__":
-    import pandas as pd
-    monday_date_str, sunday_date_str = get_week_dates()
-    print(monday_date_str,sunday_date_str)
-    monday_date_str="2024-06-03"
-    friday_date_str = "2024-06-07"
-    saturday_date_str = "2024-06-08"
-    sunday_date_str="2024-06-09"  #YMD
+
+def prepare_xlmap(data,comment="The comment section"):
+    workbook = xlsxwriter.Workbook("test.xlsx")
+    worksheet = workbook.add_worksheet("sheet1")
+    xl_map = [
+    [""],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ["","","","","","","","","","","","","","","","","","","","","","","",],
+    ]
     
-    report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    print("\n"*6)
-    print(report)
-    with open("sitewatch_report.json","w") as f:
-        json.dump(report,f,indent=4)
+    cols = ["    ","Totals","ILL",
+                "GA / SC","Sudz - Beverly",'Fuller-Calumet',
+                "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
+                "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
+                "Getaway-Ottawa","Getaway-Peru","Sparkle-Belair",
+                "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
+                "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
+                "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
+
+    index_names =["Car Count Mon - Fri","Car Count Sat - Sun","Retail Car Count Mon - Fri",
+                "Retail Car Count Sat - Sun","Total Cars","Retail Revenue Mon - Fri",
+                "Retail Revenue Sat - Sun","Total Revenue Mon - Fri","Total Revenue Sat - Sun",
+                "Total Revenue","Avg. Retail Visit","Avg. Member Visit",
+                "Staff Hours Mon - Fri","Staff Hours Sat - Sun","Cars Per Labor Hour Mon - Fri",
+                "Cars Per Labor Hour Sat & Sun","Total Cars Per Man Hour","Total Club Plans Sold",
+                "Conversion Rate","Total Club Plan Members"]
+
+    xl_map[0][0] = comment #to maps
+    
+    
+    
+    for col in range(len(cols)): #column names to maps
+        xl_map[1][col]=cols[col]
+        
+    for index  in range(len(index_names)):  #index names to map
+        xl_map[index+2][0]=index_names[index]
+    
+    Fuller_Cicero = data.get("Fuller-Cicero")  
+    
+    if Fuller_Cicero:
+        Fuller_Cicero_index=6
+        xl_map[2][Fuller_Cicero_index] = Fuller_Cicero.get("car_count_monday_to_friday")
+        xl_map[3][Fuller_Cicero_index]=Fuller_Cicero.get("car_count_saturday_sunday")
+        xl_map[4][Fuller_Cicero_index]=Fuller_Cicero.get("retail_car_count_monday_to_friday")
+        xl_map[5][Fuller_Cicero_index]=Fuller_Cicero.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Fuller_Cicero_index]=Fuller_Cicero.get("retail_revenue_monday_to_friday")
+        xl_map[8][Fuller_Cicero_index]=Fuller_Cicero.get("retail_revenue_saturday_sunday")
+        xl_map[9][Fuller_Cicero_index]=Fuller_Cicero.get("total_revenue_monday_to_friday")
+        xl_map[10][Fuller_Cicero_index]=Fuller_Cicero.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Fuller_Cicero_index]=Fuller_Cicero.get("labour_hours_monday_to_friday")
+        xl_map[15][Fuller_Cicero_index]=Fuller_Cicero.get("labour_hours_saturday_sunday")
+        xl_map[16][Fuller_Cicero_index]=Fuller_Cicero.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Fuller_Cicero_index]=Fuller_Cicero.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Fuller_Cicero_index] = Fuller_Cicero.get("arm_plans_sold_cnt")
+        xl_map[20][Fuller_Cicero_index]= Fuller_Cicero.get("conversion_rate")
+        xl_map[21][Fuller_Cicero_index] = Fuller_Cicero.get("total_arm_planmembers_cnt")
+        
+    Fuller_Matteson = data.get("Fuller-Matteson")
+    
+    if Fuller_Matteson:
+        Fuller_Matteson_index=7
+        xl_map[2][Fuller_Matteson_index] = Fuller_Matteson.get("car_count_monday_to_friday")
+        xl_map[3][Fuller_Matteson_index]=Fuller_Matteson.get("car_count_saturday_sunday")
+        xl_map[4][Fuller_Matteson_index]=Fuller_Matteson.get("retail_car_count_monday_to_friday")
+        xl_map[5][Fuller_Matteson_index]=Fuller_Matteson.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Fuller_Matteson_index]=Fuller_Matteson.get("retail_revenue_monday_to_friday")
+        xl_map[8][Fuller_Matteson_index]=Fuller_Matteson.get("retail_revenue_saturday_sunday")
+        xl_map[9][Fuller_Matteson_index]=Fuller_Matteson.get("total_revenue_monday_to_friday")
+        xl_map[10][Fuller_Matteson_index]=Fuller_Matteson.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Fuller_Matteson_index]=Fuller_Matteson.get("labour_hours_monday_to_friday")
+        xl_map[15][Fuller_Matteson_index]=Fuller_Matteson.get("labour_hours_saturday_sunday")
+        xl_map[16][Fuller_Matteson_index]=Fuller_Matteson.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Fuller_Matteson_index]=Fuller_Matteson.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Fuller_Matteson_index] = Fuller_Matteson.get("arm_plans_sold_cnt")
+        xl_map[20][Fuller_Matteson_index]= Fuller_Matteson.get("conversion_rate")
+        xl_map[21][Fuller_Matteson_index] = Fuller_Matteson.get("total_arm_planmembers_cnt")
+        
+        
+    Sparkle_Belair = data.get("Sparkle-Belair")
+    
+    if Sparkle_Belair:
+        Sparkle_Belair_index=14
+        xl_map[2][Sparkle_Belair_index] = Sparkle_Belair.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Belair_index]=Sparkle_Belair.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Belair_index]=Sparkle_Belair.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Belair_index]=Sparkle_Belair.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Belair_index]=Sparkle_Belair.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Belair_index]=Sparkle_Belair.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Belair_index]=Sparkle_Belair.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Belair_index]=Sparkle_Belair.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Belair_index]=Sparkle_Belair.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Belair_index]=Sparkle_Belair.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Belair_index]=Sparkle_Belair.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Belair_index]=Sparkle_Belair.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Belair_index] = Sparkle_Belair.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Belair_index]= Sparkle_Belair.get("conversion_rate")
+        xl_map[21][Sparkle_Belair_index] = Sparkle_Belair.get("total_arm_planmembers_cnt")
+        
+    Sparkle_Evans = data.get("Sparkle-Evans")
+    
+    if Sparkle_Evans:
+        Sparkle_Evans_index=15
+        xl_map[2][Sparkle_Evans_index] = Sparkle_Evans.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Evans_index]=Sparkle_Evans.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Evans_index]=Sparkle_Evans.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Evans_index]=Sparkle_Evans.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Evans_index]=Sparkle_Evans.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Evans_index]=Sparkle_Evans.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Evans_index]=Sparkle_Evans.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Evans_index]=Sparkle_Evans.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Evans_index]=Sparkle_Evans.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Evans_index]=Sparkle_Evans.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Evans_index]=Sparkle_Evans.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Evans_index]=Sparkle_Evans.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Evans_index] = Sparkle_Evans.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Evans_index]= Sparkle_Evans.get("conversion_rate")
+        xl_map[21][Sparkle_Evans_index] = Sparkle_Evans.get("total_arm_planmembers_cnt")
+
+    Sparkle_North_Augusta = data.get("Sparkle-North Augusta")
+    
+    if Sparkle_North_Augusta:
+        Sparkle_North_Augusta_index=20
+        xl_map[2][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_North_Augusta_index]=Sparkle_North_Augusta.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_North_Augusta_index]= Sparkle_North_Augusta.get("conversion_rate")
+        xl_map[21][Sparkle_North_Augusta_index] = Sparkle_North_Augusta.get("total_arm_planmembers_cnt")
+    
+    Sparkle_Greenwood = data.get("Sparkle-Greenwood")
+    
+    if Sparkle_Greenwood:
+        Sparkle_Greenwood_index=17
+        xl_map[2][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Greenwood_index]=Sparkle_Greenwood.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Greenwood_index]= Sparkle_Greenwood.get("conversion_rate")
+        xl_map[21][Sparkle_Greenwood_index] = Sparkle_Greenwood.get("total_arm_planmembers_cnt")        
+    
+    Sparkle_Grovetown_1 = data.get("Sparkle-Grovetown 1")
+    
+    if Sparkle_Grovetown_1:
+        Sparkle_Grovetown_1_index=18
+        xl_map[2][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Grovetown_1_index]=Sparkle_Grovetown_1.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Grovetown_1_index]= Sparkle_Grovetown_1.get("conversion_rate")
+        xl_map[21][Sparkle_Grovetown_1_index] = Sparkle_Grovetown_1.get("total_arm_planmembers_cnt")     
+        
+    Sparkle_Windsor_Spring = data.get("Sparkle-Windsor Spring")    
+    
+    if Sparkle_Windsor_Spring:
+        Sparkle_Windsor_Spring_index=22 
+        
+        xl_map[2][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Windsor_Spring_index]=Sparkle_Windsor_Spring.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Windsor_Spring_index]= Sparkle_Windsor_Spring.get("conversion_rate")
+        xl_map[21][Sparkle_Windsor_Spring_index] = Sparkle_Windsor_Spring.get("total_arm_planmembers_cnt")  
+        
+    Sparkle_Furrys_Ferry = data.get("Sparkle-Furrys Ferry")
+    
+    if Sparkle_Furrys_Ferry:
+        Sparkle_Furrys_Ferry_index= 16
+        
+        xl_map[2][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Furrys_Ferry_index]=Sparkle_Furrys_Ferry.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Furrys_Ferry_index]= Sparkle_Furrys_Ferry.get("conversion_rate")
+        xl_map[21][Sparkle_Furrys_Ferry_index] = Sparkle_Furrys_Ferry.get("total_arm_planmembers_cnt")         
+
+    Sparkle_Peach_Orchard = data.get("Sparkle-Peach Orchard")
+    
+    if Sparkle_Peach_Orchard:
+        Sparkle_Peach_Orchard_index=21
+        
+        xl_map[2][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("car_count_monday_to_friday")
+        xl_map[3][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("car_count_saturday_sunday")
+        xl_map[4][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_car_count_monday_to_friday")
+        xl_map[5][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_car_count_saturday_sunday")
+        
+        xl_map[7][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_revenue_monday_to_friday")
+        xl_map[8][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("retail_revenue_saturday_sunday")
+        xl_map[9][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("total_revenue_monday_to_friday")
+        xl_map[10][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("total_revenue_saturday_sunday")
+        
+        xl_map[14][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("labour_hours_monday_to_friday")
+        xl_map[15][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("labour_hours_saturday_sunday")
+        xl_map[16][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("cars_per_labour_hour_monday_to_friday")
+        xl_map[17][Sparkle_Peach_Orchard_index]=Sparkle_Peach_Orchard.get("cars_per_labour_hour_saturday_sunday")
+        
+        xl_map[19][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("arm_plans_sold_cnt")
+        xl_map[20][Sparkle_Peach_Orchard_index]= Sparkle_Peach_Orchard.get("conversion_rate")
+        xl_map[21][Sparkle_Peach_Orchard_index] = Sparkle_Peach_Orchard.get("total_arm_planmembers_cnt")         
+
+    #writing to actual sheet
+    #first row comment section
+    worksheet.write_row(0,0,["This is comment"])   
+    
+    cell_format = workbook.add_format({
+        'bg_color': '#0b3040',
+        'font_color': 'white'})
+
+    cell_format_index = workbook.add_format({
+            'bg_color': '#ADD8E6',
+            'font_color': 'black'})
+
+    for row in range(len(xl_map)):
+        for col in range(len(xl_map[row])):
+            print(f"index ({row},{col})")
+            val = xl_map[row][col]
+            if row==1 and col!=0:
+                worksheet.write_row(row,col,[f"{val}"],cell_format)
+            elif col==0 and row>1 and row <22:
+                worksheet.write_row(row,col,[f"{val}"],cell_format_index)
+            elif val:
+                worksheet.write_row(row,col,[val])
+            else:
+                worksheet.write_row(row,col,[f"This is ({row},{col})"])
+            
+
+    workbook.close() 
+
+if __name__=="__main__":
+    # import pandas as pd
+    # monday_date_str, sunday_date_str = get_week_dates()
+    # print(monday_date_str,sunday_date_str)
+    # monday_date_str="2024-06-03"
+    # friday_date_str = "2024-06-07"
+    # saturday_date_str = "2024-06-08"
+    # sunday_date_str="2024-06-09"  #YMD
+    
+    # report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    # print("\n"*6)
+    # print(report)
+    # with open("sitewatch_report.json","w") as f:
+    #     json.dump(report,f,indent=4)
     # with open("SPKLUS-002.json",'r') as f:
     #     data = json.load(f)
         
     # df = pd.read_json("SPKLUS-002.json")
     
     # df.to_excel("sitewatch.xlsx")
+    
+    with open("sitewatch_report_old.json",'r') as f:
+        data=json.load(f)
+    
+    prepare_xlmap(data)
+    
