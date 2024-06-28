@@ -1023,6 +1023,27 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
     
     return site_watch_report
 
+#xl maps fucntions 
+
+def do_sum(xl_map,start_index,range):
+    "This will do row based some "
+    total=0
+    for i in range:
+        val = xl_map[start_index][i+1]
+        if isinstance(val,float) or isinstance(val,int):
+            total+=val
+    
+    return total
+
+def do_sum_location(xl_map,location:list):
+    "This will take array of row ,col"
+    total =0
+    for row,col in location:
+        val = xl_map[row][col]
+        if isinstance(val,float) or isinstance(val,int):
+            total+=val
+    return total
+
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
     "Will return updates place dictionary"
     xl_map[2][place_index] = place_dictionary.get("car_count_monday_to_friday")
@@ -1198,7 +1219,284 @@ def prepare_xlmap(data,comment="The comment section"):
         
         update_place_to_xlmap(xl_map,Sudz_Beverly_index,Sudz_Beverly)
         
-    #writing to actual sheet
+    #computation for first three columns 
+    # sum([ xl_map[2][i+1] for i in range(3,13)])
+    
+    #first index
+    car_count_monday_to_friday_ILL = do_sum(xl_map,2,range(3,13))
+    xl_map[2][2] = car_count_monday_to_friday_ILL
+    
+    car_count_monday_to_friday_GA_SC = do_sum(xl_map,2,range(13,22))
+    xl_map[2][3] = car_count_monday_to_friday_GA_SC
+    
+    car_count_monday_to_friday_Total = sum([car_count_monday_to_friday_ILL,car_count_monday_to_friday_GA_SC])
+    
+    xl_map[2][1]=car_count_monday_to_friday_Total
+    
+    
+    
+    #secound index 
+    car_count_saturday_to_sunday_ILL = do_sum(xl_map,3,range(3,13))
+    xl_map[3][2] = car_count_saturday_to_sunday_ILL
+    
+    car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,3,range(13,22))
+    xl_map[3][3] = car_count_saturday_to_sunday_GA_SC
+    
+    car_count_saturday_to_sunday_Total = sum([car_count_saturday_to_sunday_ILL, car_count_saturday_to_sunday_GA_SC])
+    
+    xl_map[3][1] = car_count_saturday_to_sunday_Total
+    
+    #third row 
+    
+    retail_car_count_monday_to_friday_ILL = do_sum(xl_map,4,range(3,13))
+    xl_map[4][2] = retail_car_count_monday_to_friday_ILL
+    
+    retail_car_count_monday_to_friday_GA_SC = do_sum(xl_map,4,range(13,22))
+    xl_map[4][3] = retail_car_count_monday_to_friday_GA_SC
+    
+    retail_car_count_monday_to_friday_Total = sum([retail_car_count_monday_to_friday_ILL,retail_car_count_monday_to_friday_GA_SC])
+    
+    xl_map[4][1]=retail_car_count_monday_to_friday_Total
+    
+    # Reatil car cound satruday to sunday
+    
+    retail_car_count_saturday_to_sunday_ILL = do_sum(xl_map,5,range(3,13))
+    xl_map[5][2] = retail_car_count_saturday_to_sunday_ILL
+    
+    retail_car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,5,range(13,22))
+    xl_map[5][3] = retail_car_count_saturday_to_sunday_GA_SC
+    
+    retail_car_count_saturday_to_sunday_Total = sum([retail_car_count_saturday_to_sunday_ILL,retail_car_count_saturday_to_sunday_GA_SC])
+    
+    xl_map[5][1]=retail_car_count_saturday_to_sunday_Total
+    
+    loc_1 = [[2,3],[3,3]]
+    total_cars_GA_SC=do_sum_location(xl_map,loc_1)
+    
+    xl_map[6][3]=total_cars_GA_SC
+    
+    loc_2=[[2,2],[3,2]]
+    total_cars_in_ILL = do_sum_location(xl_map,loc_2)
+    
+    xl_map[6][2] = total_cars_in_ILL
+    
+    loc_3=[[6,3],[6,2]]
+    
+    Total_cars_Total = do_sum_location(xl_map,loc_3)
+    xl_map[6][1]=Total_cars_Total
+    
+    #Retail Revenue Monday to Friday
+    retail_revenue_monday_to_friday_ILL = do_sum(xl_map,7,range(3,13))
+    xl_map[7][2] = retail_revenue_monday_to_friday_ILL
+    
+    retail_revenue_monday_to_friday_GA_SC = do_sum(xl_map,7,range(13,22))
+    xl_map[7][3] = retail_revenue_monday_to_friday_GA_SC
+    
+    retail_revenue_monday_to_friday_Total = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_monday_to_friday_GA_SC])
+    
+    xl_map[7][1]=retail_revenue_monday_to_friday_Total
+    
+    
+    #Reatil Revenue Saturda to Sunday
+    retail_revenue_saturday_to_sunday_ILL = do_sum(xl_map,8,range(3,13))
+    xl_map[8][2] = retail_revenue_saturday_to_sunday_ILL
+    
+    retail_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,8,range(13,22))
+    xl_map[8][3] = retail_revenue_saturday_to_sunday_GA_SC
+    
+    retail_revenue_saturday_to_sunday_Total = sum([retail_revenue_saturday_to_sunday_ILL,retail_revenue_saturday_to_sunday_GA_SC])
+    
+    xl_map[8][1]=retail_revenue_saturday_to_sunday_Total
+    
+    #Total Revnue Monday to Friday
+    Total_revenue_monday_to_friday_ILL = do_sum(xl_map,9,range(3,13))
+    xl_map[9][2] = Total_revenue_monday_to_friday_ILL
+    
+    Total_revenue_monday_to_friday_GA_SC = do_sum(xl_map,9,range(13,22))
+    xl_map[9][3] = Total_revenue_monday_to_friday_GA_SC
+    
+    Total_revenue_monday_to_friday = sum([Total_revenue_monday_to_friday_ILL,Total_revenue_monday_to_friday_GA_SC])
+    
+    xl_map[9][1]=Total_revenue_monday_to_friday
+    
+    # Total Revenue Saturday to Sunday
+    Total_revenue_saturday_to_sunday_ILL = do_sum(xl_map,10,range(3,13))
+    xl_map[10][2] = Total_revenue_saturday_to_sunday_ILL
+    
+    Total_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,10,range(13,22))
+    xl_map[10][3] = Total_revenue_saturday_to_sunday_GA_SC
+    
+    Total_revenue_saturday_sunday = sum([Total_revenue_saturday_to_sunday_ILL,Total_revenue_saturday_to_sunday_GA_SC])
+    
+    xl_map[10][1]=Total_revenue_saturday_sunday 
+    
+    # Total Revenue 
+    loc_4=[[9,2],[10,2]]
+    Total_revenue_ILL = do_sum_location(xl_map,loc_4)
+    xl_map[11][2] =Total_revenue_ILL
+    
+    loc_5=[[9,3],[10,3]]
+    Total_revenue_GA_SC = do_sum_location(xl_map,loc_5)
+    xl_map[11][3]= Total_revenue_GA_SC
+    
+    Total_revenue_Total = sum([Total_revenue_ILL,Total_revenue_GA_SC])
+    xl_map[11][1] =Total_revenue_Total
+    
+    #Average Retail Visit
+    Average_retail_visit_IL = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL])/sum(
+        [retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
+    
+    
+    
+    xl_map[12][2]=round(Average_retail_visit_IL,2)
+    
+    
+    Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
+        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
+    )
+
+    xl_map[12][3] = round(Average_retail_visit__GA_SC,2)
+    
+    Average_retail_visit_Total = sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total])/sum([
+        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total
+    ])
+    xl_map[12][1] = round(Average_retail_visit_Total,2)
+    
+    #Average Member visit 
+    
+    Average_memeber_visit_ILL = (Total_revenue_ILL - sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL]))/(total_cars_in_ILL - sum([
+        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL
+    ]))
+    xl_map[13][2] = round(Average_memeber_visit_ILL,2)
+    
+    Average_memeber_visit_GA_SC = (Total_revenue_GA_SC - sum([retail_revenue_monday_to_friday_GA_SC , retail_revenue_saturday_to_sunday_GA_SC]))/(total_cars_GA_SC - sum([
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC
+    ]))
+    
+    xl_map[13][3] = round(Average_memeber_visit_GA_SC,2)
+    
+    Average_memeber_visit_Total = (Total_revenue_Total -sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total]))/(Total_cars_Total - sum([
+        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total
+    ]))
+    
+    xl_map[13][1] = round(Average_memeber_visit_Total,2)
+    
+    #Staff Hours Monday to Friday
+    
+    staff_hours_monday_to_friday_ILL = do_sum(xl_map,14,range(3,13))
+    xl_map[14][2] = staff_hours_monday_to_friday_ILL
+    
+    staff_hours_monday_to_friday_GA_SC = do_sum(xl_map,14,range(13,22))
+    
+    xl_map[14][3] = staff_hours_monday_to_friday_GA_SC
+    
+    staff_hours_monday_to_friday_Total = sum([staff_hours_monday_to_friday_ILL,staff_hours_monday_to_friday_GA_SC])
+    
+    xl_map[14][1] = staff_hours_monday_to_friday_Total
+    
+    
+    #Staff Hours Saturday to Sunday
+
+    staff_hours_saturday_to_sunday_ILL = do_sum(xl_map,15,range(3,13))
+    xl_map[15][2] = staff_hours_saturday_to_sunday_ILL
+    
+    staff_hours_saturday_to_sunday_GA_SC = do_sum(xl_map,15,range(13,22))
+    
+    xl_map[15][3] = staff_hours_saturday_to_sunday_GA_SC
+    
+    staff_hours_saturday_to_sunday_Total = sum([staff_hours_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_GA_SC])
+    
+    xl_map[15][1] = staff_hours_saturday_to_sunday_Total  
+    
+    # Cost per labour hour  Monday to friday
+    cost_per_labour_hour_monday_to_friday_ILL = car_count_monday_to_friday_ILL/staff_hours_monday_to_friday_ILL
+    xl_map[16][2] = round(cost_per_labour_hour_monday_to_friday_ILL,2)
+    cost_per_labour_hour_monday_to_friday_GA_SC = car_count_monday_to_friday_GA_SC/staff_hours_monday_to_friday_GA_SC
+    
+    xl_map[16][3] = round(cost_per_labour_hour_monday_to_friday_GA_SC,2)
+    
+    cost_per_labour_hour_monday_to_friday_Total = car_count_monday_to_friday_Total/staff_hours_monday_to_friday_Total
+    
+    xl_map[16][1] = round(cost_per_labour_hour_monday_to_friday_Total,2)
+    
+    #Cost per laobour hour Saturday and Sunday
+    cost_per_labour_hour_saturday_to_sunday_ILL = car_count_saturday_to_sunday_ILL/staff_hours_saturday_to_sunday_ILL
+    xl_map[17][2] = round(cost_per_labour_hour_saturday_to_sunday_ILL,2)
+    
+    cost_per_labour_hour_saturday_to_sunday_GA_SC = car_count_saturday_to_sunday_GA_SC/staff_hours_saturday_to_sunday_GA_SC
+    
+    
+    xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC,2)
+    
+    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total
+    
+    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2)
+    
+    # Total cars per man hour
+    
+    Total_cars_per_man_hour_ILL = total_cars_in_ILL/(sum([
+        staff_hours_monday_to_friday_ILL+staff_hours_saturday_to_sunday_ILL
+    ]))
+    
+    xl_map[18][2] = round(Total_cars_per_man_hour_ILL,2)
+    
+    Total_cars_per_man_hour_GA_SC = total_cars_GA_SC/sum([
+        staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC
+    ])
+    
+    xl_map[18][3] = round(Total_cars_per_man_hour_GA_SC,2)
+    
+    Total_cars_per_man_hour_total = Total_cars_Total/sum(
+        [staff_hours_monday_to_friday_Total,staff_hours_saturday_to_sunday_Total]
+    )
+    
+    xl_map[18][1] = round(Total_cars_per_man_hour_total,2)
+    
+    #Total club plans sold 
+    Total_club_plans_sold_ILL = do_sum(xl_map,19,range(3,13))
+    
+    xl_map[19][2] = Total_club_plans_sold_ILL
+    
+    Total_club_plans_sold_GA_SC = do_sum(xl_map,19,range(13,22))
+    
+    xl_map[19][3] = Total_club_plans_sold_GA_SC
+    
+    Total_club_plans_sold_Total = sum([Total_club_plans_sold_ILL,Total_club_plans_sold_GA_SC])
+    
+    xl_map[19][1] = Total_club_plans_sold_Total
+    
+    
+    #Conversion Rate 
+    Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
+    xl_map[20][2] = round((Conversion_rate_ILL * 100),2)
+    
+    Conversion_rate_GA_SC = Total_club_plans_sold_GA_SC/sum([
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC
+    ])
+    
+    xl_map[20][3]= round((Conversion_rate_GA_SC * 100),2)
+    
+    
+    Conversion_rate_Total = Total_club_plans_sold_Total/sum(
+        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total]
+    )
+
+    xl_map[20][1] = round((Conversion_rate_Total * 100),2)
+    
+    
+    #Total club plan members 
+    Total_club_planmembers_ILL = do_sum(xl_map,21,range(3,13))
+    
+    xl_map[21][2] = Total_club_planmembers_ILL
+    
+    Total_club_planmembers_GA_SC = do_sum(xl_map,21,range(13,22))
+    
+    xl_map[21][3] = Total_club_planmembers_GA_SC 
+    
+    Total_club_planmembers_Total = sum([Total_club_planmembers_ILL,Total_club_planmembers_GA_SC])
+    
+    xl_map[21][1] = Total_club_planmembers_Total
+    #writing to  actual sheet
     #first row comment section
     worksheet.write_row(0,0,["This is comment"])   
     
@@ -1276,7 +1574,7 @@ if __name__=="__main__":
     
     # df.to_excel("sitewatch.xlsx")
     
-    with open("sitewatch_report_old.json",'r') as f:
+    with open("sitewatch_report.json",'r') as f:
         data=json.load(f)
     
     prepare_xlmap(data)
