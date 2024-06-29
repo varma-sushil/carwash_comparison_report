@@ -130,14 +130,14 @@ def generate_weekly_report(file_path, monday,sunday):
         client_locations = client.get_user_locations()
         
         # client_locations_number_codes =list(client_locations.values())
-        
+        print(f"client lcoations {client_locations.items()}")
         if client_locations:
-            
-            for location_name,location_code in client_locations.items():
-                location_code_lst = [location_code]
-                file_name = f"washify_{location_name}_{monday}-{sunday}.xlsx".replace('/','_')
-                file_path_full = os.path.join(file_path,file_name)
-                write_place_report(file_path_full,client,location_code_lst,monday,sunday)
+            pass
+            # for location_name,location_code in client_locations.items():
+            #     location_code_lst = [location_code]
+            #     file_name = f"washify_{location_name}_{monday}-{sunday}.xlsx".replace('/','_')
+            #     file_path_full = os.path.join(file_path,file_name)
+            #     write_place_report(file_path_full,client,location_code_lst,monday,sunday)
         
     except Exception as e:
         print(f"Exception generate_weeklyrepoer washify {e}")
@@ -145,7 +145,6 @@ def generate_weekly_report(file_path, monday,sunday):
 
 
 if __name__=="__main__":
-    # monday,sunday =  get_week_dates()
-    # generate_weekly_report(file_path, monday,sunday)
-    import sys
-    print(sys.path)
+    monday,sunday =  get_week_dates()
+    generate_weekly_report(file_path, monday,sunday)
+    
