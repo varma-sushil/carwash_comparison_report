@@ -347,6 +347,148 @@ class hamiltonClient:
 
         return data
 
+    def get_dail_report_v2(self,startDate,endDate,proxy=None):
+        
+
+        headers = {
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json; charset=utf-8',
+            # 'cookie': 'ASP.NET_SessionId=yfzp50ajywiy1p2ycdrvrdbc; HamiltonHostedSolutions=8B0E35FEB571F88C228642C6C49325020CF1BF4DEC130EF15487BD9F2B3FDE2D059596E7B0623ADF26EF23824FF452D9BDB4212DB9852AC88FBD29149BEA544CFADF1FD03A8448F8638836F6170CA2837CDED44D2B405B0E2FBC338299A217AFE59077F1827FCD8C2964D35F91FA945D2AA97C9FADD25975EB4251FA8D247D9D46D3D0166CF7A1F74B43162A247DA79F35B6C6B25A3F73FFFD73C193DF721E40',
+            'dnt': '1',
+            'origin': 'https://hamiltonservices.com',
+            'priority': 'u=1, i',
+            'referer': 'https://hamiltonservices.com/web/Reporting/DailyRevenueTable',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        json_data = {
+            'startDate':startDate ,# "2024-06-29"
+            'endDate': endDate,
+        }
+        cookies = self.get_ccokies()
+
+        try:
+            response = requests.post(
+            'https://hamiltonservices.com/web/Reporting/GetDailyReport',
+            cookies=cookies,
+            headers=headers,
+            json=json_data,
+        )
+            if response.status_code==200:
+                data= response.json().get("Data")
+                data2 = data.get("Data")
+                items = data2.get("Items")
+                
+                return items
+        except Exception as e:
+            print(f"Exception in get_dail_report_v2() {e}")
+        
+
+
+
+def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
+    final_data = {}
+    proxy_url = None
+
+    proxy = {"http": proxy_url, "https": proxy_url}
+    client = hamiltonClient()
+    login_data = {"UserName": "CR@Sparklecw.com", "Password": "CameronRay1"}
+    login = client.login(login_data, proxy)
+    
+    items = client.get_dail_report_v2(monday_date_str,friday_date_str)
+    
+
+    
+    wash_purchases_total_cnt = 0
+    reedeemd_total_cnt = 0
+    retail_revenue=0.0
+    total_revenue = 0.0
+    
+    for item in items :
+        itemtyp = item.get("ItemType")
+        discount = item.get("Discount")
+        flag= item.get("Flag")
+        price = item.get("Price")
+        
+        if flag:                    #Reedemed
+            reedeemd_total_cnt+=1
+        
+        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+            wash_purchases_total_cnt+=1
+            retail_revenue+=price
+        
+        if not (flag or   discount): 
+            total_revenue+=price
+
+            
+        
+    
+    final_data["car_count_monday_to_friday"] = sum([wash_purchases_total_cnt,reedeemd_total_cnt])
+    final_data["arm_plans_reedemed_monday_to_friday_cnt"]  = "" #update
+    final_data["retail_car_count_monday_to_friday"] = wash_purchases_total_cnt
+    final_data["retail_revenue_monday_to_friday"] = retail_revenue
+    final_data["total_revenue_monday_to_friday"] =  total_revenue
+    final_data["labour_hours_monday_to_friday"]  = "" #update
+    final_data["cars_per_labour_hour_monday_to_friday"] = "" #update
+    
+    #for saturday to sunday
+    items = client.get_dail_report_v2(saturday_date_str, sunday_date_str)
+    
+    wash_purchases_total_cnt2 = 0
+    reedeemd_total_cnt2 = 0
+    retail_revenue2=0.0
+    total_revenue2 = 0.0
+    
+    for item in items :
+        itemtyp = item.get("ItemType")
+        discount = item.get("Discount")
+        flag= item.get("Flag")
+        price = item.get("Price")
+        
+        if flag:
+            reedeemd_total_cnt2+=1
+        
+        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+            wash_purchases_total_cnt2+=1
+            retail_revenue2+=price
+        
+        if not (flag or   discount): 
+            total_revenue2+=price
+            
+    final_data["car_count_saturday_sunday"] = sum([wash_purchases_total_cnt2,reedeemd_total_cnt2])
+    final_data["arm_plans_reedemed_saturday_sunday"] = "" #update
+    final_data["retail_car_count_saturday_sunday"]   = wash_purchases_total_cnt2
+    final_data["retail_revenue_saturday_sunday"]    = retail_revenue2
+    final_data["total_revenue_saturday_sunday"]    = total_revenue2
+    final_data["labour_hours_saturday_sunday"]     = "" #update
+    final_data["cars_per_labour_hour_saturday_sunday"] = "" #update
+    
+    final_data["total_revenue"] = "" #update
+    final_data["arm_plans_sold_cnt"] = "" #update
+    final_data["total_arm_planmembers_cnt"] = "" #update
+    final_data["conversion_rate"] = "" #update
+    # final_data[""]
+    place_format = {}
+    place_format["Splash-Peoria"] = final_data
+    
+    return  place_format
+        
+
+
+                
+        
+            
+            
+    
+
+
 
 if __name__ == "__main__":
     proxy_url = None
@@ -356,10 +498,24 @@ if __name__ == "__main__":
     login_data = {"UserName": "CR@Sparklecw.com", "Password": "CameronRay1"}
     login = client.login(login_data, proxy)
     # print(f"login:{login}")
-    # daily_report = client.get_daily_report(proxy)
-    # print(f"daily :{daily_report}")
-    rev = client.get_revenue("05/22/2024", "06/23/2024")
+    #daily_report = client.get_daily_report(proxy)
+    #print(f"daily :{daily_report}")
+    #rev = client.get_revenue("05/22/2024", "06/23/2024")
     # client.to_csv(rev, "revenue.csv")
-    client.to_excel(rev, "revenue.xlsx")
-    print(rev)
+    # client.to_excel(rev, "revenue.xlsx")
+    #print(rev)
+    monday_date_str = "2024-06-03"
+    friday_date_str = "2024-06-07"
+    saturday_date_str = "2024-06-08"
+    sunday_date_str  = "2024-06-09"
+    # dail_report_v2 = client.get_dail_report_v2(monday_date_str,friday_date_str)
+    
+    # print(f"Daily report v2 : {dail_report_v2}")
+    
+    # with open("hamiltin_data.json","w") as f:
+    #     json.dump(dail_report_v2,f,indent=4)
+    
+    hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    
+    print(hamilton_report)
 

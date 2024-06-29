@@ -10,14 +10,18 @@ def get_week_dates():
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
     
-    # Find the current week's Sunday date
+    # Find the current week's Friday, Saturday, and Sunday dates
+    current_week_friday = current_week_monday + timedelta(days=4)
+    current_week_saturday = current_week_monday + timedelta(days=5)
     current_week_sunday = current_week_monday + timedelta(days=6)
     
-    # Format the dates in dd/mm/yyyy format
+    # Format the dates in mm/dd/yyyy format
     monday_date_str = current_week_monday.strftime("%m/%d/%Y")
+    friday_date_str = current_week_friday.strftime("%m/%d/%Y")
+    saturday_date_str = current_week_saturday.strftime("%m/%d/%Y")
     sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
     
-    return monday_date_str, sunday_date_str
+    return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
 
 
 def generate_weekly_report(file_path,monday_date_str, sunday_date_str):

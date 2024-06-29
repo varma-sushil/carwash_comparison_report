@@ -7,12 +7,39 @@ import locale
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
+from datetime import datetime, timedelta
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Set the locale to US English
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 file_path="washift.xlsx"
+
+def get_week_dates():
+    # Get the current date
+    today = datetime.today()
+    
+    # Find the current week's Monday date
+    current_week_monday = today - timedelta(days=today.weekday())
+    
+    # Find the current week's Sunday date
+    current_week_sunday = current_week_monday + timedelta(days=6)
+    
+    # Find the current week's Friday date
+    current_week_friday = current_week_monday + timedelta(days=4)
+    
+    # Find the current week's Saturday date
+    current_week_saturday = current_week_monday + timedelta(days=5)
+    
+    # Format the dates in mm/dd/yyyy format
+    monday_date_str = current_week_monday.strftime("%m/%d/%Y")
+    friday_date_str = current_week_friday.strftime("%m/%d/%Y")
+    saturday_date_str = current_week_saturday.strftime("%m/%d/%Y")
+    sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
+    
+    return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
+
 
 def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
     try:
@@ -175,7 +202,7 @@ class washifyClient():
         
         return common_data
 
-    def check_login(self,proxy=proxy)->bool:
+    def check_login(self,proxy)->bool:
         "cheks is we can use previous login data or not"
 
         login_passed = False
@@ -260,8 +287,9 @@ class washifyClient():
         
         return data
 
-    def get_car_count_report(self,location:list):
-        data = None
+    def get_car_count_report(self,location:list,StartDate,EndDate):
+        result={}
+
         headers = {
             'accept': 'application/json, text/plain, */*',
             'accept-language': 'en-US,en;q=0.9',
@@ -278,15 +306,10 @@ class washifyClient():
             'sec-fetch-site': 'same-site',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         }
-        # Get the current time
-        current_time = datetime.datetime.now()
-        # Define the desired date format
-        date_format_string = '%m/%d/%Y'
-        current_date_formatted = current_time.strftime(date_format_string)
         json_data = {
             'Locations': location,
-            'StartDate': current_date_formatted,#'06/14/2024',
-            'EndDate': current_date_formatted,#'06/14/2024',
+            'StartDate': StartDate , #'06/24/2024'
+            'EndDate': EndDate,  # '06/28/2024'
             'ReportBy': 'Day',
             'GroupAll': True,
             'CommonCompanySettings': self.get_common_data(),
@@ -294,11 +317,22 @@ class washifyClient():
         try:
             response = requests.post('https://washifyapi.com:8298/api/Reports/GetCarCountReport', headers=headers, json=json_data)
             if response.status_code==200:
-                data = response.json().get("data")[0].get("carwashed")
-        except Exception as e:
-            print(f"Exception : {e}")
-
-        return data
+                data = response.json().get("data")
+                #print(f"car count : {response} {response.json()}")
+                for single_data in data:
+                    car_count=single_data.get("carwashed",0)
+                    unlimited_cars_washed = single_data.get("unilitedCarwashed",0)
+                    staff_hours = single_data.get("totalhrs",0.0)
+                    result["car_count"] = result.get("car_count",0)+car_count
+                    
+                    result["retail_car_count"]=result.get("retail_car_count",0)+(car_count-unlimited_cars_washed)
+                    result['totalhrs'] = result.get("totalhrs",0.0)+staff_hours
+                
+                
+        except Exception as e :
+            print(f"Excpetion in get_car_count_report() {e}")
+            
+        return result
     
     def get_financal_revenue_summary(self):
         data =None
@@ -976,9 +1010,9 @@ class washifyClient():
     #     return data
 
     def GetRevenuReportFinancialRevenueSummary(self,client_locations,monday,sunday):
-        "GIFT CARD REDEEMED"
+        "GIFT CARD REDEEMED netPrice total(totalrevenue)"
         
-        data = None
+        result = {}
         
 
 
@@ -1016,11 +1050,15 @@ class washifyClient():
             )
             
             if response.status_code==200:
-                data = response.json()
+                data = response.json().get("data")
+                finanacial_sumamry= data.get("financialRevenueSummary")[0]
+                financialReportOther = data.get("financialReportOther")[0]
+                result['netPrice'] = finanacial_sumamry.get("netPrice")
+                result["total"]    =financialReportOther.get("total")
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
 
-        return data
+        return result 
     
     def GetRevenuReportFinancialRevenueSummary_formatted(self,data):
         "GIFT CARD REDEEMED formatter"
@@ -1229,96 +1267,98 @@ if __name__=="__main__":
             
             
         ## Formatter logic
-        wash_packages_response = client.GetRevenuReportFinancialWashPackage()
-        wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
+        # wash_packages_response = client.GetRevenuReportFinancialWashPackage()
+        # wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
         
-        for index,data in enumerate(wash_packages_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,0)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
-            # print(data)
-        # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate(wash_packages_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,0)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
+        #     # print(data)
+        # # print(json.dumps(formatted_response,indent=4))
 
-        wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts()
-        washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table 
-        # print(json.dumps(formatted_response,indent=4))
+        # wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts()
+        # washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table 
+        # # print(json.dumps(formatted_response,indent=4))
         
-        for index,data in enumerate(washpack_discount_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # for index,data in enumerate(washpack_discount_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
 
-        wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount()
-        wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table 
-        # print(json.dumps(formatted_response,indent=4))
-        for index,data in enumerate(wash_extra_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount()
+        # wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table 
+        # # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate(wash_extra_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
 
-        unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales()
-        unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) #unlimited sales
-        # print(unlimited_sales_data)
-        # print(json.dumps(formatted_response,indent=4))
-        for index,data in enumerate( unlimited_sales_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # unlimited_sales_response = client.GetRevenuReportFinancialUnlimitedSales()
+        # unlimited_sales_data  = client.GetRevenuReportFinancialUnlimitedSales_formatter(unlimited_sales_response) #unlimited sales
+        # # print(unlimited_sales_data)
+        # # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate( unlimited_sales_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
             
-        giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale()
-        giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response)  #4rd table  gift card sale
-        # print(formatted_response) 
-        # print(json.dumps(formatted_response,indent=4))
+        # giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale()
+        # giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response)  #4rd table  gift card sale
+        # # print(formatted_response) 
+        # # print(json.dumps(formatted_response,indent=4))
         
-        for index,data in enumerate(giftcards_sales_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
-        
-        
-        discount_discount_response = client.GetRevenuReportFinancialWashDiscounts()
-        discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response)  #5rd table    Discount discount
-        # print(json.dumps(formatted_response,indent=4))
-        
-        for index,data in enumerate(discount_discount_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # for index,data in enumerate(giftcards_sales_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
         
-        giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary()
-        giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)  #6rd table   Discount discount
-        # print(json.dumps(formatted_response,indent=4))
-        for index,data in enumerate(giftcard_reedemed_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # discount_discount_response = client.GetRevenuReportFinancialWashDiscounts()
+        # discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response)  #5rd table    Discount discount
+        # # print(json.dumps(formatted_response,indent=4))
+        
+        # for index,data in enumerate(discount_discount_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
         
-        
-        # response = client.GetRevenuReportFinancialRevenueSummary()   #duplicate
-        # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #8rd table  gift card reedem
-        # print(json.dumps(formatted_response,indent=4))
-        
-        
-        payment_response  = client.GetRevenuReportFinancialPaymentNew()
-        payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response)  #8rd table payment location
-        # print(json.dumps(payment_data,indent=4))
-        for index,data in enumerate(payment_data):
-            if index == 0:
-                append_dict_to_excel(file_path,data,2)
-            else:
-                append_dict_to_excel(file_path,data,0,False)
+        # giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary()
+        # giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)  #6rd table   Discount discount
+        # # print(json.dumps(formatted_response,indent=4))
+        # for index,data in enumerate(giftcard_reedemed_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
         
         
         
+        # # response = client.GetRevenuReportFinancialRevenueSummary()   #duplicate
+        # # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #8rd table  gift card reedem
+        # # print(json.dumps(formatted_response,indent=4))
+        
+        
+        # payment_response  = client.GetRevenuReportFinancialPaymentNew()
+        # payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response)  #8rd table payment location
+        # # print(json.dumps(payment_data,indent=4))
+        # for index,data in enumerate(payment_data):
+        #     if index == 0:
+        #         append_dict_to_excel(file_path,data,2)
+        #     else:
+        #         append_dict_to_excel(file_path,data,0,False)
+        
+        
+        monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
+        data = client.get_car_count_report([88],monday_date_str, friday_date_str)
+        print(data)
         
         
 ## need to chanege site locations dynamic and and time stamp also dynamic and need to use type casting and need to write xl conversion code

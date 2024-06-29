@@ -891,14 +891,19 @@ def get_week_dates():
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
     
-    # Find the current week's Sunday date
+    # Find the current week's Friday, Saturday, and Sunday dates
+    current_week_friday = current_week_monday + timedelta(days=4)
+    current_week_saturday = current_week_monday + timedelta(days=5)
     current_week_sunday = current_week_monday + timedelta(days=6)
     
-    # Format the dates in dd/mm/yyyy format
+    # Format the dates in yyyy-mm-dd format
     monday_date_str = current_week_monday.strftime("%Y-%m-%d")
+    friday_date_str = current_week_friday.strftime("%Y-%m-%d")
+    saturday_date_str = current_week_saturday.strftime("%Y-%m-%d")
     sunday_date_str = current_week_sunday.strftime("%Y-%m-%d")
     
-    return monday_date_str, sunday_date_str
+    return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
+
 
 
 def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_str, sunday_date_str):
@@ -956,7 +961,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 
                 arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
                 labour_hours_monday_to_friday=client.get_labour_hours(reportOn,request_id1_1)
-                cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2)
+                cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2) if labour_hours_monday_to_friday !=0 else "" 
                 
                 mon_fri_data = {
                     "car_count_monday_to_friday":car_count_monday_to_friday,
@@ -1043,6 +1048,8 @@ def do_sum_location(xl_map,location:list):
         if isinstance(val,float) or isinstance(val,int):
             total+=val
     return total
+
+#Xl maps fucntions ends
 
 def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
                                          retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):    
@@ -1466,6 +1473,14 @@ def prepare_xlmap(data,comment="The comment section"):
         Sudz_Beverly_index = 4
         
         update_place_to_xlmap(xl_map,Sudz_Beverly_index,Sudz_Beverly)
+        
+    ##Hamilton sites 
+    
+    Getaway_Macomb = data.get("Getaway-Macomb")
+    
+    if Getaway_Macomb:
+        Getaway_Macomb_index = 10
+        update_place_to_xlmap(xl_map,Getaway_Macomb_index,Getaway_Macomb)
         
     #computation for first three columns 
     # sum([ xl_map[2][i+1] for i in range(3,13)])
