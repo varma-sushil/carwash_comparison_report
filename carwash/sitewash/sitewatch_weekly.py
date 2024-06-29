@@ -947,7 +947,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 car_count_monday_to_friday = extracted_data1.get("car_count",0)
                 arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
                 arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt")
-                retail_car_count_monday_to_friday=abs(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
+                retail_car_count_monday_to_friday=(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
                 
                 net_sales_amt= extracted_data1.get("net_sales",0.0)
                 retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
@@ -980,7 +980,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
                 arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt")
                 
-                retail_car_count_saturday_sunday =abs(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
+                retail_car_count_saturday_sunday =(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
                 
                 net_sales_amt2= extracted_data2.get("net_sales",0.0)
                 retail_revenue__saturday_sunday = round((net_sales_amt2 - arm_plans_reedemed_saturday_sunday_amt),2)
@@ -1289,6 +1289,8 @@ def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
         print(f"Exception Average_retail_visit_IL_function() {e}")
     
     return result
+
+
 
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
     "Will return updates place dictionary"
@@ -1747,6 +1749,63 @@ def prepare_xlmap(data,comment="The comment section"):
     Total_club_planmembers_Total = sum([Total_club_planmembers_ILL,Total_club_planmembers_GA_SC])
     
     xl_map[21][1] = Total_club_planmembers_Total
+    
+    #Toatl Cars for all locations 
+    total_cars_row = 6 
+    for i in range(3,22):
+        xl_map[total_cars_row][i+1]= do_sum_location(xl_map,[[2,i+1],[3,i+1]])
+    
+    
+    revenue_row = 11
+    
+    #Total Revenue calculatio n for all locations 
+    for i in range(3,22):
+        xl_map[revenue_row][i+1]= do_sum_location(xl_map,[[9,i+1],[10,i+1]])
+    
+    average_retail_visit_row = 12
+    for i in range(3,22):
+        retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
+        retail_car_count_mon_sun = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
+        
+        average_retail_visit_val = retail_revenue_mon_sun/retail_car_count_mon_sun if retail_car_count_mon_sun != 0 else ""
+        xl_map[average_retail_visit_row][i+1]=   round(average_retail_visit_val,2) if average_retail_visit_val else ""
+    
+    
+    average_member_visit_row = 13
+    for i in range(3,22):
+        total_revenue = xl_map[11][i+1]
+        total_revenue = total_revenue if isinstance(total_revenue,int) or isinstance(total_revenue,float) else 0
+        
+        retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
+        
+        total_cars = xl_map[6][i+1]
+        total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
+        
+        retail_car_count_mon_sun  = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
+        
+        average_member_visit_val = (total_revenue-retail_revenue_mon_sun)/(total_cars-retail_car_count_mon_sun) if total_cars-retail_car_count_mon_sun !=0 else ""
+        
+        xl_map[average_member_visit_row][i+1] = round(average_member_visit_val,2) if average_member_visit_val else ""
+    
+    #Total cars per man hour 
+    total_cars_per_man_hour_row = 18 
+    for i in range(3,22):
+        total_cars = xl_map[6][i+1]
+        total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
+        staff_hours_monday_to_saturday = do_sum_location(xl_map,[[14,i+1],[15,i+1]])
+        
+        total_cars_per_man_hour_val = total_cars/staff_hours_monday_to_saturday if staff_hours_monday_to_saturday !=0 else ""
+        
+        xl_map[total_cars_per_man_hour_row][i+1] = round(total_cars_per_man_hour_val,2) if total_cars_per_man_hour_val else ""
+ 
+        
+      
+    darkred_format = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
+    lightred_format = workbook.add_format({'bold': True,"bg_color":"#d98484"})
+    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
+    light_green_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
+    darkgreen_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+    
     #writing to  actual sheet
     #first row comment section
     worksheet.write_row(0,0,["This is comment"])   
@@ -1767,13 +1826,39 @@ def prepare_xlmap(data,comment="The comment section"):
                 worksheet.write_row(row,col,[f"{val}"],cell_format)  #col names 
             elif col==0 and row>1 and row <22:
                 worksheet.write_row(row,col,[f"{val}"],cell_format_index)  #index rowes
+            
+            elif val and row==12 and col>0: #Avg. Retail Visit colouring
+                if val > 10: 
+                    worksheet.write_row(row,col,[val],darkgreen_format)  
+                elif val > 5:
+                    worksheet.write_row(row,col,[val],light_green_format)  
+                elif val< -5:
+                    worksheet.write_row(row,col,[val],lightred_format)
+                elif val < -10:
+                    worksheet.write_row(row,col,[val],darkred_format)
+            
+            elif val and row in [16,17,18,20] and col>0:
+                if val > 20:
+                    worksheet.write_row(row,col,[val],darkgreen_format)  
+                
+                elif val > 10:
+                     worksheet.write_row(row,col,[val],light_green_format)  
+                    
+                elif val < -10 :
+                    worksheet.write_row(row,col,[val],lightred_format)
+                
+                elif val < -20 :
+                    worksheet.write_row(row,col,[val],darkred_format)
+                else:
+                    worksheet.write_row(row,col,[val]) 
+            
             elif val:
                 worksheet.write_row(row,col,[val])   #which has values
                 
             elif row==6 and col>3:                   #Totals empty rowes 
                 worksheet.write_row(row,col,[""])
                 
-            elif row in [11,12,13,18] and col>3:
+            elif row in [18] and col>3:  # 11,12,13,
                 worksheet.write_row(row,col,[""]) #empty rowes 3 empty 
             
             elif row==22:
@@ -1806,12 +1891,12 @@ def prepare_xlmap(data,comment="The comment section"):
 
 if __name__=="__main__":
     # import pandas as pd
-    # monday_date_str, sunday_date_str = get_week_dates()
-    # print(monday_date_str,sunday_date_str)
-    # monday_date_str="2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str="2024-06-09"  #YMD
+    monday_date_str, sunday_date_str = get_week_dates()
+    print(monday_date_str,sunday_date_str)
+    monday_date_str="2024-06-03"
+    friday_date_str = "2024-06-07"
+    saturday_date_str = "2024-06-08"
+    sunday_date_str="2024-06-09"  #YMD
     
     # report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     # print("\n"*6)
@@ -1827,6 +1912,6 @@ if __name__=="__main__":
     
     with open("sitewatch_report_old.json",'r') as f:
         data=json.load(f)
-    
+    # data = report
     prepare_xlmap(data)
     
