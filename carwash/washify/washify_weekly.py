@@ -153,7 +153,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 ## -----------Monday  to ---- Friday  ----------------##
                 car_count_report_mon_fri_report = client.get_car_count_report([location_code],monday_date_str,friday_date_str)
                 retail_revenue_summary_report_mon_fri = client.GetRevenuReportFinancialRevenueSummary([location_code],monday_date_str,friday_date_str)
-                retail_revenue_monday_fri = retail_revenue_summary_report_mon_fri.get("retail_revenue",0)
+                retail_revenue_monday_fri = retail_revenue_summary_report_mon_fri.get("netPrice",0)
                 total_revenue_monday_fri = retail_revenue_summary_report_mon_fri.get("total",0.0)
                 labour_hours_monday_to_friday = car_count_report_mon_fri_report.get("totalhrs")
                 
@@ -175,7 +175,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 car_count_report_sat_sun_report = client.get_car_count_report([location_code],saturday_date_str, sunday_date_str)
                 retail_revenue_summary_report_sat_sun = client.GetRevenuReportFinancialRevenueSummary([location_code],saturday_date_str, sunday_date_str)
-                retail_revenue_sat_sun = retail_revenue_summary_report_sat_sun.get("retail_revenue",0)
+                retail_revenue_sat_sun = retail_revenue_summary_report_sat_sun.get("netPrice",0)
                 total_revenue_sat_sun = retail_revenue_summary_report_sat_sun.get("total",0.0)
                 #print(car_count_report_sat_sun_report)
                 car_count_saturday_sunday_cnt = car_count_report_sat_sun_report.get("car_count",0)

@@ -4,6 +4,9 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import xlsxwriter
+import openpyxl
+from openpyxl.styles import PatternFill, Font
+
 
 
 
@@ -321,8 +324,9 @@ def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
     return xl_map
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
-    workbook = xlsxwriter.Workbook(filename)
-    worksheet = workbook.add_worksheet(sheet_name)
+    # Load the existing workbook using openpyxl
+    workbook = openpyxl.load_workbook(filename)
+    worksheet = workbook.create_sheet(sheet_name)
     xl_map = [
     [""],
     ["","","","","","","","","","","","","","","","","","","","","","","",],
@@ -729,9 +733,9 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     cost_per_labour_hour_saturday_to_sunday_GA_SC_val = cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC)
     xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC_val,2)
     
-    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total
+    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total if staff_hours_saturday_to_sunday_Total!=0 else ""
     
-    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2)
+    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2) if cost_per_labour_hour_saturday_to_sunday_Total else ""
     
     # Total cars per man hour
     
@@ -847,94 +851,91 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
  
         
       
-    darkred_format = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
-    lightred_format = workbook.add_format({'bold': True,"bg_color":"#d98484"})
-    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
-    light_green_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
-    darkgreen_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+    # Define cell styles (assuming they are the same as before)
+    bg_color = PatternFill(start_color='0b3040', end_color='0b3040', fill_type='solid')
+    font_color = Font(color='FFFFFF')
+
+    bg_color_index = PatternFill(start_color='ADD8E6', end_color='ADD8E6', fill_type='solid')
+    font_color_index = Font(color='000000')
+
+    darkgreen_format = PatternFill(start_color='0ee85e', end_color='0ee85e', fill_type='solid')
+    light_green_format = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
+    darkred_format = PatternFill(start_color='FC0303', end_color='FC0303', fill_type='solid')
+    lightred_format = PatternFill(start_color='D98484', end_color='D98484', fill_type='solid')
+    yellow=  PatternFill(start_color='D0D48A', end_color='D0D48A', fill_type='solid')
     
     #writing to  actual sheet
     #first row comment section
-    worksheet.write_row(0,0,["This is comment"])   
+    # Write comments in the first row
+    # worksheet.append([comment])
     
-    cell_format = workbook.add_format({
-        'bg_color': '#0b3040',
-        'font_color': 'white'})  #column format
-
-    cell_format_index = workbook.add_format({
-            'bg_color': '#ADD8E6',
-            'font_color': 'black'})
-
     for row in range(len(xl_map)):
         for col in range(len(xl_map[row])):
-            print(f"index ({row},{col})")
             val = xl_map[row][col]
-            if row==1 and col!=0:
-                worksheet.write_row(row,col,[f"{val}"],cell_format)  #col names 
-            elif col==0 and row>1 and row <22:
-                worksheet.write_row(row,col,[f"{val}"],cell_format_index)  #index rowes
-            
-            elif val and row==12 and col>0: #Avg. Retail Visit colouring
-                if val > 10: 
-                    worksheet.write_row(row,col,[val],darkgreen_format)  
+            cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
+
+            if row == 1 and col != 0:
+                cell.fill = bg_color
+                cell.font = font_color
+
+            elif col == 0 and 1 < row < 22:
+                cell.fill = bg_color_index
+                cell.font = font_color_index
+
+            elif val and row == 12 and col > 0:
+                if val > 10:
+                    cell.fill = darkgreen_format
                 elif val > 5:
-                    worksheet.write_row(row,col,[val],light_green_format)  
-                elif val< -5:
-                    worksheet.write_row(row,col,[val],lightred_format)
+                    cell.fill = light_green_format
+                elif val < -5:
+                    cell.fill = lightred_format
                 elif val < -10:
-                    worksheet.write_row(row,col,[val],darkred_format)
-            
-            elif val and row in [16,17,18,20] and col>0:
+                    cell.fill = darkred_format
+
+            elif val and row in [16, 17, 18, 20] and col > 0:
                 if val > 20:
-                    worksheet.write_row(row,col,[val],darkgreen_format)  
-                
+                    cell.fill = darkgreen_format
                 elif val > 10:
-                     worksheet.write_row(row,col,[val],light_green_format)  
-                    
-                elif val < -10 :
-                    worksheet.write_row(row,col,[val],lightred_format)
-                
-                elif val < -20 :
-                    worksheet.write_row(row,col,[val],darkred_format)
-                else:
-                    worksheet.write_row(row,col,[val]) 
-            
-            elif val:
-                worksheet.write_row(row,col,[val])   #which has values
-                
-            elif row==6 and col>3:                   #Totals empty rowes 
-                worksheet.write_row(row,col,[""])
-                
-            elif row in [18] and col>3:  # 11,12,13,
-                worksheet.write_row(row,col,[""]) #empty rowes 3 empty 
-            
-            elif row==22:
-                worksheet.write_row(row,col,[""]) #empty rowes 1 before legends
-            
-            elif row>22 and col>0:
-                worksheet.write_row(row,col,[""]) #empty rowes  before legends
-            else:
-                worksheet.write_row(row,col,[f"This is ({row},{col})"])
-                
-    legend_start_row=23
-                
+                    cell.fill = light_green_format
+                elif val < -10:
+                    cell.fill = lightred_format
+                elif val < -20:
+                    cell.fill = darkred_format
+
+            # elif row == 5 and col > 2:
+            #     cell.value = ""
+
+            # elif row in [17] and col > 2:
+            #     cell.value = ""
+
+            # elif row == 21:
+            #     cell.value = ""
+
+            # elif row > 21 and col > 0:
+            #     cell.value = ""
+
     # Add legend or additional information below the table
-    very_concerningformat = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
-    concerningformat = workbook.add_format({'bold': True,"bg_color":"#d98484"})
-    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
-    positive_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
-    very_positive_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+    legend_start_row = 23
 
-    worksheet.write(legend_start_row, 0, 'Legend')
-    worksheet.write(legend_start_row + 1, 0, 'Very Concerning',very_concerningformat)
-    worksheet.write(legend_start_row + 2, 0, 'Concerning',concerningformat)
-    worksheet.write(legend_start_row + 3, 0, 'Neutral',neutral_format)
-    worksheet.write(legend_start_row + 4, 0, 'Positive',positive_format)
-    worksheet.write(legend_start_row + 5, 0, 'Very Positive',very_positive_format)
-            
-            
+    legend_styles = {
+        "Very Concerning": PatternFill(start_color="fc0303", end_color="fc0303", fill_type="solid"),
+        "Concerning": PatternFill(start_color="d98484", end_color="d98484", fill_type="solid"),
+        "Neutral": PatternFill(start_color="d0d48a", end_color="d0d48a", fill_type="solid"),
+        "Positive": PatternFill(start_color="8ad493", end_color="8ad493", fill_type="solid"),
+        "Very Positive": PatternFill(start_color="0ee85e", end_color="0ee85e", fill_type="solid"),
+    }
 
-    workbook.close() 
+    worksheet.cell(row=legend_start_row, column=1, value='Legend')
+    worksheet.cell(row=legend_start_row + 1, column=1, value='Very Concerning').fill = legend_styles["Very Concerning"]
+    worksheet.cell(row=legend_start_row + 2, column=1, value='Concerning').fill = legend_styles["Concerning"]
+    worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
+    worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
+    worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
+
+    # Save the modified workbook
+    workbook.save(filename)
+
+
 
 
 # print(data_path)
@@ -1098,6 +1099,7 @@ if __name__=="__main__":
     data.update(washify_report)
     
     data.update(hamilton_report)
+    
     comment =f"Ending {sunday_date_str}"
     sheet_name= saturday_date_str.replace("/","-")
     prepare_xlmap(data,comment,sheet_name=sheet_name)
