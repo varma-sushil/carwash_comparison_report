@@ -774,8 +774,9 @@ class washifyClient():
 
 
     def GetRevenuReportFinancialUnlimitedSales(self,client_locations,monday,sunday):
-        "UNLIMITED SALES"
+        "UNLIMITED SALES clubplans sold"
         data = None
+        sale_count_total=0
         
 
 
@@ -813,11 +814,19 @@ class washifyClient():
                 json=json_data,
             )
             if response.status_code==200:
-                data = response.json()
+                data = response.json().get("data")
+                unlimited_sales = data.get("financialUnlimitedSales")
+                sale_count_total = 0
+                for unlimited_sale in unlimited_sales:
+                    unlimite_sale_type = unlimited_sale.get("unlimited_Sales")
+                    
+                    if unlimite_sale_type in ["New Sales","Re Signups"]:
+                        sale_cnt = unlimited_sale.get("number",0)
+                        sale_count_total += sale_cnt
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
 
-        return data
+        return sale_count_total
 
     def GetRevenuReportFinancialUnlimitedSales_formatter(self,data):
         "UNLIMITED SALES formatter"

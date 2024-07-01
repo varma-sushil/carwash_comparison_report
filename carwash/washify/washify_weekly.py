@@ -127,6 +127,18 @@ def write_place_report(file_path,client,client_locations_number_codes,monday,sun
         
         write_dictionary_to_xlshet(payment_data,file_path,False)
 
+
+def conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday):
+    rate = 0.0
+    
+    try:
+        rate = arm_plans_sold/sum([retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday])
+        rate = round(rate,2)
+    
+    except Exception as e:
+        print(f"Exception in conversion_rate_washify() {e}")
+    return rate
+
 def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
     "This will generate weekly report"
     final_report = {}
@@ -153,6 +165,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 ## -----------Monday  to ---- Friday  ----------------##
                 car_count_report_mon_fri_report = client.get_car_count_report([location_code],monday_date_str,friday_date_str)
                 retail_revenue_summary_report_mon_fri = client.GetRevenuReportFinancialRevenueSummary([location_code],monday_date_str,friday_date_str)
+                total_arm_plans1 = client.GetRevenuReportFinancialUnlimitedSales([location_code],monday_date_str,friday_date_str)
                 retail_revenue_monday_fri = retail_revenue_summary_report_mon_fri.get("netPrice",0)
                 total_revenue_monday_fri = retail_revenue_summary_report_mon_fri.get("total",0.0)
                 labour_hours_monday_to_friday = car_count_report_mon_fri_report.get("totalhrs")
@@ -162,10 +175,13 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 print("retail revenue  report :",retail_revenue_summary_report_mon_fri)
                 
                 cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday_cnt/labour_hours_monday_to_friday),2) if labour_hours_monday_to_friday !=0 else ""
+                
+                retail_car_count_monday_to_friday = car_count_report_mon_fri_report.get("retail_car_count")
                  
                 single_site_report["car_count_monday_to_friday"]=car_count_monday_to_friday_cnt
-                single_site_report["arm_plans_reedemed_monday_to_friday_cnt"] = ""  #update
-                single_site_report["retail_car_count_monday_to_friday"] = car_count_report_mon_fri_report.get("retail_car_count")
+               
+                #single_site_report["arm_plans_reedemed_monday_to_friday_cnt"] = ""  #update
+                single_site_report["retail_car_count_monday_to_friday"] = retail_car_count_monday_to_friday
                 single_site_report["retail_revenue_monday_to_friday"] = retail_revenue_monday_fri
                 single_site_report["total_revenue_monday_to_friday"] = total_revenue_monday_fri
                 single_site_report["labour_hours_monday_to_friday"] = labour_hours_monday_to_friday
@@ -175,6 +191,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 car_count_report_sat_sun_report = client.get_car_count_report([location_code],saturday_date_str, sunday_date_str)
                 retail_revenue_summary_report_sat_sun = client.GetRevenuReportFinancialRevenueSummary([location_code],saturday_date_str, sunday_date_str)
+                total_arm_plans2 = client.GetRevenuReportFinancialUnlimitedSales([location_code],saturday_date_str, sunday_date_str)
                 retail_revenue_sat_sun = retail_revenue_summary_report_sat_sun.get("netPrice",0)
                 total_revenue_sat_sun = retail_revenue_summary_report_sat_sun.get("total",0.0)
                 #print(car_count_report_sat_sun_report)
@@ -185,18 +202,23 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 print("retail revenue  report :",retail_revenue_summary_report_mon_fri)
                 
+                retail_car_count_saturday_to_sunday = car_count_report_sat_sun_report.get("retail_car_count")
+                
                 single_site_report["car_count_saturday_sunday"]=car_count_report_sat_sun_report.get("car_count")
-                single_site_report["arm_plans_reedemed_saturday_sunday"] = "" #update
-                single_site_report["retail_car_count_saturday_sunday"] = car_count_report_sat_sun_report.get("retail_car_count")
+                #single_site_report["arm_plans_reedemed_saturday_sunday"] = "" #update
+                single_site_report["retail_car_count_saturday_sunday"] = retail_car_count_saturday_to_sunday
                 single_site_report["retail_revenue_saturday_sunday"] = retail_revenue_sat_sun
                 single_site_report["total_revenue_saturday_sunday"] = total_revenue_sat_sun
                 single_site_report["labour_hours_saturday_sunday"] = labour_hours_saturday_sunday
                 single_site_report["cars_per_labour_hour_saturday_sunday"] = cars_per_labour_hour_saturday_sunday
                 
+                
+                
+                arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])
                 single_site_report["total_revenue"] = sum([total_revenue_monday_fri,total_revenue_sat_sun])
-                single_site_report["arm_plans_sold_cnt"] = "" #update
+                single_site_report["arm_plans_sold_cnt"] = arm_plans_sold
                 single_site_report["total_arm_planmembers_cnt"] = "" #update
-                single_site_report["conversion_rate"] = "" #update
+                single_site_report["conversion_rate"] = conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday)
                
                 if "1631" in location_name: # 1631 E Jackson St
                     final_report["Getaway-Macomb"] = single_site_report
@@ -217,11 +239,18 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
 
 if __name__=="__main__":
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    print(data)
+    # print(data)
     
-    with open("washify_data.json","w") as f:
-        json.dump(data,f,indent=4)
+    # with open("washify_data.json","w") as f:
+    #     json.dump(data,f,indent=4)
+    
+    clinet = washifyClient()
+    monday_str  = "06/03/2024"
+    saturday= "06/09/2024"
+    
+    arm_plans =clinet.GetRevenuReportFinancialUnlimitedSales([90],monday_str,saturday)
+    print(arm_plans)
     

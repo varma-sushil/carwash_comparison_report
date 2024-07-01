@@ -995,7 +995,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
                 
                 labour_hours_saturday_sunday=client.get_labour_hours(reportOn,request_id2_2)
-                cars_per_labour_hour_saturday_sunday = round((car_count_saturday_sunday/labour_hours_saturday_sunday),2)
+                cars_per_labour_hour_saturday_sunday = round((car_count_saturday_sunday/labour_hours_saturday_sunday),2) if labour_hours_saturday_sunday !=0 else ""
                 
                 sat_sun_data = {
                     "car_count_saturday_sunday":car_count_saturday_sunday,
@@ -1015,7 +1015,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                                                                   arm_plans_reedemed_saturday_sunday_cnt])
                 
                 total_retail_car_cnt = sum([retail_car_count_monday_to_friday,retail_car_count_saturday_sunday])
-                conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2)
+                conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2) if total_retail_car_cnt !=0 else ""
                 #combines values update 
                 #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
                 combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])

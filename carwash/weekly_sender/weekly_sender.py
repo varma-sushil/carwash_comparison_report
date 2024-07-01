@@ -325,8 +325,16 @@ def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
     # Load the existing workbook using openpyxl
-    workbook = openpyxl.load_workbook(filename)
-    worksheet = workbook.create_sheet(sheet_name)
+    try:
+        workbook = openpyxl.load_workbook(filename)
+        worksheet = workbook.create_sheet(sheet_name)
+    except Exception as _:
+        print(f"creating neww xl file !! {filename}")
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+        worksheet.title = sheet_name
+    
+    
     xl_map = [
     [""],
     ["","","","","","","","","","","","","","","","","","","","","","","",],
@@ -915,7 +923,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             #     cell.value = ""
 
     # Add legend or additional information below the table
-    legend_start_row = 23
+    legend_start_row = 24
 
     legend_styles = {
         "Very Concerning": PatternFill(start_color="fc0303", end_color="fc0303", fill_type="solid"),
@@ -1027,71 +1035,30 @@ if __name__=="__main__":
     
     # monday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str,sunday_date_str)
-    # monday_date_str="2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str="2024-06-09"  #Y-M-D
-    
-    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
-    
-    # #testing dates 
-    # monday_date_str =  "06/03/2024"
-    # friday_date_str =  "06/07/2024"
-    # saturday_date_str = "06/08/2024"
-    # sunday_date_str  =  "06/09/2024"  #M/D/Y
-    
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
-    # #for hamilton dates
-    # monday_date_str = "2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str  = "2024-06-09"
-    
-    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
-    # data = sitewatch_report
-    
-    # data.update(washify_report)
-    
-    # data.update(hamilton_report)
-    # comment =f"Ending {sunday_date_str}"
-    # sheet_name= saturday_date_str.replace("/","-")
-    # prepare_xlmap(data,comment,sheet_name=sheet_name)
-    
-    # ------------------- Test Script ends ---------------------#
-    
-    # -----------------Actual script  ----------------------------#
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # monday_date_str="2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str="2024-06-09"  #Y-M-D
+    monday_date_str="2024-06-24"
+    friday_date_str = "2024-06-28"
+    saturday_date_str = "2024-06-29"
+    sunday_date_str="2024-06-30"  #Y-M-D
     
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     #testing dates 
-    # monday_date_str =  "06/03/2024"
-    # friday_date_str =  "06/07/2024"
-    # saturday_date_str = "06/08/2024"
-    # sunday_date_str  =  "06/09/2024"  #M/D/Y
+    monday_date_str =  "06/24/2024"
+    friday_date_str =  "06/28/2024"
+    saturday_date_str = "06/29/2024"
+    sunday_date_str  =  "06/30/2024"  #M/D/Y
     
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     #for hamilton dates
-    # monday_date_str = "2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str  = "2024-06-09"
+    monday_date_str = "2024-06-24"
+    friday_date_str = "2024-06-28"
+    saturday_date_str = "2024-06-29"
+    sunday_date_str  = "2024-06-30"
     
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     data = sitewatch_report
@@ -1099,11 +1066,54 @@ if __name__=="__main__":
     data.update(washify_report)
     
     data.update(hamilton_report)
-    
     comment =f"Ending {sunday_date_str}"
-    sheet_name= saturday_date_str.replace("/","-")
-    prepare_xlmap(data,comment,sheet_name=sheet_name)
-    # -----------------Actual script  ----------------------------#
+    sheet_name= sunday_date_str.replace("/","-")
+    
+    filename="test3.xlsx"
+    prepare_xlmap(data,comment,sheet_name=sheet_name,filename=filename)
+    
+    # ------------------- Test Script ends ---------------------#
+    
+    # # -----------------Actual script  ----------------------------#
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # # monday_date_str="2024-06-03"
+    # # friday_date_str = "2024-06-07"
+    # # saturday_date_str = "2024-06-08"
+    # # sunday_date_str="2024-06-09"  #Y-M-D
+    
+    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
+    
+    # #testing dates 
+    # # monday_date_str =  "06/03/2024"
+    # # friday_date_str =  "06/07/2024"
+    # # saturday_date_str = "06/08/2024"
+    # # sunday_date_str  =  "06/09/2024"  #M/D/Y
+    
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    
+    # #for hamilton dates
+    # # monday_date_str = "2024-06-03"
+    # # friday_date_str = "2024-06-07"
+    # # saturday_date_str = "2024-06-08"
+    # # sunday_date_str  = "2024-06-09"
+    
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    
+    # data = sitewatch_report
+    
+    # data.update(washify_report)
+    
+    # data.update(hamilton_report)
+    
+    # comment =f"Ending {sunday_date_str}"
+    # sheet_name= saturday_date_str.replace("/","-")
+    # prepare_xlmap(data,comment,sheet_name=sheet_name)
+    # # -----------------Actual script  ----------------------------#
     
 
 
