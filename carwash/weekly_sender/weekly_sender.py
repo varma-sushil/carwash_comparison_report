@@ -891,23 +891,26 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 cell.font = font_color_index
 
             elif val and row == 12 and col > 0:
-                if val > 10:
+                if val >= 10:
                     cell.fill = darkgreen_format
-                elif val > 5:
+                    
+                elif val>=5 and val <10: # [5,9] (inclusive intervals)
                     cell.fill = light_green_format
-                elif val < -5:
+                    
+                elif val>=-5 and val <5:  # [-5,4]
                     cell.fill = lightred_format
-                elif val < -10:
+        
+                elif  val <=-10 and val<-5:
                     cell.fill = darkred_format
 
             elif val and row in [16, 17, 18, 20] and col > 0:
-                if val > 20:
+                if val >= 20:
                     cell.fill = darkgreen_format
-                elif val > 10:
+                elif val>=10 and val <20:
                     cell.fill = light_green_format
-                elif val < -10:
+                elif val>=-10 and val <10:
                     cell.fill = lightred_format
-                elif val < -20:
+                elif val <=-20 or val<-10:
                     cell.fill = darkred_format
 
             # elif row == 5 and col > 2:
