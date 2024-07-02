@@ -22,3 +22,7 @@
 
 - version3 has the letes code with all support
 
+## Version3 details 
+- colour coding logic done 
+- smtp need to implemet on the server
+

@@ -1072,8 +1072,19 @@ if __name__=="__main__":
     comment =f"Ending {sunday_date_str}"
     sheet_name= sunday_date_str.replace("/","-")
     
+    
     filename="test3.xlsx"
-    prepare_xlmap(data,comment,sheet_name=sheet_name,filename=filename)
+    file_name_with_fullpath = os.path.join(data_path,filename)
+    prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
+    
+    # Directory containing Excel files
+    directory_path = data_path
+    attachments = get_excel_files(directory_path)
+    
+    # Sending email to email address
+    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)
+    
+    
     
     # ------------------- Test Script ends ---------------------#
     
