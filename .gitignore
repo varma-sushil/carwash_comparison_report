@@ -5,6 +5,7 @@ logs/*
 carwash/weekly_sender/data/*
 all_data.json
 all_data_curent.json
+*.log
 
 
 
