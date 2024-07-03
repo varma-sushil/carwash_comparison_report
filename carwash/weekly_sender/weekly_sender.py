@@ -965,10 +965,11 @@ def get_week_dates_for_storage():
     current_week_sunday = current_week_monday + timedelta(days=6)
     
     # Format the dates in dd/mm/yyyy format
-    monday_date_str = current_week_monday.strftime("%m/%d/%Y")
-    sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
+    #monday_date_str = current_week_monday.strftime("%m/%d/%Y")
+    sunday_date_str = current_week_sunday.strftime("%m_%Y")
     
-    return f"{monday_date_str}-{sunday_date_str}".replace('/','_')
+    #old ret f"{monday_date_str}-{sunday_date_str}".replace('/','_')
+    return sunday_date_str
 
 
 
@@ -1040,52 +1041,52 @@ if __name__=="__main__":
     
     # ------------------- Test Script start ---------------------#
     
-    # monday_date_str, sunday_date_str = sitewatch_week_dates()
-    # print(monday_date_str,sunday_date_str)
-    monday_date_str="2024-06-24"
-    friday_date_str = "2024-06-28"
-    saturday_date_str = "2024-06-29"
-    sunday_date_str="2024-06-30"  #Y-M-D
+    # # monday_date_str, sunday_date_str = sitewatch_week_dates()
+    # # print(monday_date_str,sunday_date_str)
+    # monday_date_str="2024-06-24"
+    # friday_date_str = "2024-06-28"
+    # saturday_date_str = "2024-06-29"
+    # sunday_date_str="2024-06-30"  #Y-M-D
     
-    sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
-    #testing dates 
-    monday_date_str =  "06/24/2024"
-    friday_date_str =  "06/28/2024"
-    saturday_date_str = "06/29/2024"
-    sunday_date_str  =  "06/30/2024"  #M/D/Y
+    # #testing dates 
+    # monday_date_str =  "06/24/2024"
+    # friday_date_str =  "06/28/2024"
+    # saturday_date_str = "06/29/2024"
+    # sunday_date_str  =  "06/30/2024"  #M/D/Y
     
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    #for hamilton dates
-    monday_date_str = "2024-06-24"
-    friday_date_str = "2024-06-28"
-    saturday_date_str = "2024-06-29"
-    sunday_date_str  = "2024-06-30"
+    # #for hamilton dates
+    # monday_date_str = "2024-06-24"
+    # friday_date_str = "2024-06-28"
+    # saturday_date_str = "2024-06-29"
+    # sunday_date_str  = "2024-06-30"
     
-    hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    data = sitewatch_report
+    # data = sitewatch_report
     
-    data.update(washify_report)
+    # data.update(washify_report)
     
-    data.update(hamilton_report)
-    comment =f"Ending {sunday_date_str}"
-    sheet_name= sunday_date_str.replace("/","-")
+    # data.update(hamilton_report)
+    # comment =f"Ending {sunday_date_str}"
+    # sheet_name= sunday_date_str.replace("/","-")
     
-    with open("all_data_curent.json","w") as f:
-        json.dump(data,f,indent=4)
+    # with open("all_data_curent.json","w") as f:
+    #     json.dump(data,f,indent=4)
     
-    filename="test1.xlsx"
-    file_name_with_fullpath = os.path.join(data_path,filename)
-    prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
+    # filename="test1.xlsx"
+    # file_name_with_fullpath = os.path.join(data_path,filename)
+    # prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
     
-    # Directory containing Excel files
-    directory_path = data_path
-    attachments = get_excel_files(directory_path)
+    # # Directory containing Excel files
+    # directory_path = data_path
+    # attachments = get_excel_files(directory_path)
     
     #Sending email to email address
     #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
@@ -1095,43 +1096,58 @@ if __name__=="__main__":
     # ------------------- Test Script ends ---------------------#
     
     # # -----------------Actual script  ----------------------------#
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # # monday_date_str="2024-06-03"
-    # # friday_date_str = "2024-06-07"
-    # # saturday_date_str = "2024-06-08"
-    # # sunday_date_str="2024-06-09"  #Y-M-D
     
-    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    path = get_week_dates_for_storage()
+    storage_path = create_storage_directory(path)
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
+    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # monday_date_str="2024-06-03"
+    # friday_date_str = "2024-06-07"
+    # saturday_date_str = "2024-06-08"
+    # sunday_date_str="2024-06-09"  #Y-M-D
     
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
+    sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
-    # #testing dates 
-    # # monday_date_str =  "06/03/2024"
-    # # friday_date_str =  "06/07/2024"
-    # # saturday_date_str = "06/08/2024"
-    # # sunday_date_str  =  "06/09/2024"  #M/D/Y
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    #testing dates 
+    # monday_date_str =  "06/03/2024"
+    # friday_date_str =  "06/07/2024"
+    # saturday_date_str = "06/08/2024"
+    # sunday_date_str  =  "06/09/2024"  #M/D/Y
     
-    # #for hamilton dates
-    # # monday_date_str = "2024-06-03"
-    # # friday_date_str = "2024-06-07"
-    # # saturday_date_str = "2024-06-08"
-    # # sunday_date_str  = "2024-06-09"
+    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
-    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    #for hamilton dates
+    # monday_date_str = "2024-06-03"
+    # friday_date_str = "2024-06-07"
+    # saturday_date_str = "2024-06-08"
+    # sunday_date_str  = "2024-06-09"
     
-    # data = sitewatch_report
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    # data.update(washify_report)
+    data = sitewatch_report
     
-    # data.update(hamilton_report)
+    data.update(washify_report)
     
-    # comment =f"Ending {sunday_date_str}"
-    # sheet_name= saturday_date_str.replace("/","-")
+    data.update(hamilton_report)
+    
+    comment =f"Ending {sunday_date_str}"
+    sheet_name= saturday_date_str.replace("/","-")
+    filename=f"{path}.xlsx"
+    file_name_with_fullpath = os.path.join(storage_path,filename)
+    prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
+    
+    # Directory containing Excel files
+    directory_path = storage_path
+    attachments = get_excel_files(directory_path)
+    
+    #Sending email to email address
+    body = f'weekly report Ending {sunday_date_str}'
+    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
     
