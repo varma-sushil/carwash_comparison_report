@@ -912,119 +912,125 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
     
     for index,site in sites_df.iterrows():
         # all_dictionaries_lst = []
-        combined_data = {}
         
-        site_dict = site.to_dict()
-        cookiesfile_name = f"{(site_dict.get('Organization')).strip().replace('-','_')}.pkl"
-        # print(cookiesfile_name)
-        print(site_dict)
-
-        cookies_file = os.path.join(cookies_path,cookiesfile_name)
-    
+        try:
         
-        client = sitewatchClient(cookies_file=cookies_file)
-        employCode = site_dict.get("employee")
-        password = site_dict.get("password")
-        locationCode = site_dict.get("Organization")
-        client_name = site_dict.get("client_name2")
-        remember = 1
-        # file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
-        
-        # file_path = os.path.join(path,file_path)
-        session_chek = client.check_session_auth(timeout=60)
-
-        if not session_chek:
-            token = client.login(employeeCode=employCode,password=password,locationCode=locationCode,remember=1)
-            print(token)
-        
-        session_chek = client.check_session_auth(timeout=60)
-        if session_chek:
-            reportOn=site_dict.get("site")
-            id=site_dict.get("id")
-            idname=site_dict.get("id_name")
-            request_id1 = client.get_general_sales_report_request_id(reportOn,id,idname,monday_date_str,friday_date_str)
-            request_id1_1 =client.get_activity_by_date_proft_request_id(reportOn,monday_date_str,friday_date_str) #for labour hours 
-
-            if request_id1 and request_id1_1:
-                report_data = client.get_report(reportOn,request_id1)
-                # print(f"report data: {report_data}")
-                extracted_data1= report_data_extractor(report_data)
-                car_count_monday_to_friday = extracted_data1.get("car_count",0)
-                arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
-                arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt",0)
-                retail_car_count_monday_to_friday=(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
-                
-                net_sales_amt= extracted_data1.get("net_sales",0.0)
-                retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
-                
-                total_revenue_val = round(extracted_data1.get("total_revenue",0.0),2)
-                
-                arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
-                labour_hours_monday_to_friday=client.get_labour_hours(reportOn,request_id1_1)
-                cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2) if labour_hours_monday_to_friday !=0 else "" 
-                
-                mon_fri_data = {
-                    "car_count_monday_to_friday":car_count_monday_to_friday,
-                    "arm_plans_reedemed_monday_to_friday_cnt":arm_plans_reedemed_monday_to_friday_cnt,
-                    "retail_car_count_monday_to_friday":retail_car_count_monday_to_friday,
-                    "retail_revenue_monday_to_friday":retail_revenue__monday_to_friday,
-                    "total_revenue_monday_to_friday":total_revenue_val,
-                    "labour_hours_monday_to_friday":labour_hours_monday_to_friday,
-                    "cars_per_labour_hour_monday_to_friday":cars_per_labour_hour_monday_to_friday
-                }
-                combined_data.update(mon_fri_data)
+            combined_data = {}
             
-            request_id2 = client.get_general_sales_report_request_id(reportOn,id,idname,saturday_date_str,sunday_date_str)
-            request_id2_2 =client.get_activity_by_date_proft_request_id(reportOn,saturday_date_str,sunday_date_str) #for labour hours
-             
-            if request_id2 and request_id2_2:
-                report_data = client.get_report(reportOn,request_id2)
-                # print(f"data2:{report_data}")
-                extracted_data2= report_data_extractor(report_data)
-                car_count_saturday_sunday = extracted_data2.get("car_count",0)
-                arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
-                arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt")
+            site_dict = site.to_dict()
+            cookiesfile_name = f"{(site_dict.get('Organization')).strip().replace('-','_')}.pkl"
+            # print(cookiesfile_name)
+            print(site_dict)
+
+            cookies_file = os.path.join(cookies_path,cookiesfile_name)
+        
+            
+            client = sitewatchClient(cookies_file=cookies_file)
+            employCode = site_dict.get("employee")
+            password = site_dict.get("password")
+            locationCode = site_dict.get("Organization")
+            client_name = site_dict.get("client_name2")
+            remember = 1
+            # file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
+            
+            # file_path = os.path.join(path,file_path)
+            session_chek = client.check_session_auth(timeout=60)
+
+            if not session_chek:
+                token = client.login(employeeCode=employCode,password=password,locationCode=locationCode,remember=1)
+                print(token)
+            
+            session_chek = client.check_session_auth(timeout=60)
+            if session_chek:
+                reportOn=site_dict.get("site")
+                id=site_dict.get("id")
+                idname=site_dict.get("id_name")
+                request_id1 = client.get_general_sales_report_request_id(reportOn,id,idname,monday_date_str,friday_date_str)
+                request_id1_1 =client.get_activity_by_date_proft_request_id(reportOn,monday_date_str,friday_date_str) #for labour hours 
+
+                if request_id1 and request_id1_1:
+                    report_data = client.get_report(reportOn,request_id1)
+                    # print(f"report data: {report_data}")
+                    extracted_data1= report_data_extractor(report_data)
+                    car_count_monday_to_friday = extracted_data1.get("car_count",0)
+                    arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
+                    arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt",0)
+                    retail_car_count_monday_to_friday=(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
+                    
+                    net_sales_amt= extracted_data1.get("net_sales",0.0)
+                    retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
+                    
+                    total_revenue_val = round(extracted_data1.get("total_revenue",0.0),2)
+                    
+                    arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
+                    labour_hours_monday_to_friday=client.get_labour_hours(reportOn,request_id1_1)
+                    cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2) if labour_hours_monday_to_friday !=0 else "" 
+                    
+                    mon_fri_data = {
+                        "car_count_monday_to_friday":car_count_monday_to_friday,
+                        "arm_plans_reedemed_monday_to_friday_cnt":arm_plans_reedemed_monday_to_friday_cnt,
+                        "retail_car_count_monday_to_friday":retail_car_count_monday_to_friday,
+                        "retail_revenue_monday_to_friday":retail_revenue__monday_to_friday,
+                        "total_revenue_monday_to_friday":total_revenue_val,
+                        "labour_hours_monday_to_friday":labour_hours_monday_to_friday,
+                        "cars_per_labour_hour_monday_to_friday":cars_per_labour_hour_monday_to_friday
+                    }
+                    combined_data.update(mon_fri_data)
                 
-                retail_car_count_saturday_sunday =(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
+                request_id2 = client.get_general_sales_report_request_id(reportOn,id,idname,saturday_date_str,sunday_date_str)
+                request_id2_2 =client.get_activity_by_date_proft_request_id(reportOn,saturday_date_str,sunday_date_str) #for labour hours
                 
-                net_sales_amt2= extracted_data2.get("net_sales",0.0)
-                retail_revenue__saturday_sunday = round((net_sales_amt2 - arm_plans_reedemed_saturday_sunday_amt),2)
-                
-                total_revenue_val2 = round(extracted_data2.get("total_revenue",0.0),2)
-                
-                arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
-                
-                labour_hours_saturday_sunday=client.get_labour_hours(reportOn,request_id2_2)
-                cars_per_labour_hour_saturday_sunday = round((car_count_saturday_sunday/labour_hours_saturday_sunday),2) if labour_hours_saturday_sunday !=0 else ""
-                
-                sat_sun_data = {
-                    "car_count_saturday_sunday":car_count_saturday_sunday,
-                    "arm_plans_reedemed_saturday_sunday":arm_plans_reedemed_saturday_sunday_cnt,
-                    "retail_car_count_saturday_sunday":retail_car_count_saturday_sunday,
-                    "retail_revenue_saturday_sunday":retail_revenue__saturday_sunday,
-                    "total_revenue_saturday_sunday":total_revenue_val2,
-                    "labour_hours_saturday_sunday":labour_hours_saturday_sunday,
-                    "cars_per_labour_hour_saturday_sunday":cars_per_labour_hour_saturday_sunday
-                }
-                
-                combined_data.update(sat_sun_data)
-                
-                arm_plans_sold_total_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2])
-                total_arm_planmembers_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2,
-                                                                  arm_plans_reedemed_monday_to_friday_cnt,
-                                                                  arm_plans_reedemed_saturday_sunday_cnt])
-                
-                total_retail_car_cnt = sum([retail_car_count_monday_to_friday,retail_car_count_saturday_sunday])
-                conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2) if total_retail_car_cnt !=0 else ""
-                #combines values update 
-                #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
-                combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
-                combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
-                combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
-                combined_data["conversion_rate"]= conversion_rate
-            # print(f"combined data:{combined_data}")
-            site_watch_report[client_name]=combined_data
-                        
+                if request_id2 and request_id2_2:
+                    report_data = client.get_report(reportOn,request_id2)
+                    # print(f"data2:{report_data}")
+                    extracted_data2= report_data_extractor(report_data)
+                    car_count_saturday_sunday = extracted_data2.get("car_count",0)
+                    arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
+                    arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt")
+                    
+                    retail_car_count_saturday_sunday =(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
+                    
+                    net_sales_amt2= extracted_data2.get("net_sales",0.0)
+                    retail_revenue__saturday_sunday = round((net_sales_amt2 - arm_plans_reedemed_saturday_sunday_amt),2)
+                    
+                    total_revenue_val2 = round(extracted_data2.get("total_revenue",0.0),2)
+                    
+                    arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
+                    
+                    labour_hours_saturday_sunday=client.get_labour_hours(reportOn,request_id2_2)
+                    cars_per_labour_hour_saturday_sunday = round((car_count_saturday_sunday/labour_hours_saturday_sunday),2) if labour_hours_saturday_sunday !=0 else ""
+                    
+                    sat_sun_data = {
+                        "car_count_saturday_sunday":car_count_saturday_sunday,
+                        "arm_plans_reedemed_saturday_sunday":arm_plans_reedemed_saturday_sunday_cnt,
+                        "retail_car_count_saturday_sunday":retail_car_count_saturday_sunday,
+                        "retail_revenue_saturday_sunday":retail_revenue__saturday_sunday,
+                        "total_revenue_saturday_sunday":total_revenue_val2,
+                        "labour_hours_saturday_sunday":labour_hours_saturday_sunday,
+                        "cars_per_labour_hour_saturday_sunday":cars_per_labour_hour_saturday_sunday
+                    }
+                    
+                    combined_data.update(sat_sun_data)
+                    
+                    arm_plans_sold_total_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2])
+                    total_arm_planmembers_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2,
+                                                                    arm_plans_reedemed_monday_to_friday_cnt,
+                                                                    arm_plans_reedemed_saturday_sunday_cnt])
+                    
+                    total_retail_car_cnt = sum([retail_car_count_monday_to_friday,retail_car_count_saturday_sunday])
+                    conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2) if total_retail_car_cnt !=0 else ""
+                    #combines values update 
+                    #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
+                    combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
+                    combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
+                    combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
+                    combined_data["conversion_rate"]= conversion_rate
+                # print(f"combined data:{combined_data}")
+                site_watch_report[client_name]=combined_data
+        
+        
+        except Exception as e:
+            print(f"Excetion for this loctaion {client_name} {e}")                 
     
     return site_watch_report
 
