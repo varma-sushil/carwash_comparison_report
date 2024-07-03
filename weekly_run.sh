@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Define the parent directory containing the virtual environment
-PARENT_DIR="/workspaces/codespaces-blank"
+PARENT_DIR="/home/ubuntu/CAR_WASH_2/carwash_weekly"
 VENV_NAME="env" # The name of the virtual environment directory
 
 # Define the Python script to run
-SCRIPT="car_wash_updater/carwash/weekly_sender/weekly_sender.py"
+SCRIPT="carwash/weekly_sender/weekly_sender.py"
 
 # Define the log file with date and timestamp
 LOG_DIR="$PARENT_DIR/logs"
