@@ -1221,6 +1221,46 @@ class washifyClient():
 
         return payment_data_all
 
+   
+    def get_club_plan_members(self,locationcode:int):
+        "This function will give toital club plan memebers based on user lcoation"
+        total_plan_members = 0
+       
+        try:
+
+            headers = {
+                'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+                'DNT': '1',
+                'sec-ch-ua-mobile': '?0',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json, text/plain, */*',
+                'Referer': 'https://washifyapi.com:1000/',
+                'sec-ch-ua-platform': '"Windows"',
+            }
+
+            json_data = {
+                'CompanyID': 0,
+                'UserLocations': locationcode,
+                'ServerID': 0,
+                'UserRoleID': 0,
+                'ID': 0,
+                'CommonCompanySettings': self.get_common_data(),
+            }
+
+            response = requests.post(
+                'https://washifyapi.com:8298/api/Dashboard/DashBoardDailyStatisticList',
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                data = response.json().get("data")
+                dailyStatisticList = data.get("dailyStatisticList")[0]
+                total_plan_members = dailyStatisticList.get("vehicles")
+        except Exception as e:
+            print(f"Exception in get_club_plan_mberbers() {e}")
+
+        return total_plan_members
     
     
 if __name__=="__main__":
@@ -1365,9 +1405,10 @@ if __name__=="__main__":
         #         append_dict_to_excel(file_path,data,0,False)
         
         
-        monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
-        data = client.get_car_count_report([88],monday_date_str, friday_date_str)
-        print(data)
+        # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
+        # data = client.get_car_count_report([88],monday_date_str, friday_date_str)
+        # print(data)
         
+        print(client.get_club_plan_members(90))
         
 ## need to chanege site locations dynamic and and time stamp also dynamic and need to use type casting and need to write xl conversion code

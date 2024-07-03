@@ -9,6 +9,13 @@ from openpyxl.styles import Font
 
 
 
+# Add the path to the parent directory of "washify" to sys.path
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'washify')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'sitewash')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'hamilton')))
+
+
+
 # Add the carwash directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
@@ -213,11 +220,12 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 single_site_report["cars_per_labour_hour_saturday_sunday"] = cars_per_labour_hour_saturday_sunday
                 
                 
+                total_arm_planmembers_cnt = client.get_club_plan_members(location_code)
                 
                 arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])
                 single_site_report["total_revenue"] = sum([total_revenue_monday_fri,total_revenue_sat_sun])
                 single_site_report["arm_plans_sold_cnt"] = arm_plans_sold
-                single_site_report["total_arm_planmembers_cnt"] = "" #update
+                single_site_report["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                 single_site_report["conversion_rate"] = conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday)
                
                 if "1631" in location_name: # 1631 E Jackson St
