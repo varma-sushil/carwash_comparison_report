@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import xlsxwriter
 import openpyxl
 from openpyxl.styles import PatternFill, Font
+import json
 
 
 
@@ -1010,6 +1011,9 @@ if __name__=="__main__":
     smtp_user = emailConfig.SMTP_USER
     smtp_password = emailConfig.SMTP_PASSWORD
     
+    
+    cc_emails=["abhishekmeher@reluconsultancy.in"]
+    
     # path = get_week_dates_for_storage()
     # storage_path = create_storage_directory(path)
     
@@ -1072,8 +1076,10 @@ if __name__=="__main__":
     comment =f"Ending {sunday_date_str}"
     sheet_name= sunday_date_str.replace("/","-")
     
+    with open("all_data_curent.json","w") as f:
+        json.dump(data,f,indent=4)
     
-    filename="test3.xlsx"
+    filename="test1.xlsx"
     file_name_with_fullpath = os.path.join(data_path,filename)
     prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
     
@@ -1081,8 +1087,8 @@ if __name__=="__main__":
     directory_path = data_path
     attachments = get_excel_files(directory_path)
     
-    # Sending email to email address
-    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)
+    #Sending email to email address
+    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
     
     
     

@@ -928,16 +928,16 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
         locationCode = site_dict.get("Organization")
         client_name = site_dict.get("client_name2")
         remember = 1
-        file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
+        # file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
         
-        file_path = os.path.join(path,file_path)
-        session_chek = client.check_session_auth(timeout=30)
+        # file_path = os.path.join(path,file_path)
+        session_chek = client.check_session_auth(timeout=60)
 
         if not session_chek:
             token = client.login(employeeCode=employCode,password=password,locationCode=locationCode,remember=1)
             print(token)
         
-        session_chek = client.check_session_auth(timeout=30)
+        session_chek = client.check_session_auth(timeout=60)
         if session_chek:
             reportOn=site_dict.get("site")
             id=site_dict.get("id")
@@ -951,7 +951,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 extracted_data1= report_data_extractor(report_data)
                 car_count_monday_to_friday = extracted_data1.get("car_count",0)
                 arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
-                arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt")
+                arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt",0)
                 retail_car_count_monday_to_friday=(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
                 
                 net_sales_amt= extracted_data1.get("net_sales",0.0)

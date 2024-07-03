@@ -6,6 +6,7 @@ import json
 import datetime as dt
 from bs4 import BeautifulSoup
 import pandas as pd
+from datetime import datetime, timedelta
 
 import csv
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -390,8 +391,91 @@ class hamiltonClient:
         except Exception as e:
             print(f"Exception in get_dail_report_v2() {e}")
         
+    def get_days_for_Total_membership(self):
 
 
+        # Get the current date
+        current_date = datetime.now()
+        
+        # Get the date 30 days before the current date
+        date_30_days_ago = current_date - timedelta(days=30)
+        
+        # Format both dates to the desired format
+        current_date_str = current_date.strftime('%Y-%m-%d')
+        date_30_days_ago_str = date_30_days_ago.strftime('%Y-%m-%d')
+        
+        # print(f"Current Date: {current_date_str}")
+        # print(f"Date 30 Days Ago: {date_30_days_ago_str}")
+        
+        return current_date_str,date_30_days_ago_str
+
+
+    def get_total_plan_members(self):
+        "will return total plan members by considering last 30days"
+        total_plan_members = 0
+        
+        cookies = self.get_ccokies()
+
+        headers = {
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json; charset=utf-8',
+            # 'cookie': 'ASP.NET_SessionId=pmqmo14o2uq3smgwvzpvuqvk; HamiltonHostedSolutions=4C37D484F9CA28F54EB1FE2D62D3FF7AB1EF23DC5672B266016BC960225599A3D40CD32A0779F501D33DE06AE9624DEFD925BCF95774F6C1FCEDF0B8D9393846BD08BEC0C4A8A6DC6D36D3E4125C4EA4660313B2D2AF082910B9639C71B3757DD2F7F1D5E230707124504E61C1C862FCAD2BD52CC868057DED2243429F885DB55DE87FEA6A060B852B720F59C35541CEF789DB4337C12FD39F43D05521DE0BC4',
+            'dnt': '1',
+            'origin': 'https://hamiltonservices.com',
+            'priority': 'u=1, i',
+            'referer': 'https://hamiltonservices.com/web/Reporting/DailyRevenueTable',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        }
+
+        endDate,startDate = self.get_days_for_Total_membership()
+        json_data = {
+            'startDate': startDate,
+            'endDate': endDate,
+        }
+
+        try:
+            response = requests.post(
+                'https://hamiltonservices.com/web/Reporting/GetDailyReport',
+                cookies=cookies,
+                headers=headers,
+                json=json_data,
+            )
+            if response.status_code==200:
+                
+                data = response.json().get("Data").get("Data")
+                items = data.get("Items")
+                for item in items:
+    
+                    itemtyp = item.get("ItemType")
+                    
+                    if itemtyp in ["AppWashClubBilling","PrepaidPassBilling"]:
+                        total_plan_members+=1
+            
+        except Exception as e:
+            print(f"Exception in get_total_plan_members()  in {e}")
+            
+        return total_plan_members
+    
+
+   
+    
+
+
+def conversion_rate_hamilton(arm_plans_sold_cnt,wash_purchases_total_cnt,wash_purchases_total_cnt2):
+    rate = 0
+    try:
+        rate = arm_plans_sold_cnt/ sum([wash_purchases_total_cnt,wash_purchases_total_cnt2])
+        rate = round(rate,2)
+    except Exception as e:
+        print(f"Exception in conversion_rate_hamilton() {e}")
+    return rate
 
 def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
     final_data = {}
@@ -410,6 +494,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     reedeemd_total_cnt = 0
     retail_revenue=0.0
     total_revenue = 0.0
+    arm_plans_sold1 = 0
     
     for item in items :
         itemtyp = item.get("ItemType")
@@ -424,8 +509,11 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
             wash_purchases_total_cnt+=1
             retail_revenue+=price
         
-        if not (flag or   discount): 
+        if not (flag or   discount): #total revenue monday- friday
             total_revenue+=price
+            
+        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+            arm_plans_sold1+=1
 
             
         
@@ -445,6 +533,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     reedeemd_total_cnt2 = 0
     retail_revenue2=0.0
     total_revenue2 = 0.0
+    arm_plans_sold2 = 0
     
     for item in items :
         itemtyp = item.get("ItemType")
@@ -462,6 +551,9 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         if not (flag or   discount): 
             total_revenue2+=price
             
+        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+            arm_plans_sold2+=1
+            
     final_data["car_count_saturday_sunday"] = sum([wash_purchases_total_cnt2,reedeemd_total_cnt2])
     final_data["arm_plans_reedemed_saturday_sunday"] = "" #update
     final_data["retail_car_count_saturday_sunday"]   = wash_purchases_total_cnt2
@@ -470,16 +562,20 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     final_data["labour_hours_saturday_sunday"]     = "" #update
     final_data["cars_per_labour_hour_saturday_sunday"] = "" #update
     
-    final_data["total_revenue"] = "" #update
-    final_data["arm_plans_sold_cnt"] = "" #update
-    final_data["total_arm_planmembers_cnt"] = "" #update
-    final_data["conversion_rate"] = "" #update
+    arm_plans_sold_cnt = sum([arm_plans_sold1,arm_plans_sold2])
+    
+    total_arm_planmembers_cnt = client.get_total_plan_members()
+    
+    final_data["total_revenue"] = sum([total_revenue,total_revenue2])
+    final_data["arm_plans_sold_cnt"] = arm_plans_sold_cnt
+    final_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
+    final_data["conversion_rate"] = conversion_rate_hamilton(arm_plans_sold_cnt,wash_purchases_total_cnt,wash_purchases_total_cnt2)
     # final_data[""]
     place_format = {}
     place_format["Splash-Peoria"] = final_data
     
     return  place_format
-        
+  
 
 
                 
@@ -515,7 +611,9 @@ if __name__ == "__main__":
     # with open("hamiltin_data.json","w") as f:
     #     json.dump(dail_report_v2,f,indent=4)
     
-    hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    print(hamilton_report)
+    # print(hamilton_report)
+    
+    print(client.get_total_plan_members())
 

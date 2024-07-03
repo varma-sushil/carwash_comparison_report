@@ -59,13 +59,13 @@ for index,site in sites_df.iterrows():
     remember = 1
 
     
-    session_chek = client.check_session_auth(timeout=30)
+    session_chek = client.check_session_auth(timeout=60)
 
     if not session_chek:
         token = client.login(employeeCode=employCode,password=password,locationCode=locationCode,remember=1)
         print(token)
     
-    session_chek = client.check_session_auth(timeout=30)
+    session_chek = client.check_session_auth(timeout=60)
     if session_chek:
         reportOn=site_dict.get("site")
         id=site_dict.get("id")
