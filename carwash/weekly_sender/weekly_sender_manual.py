@@ -1137,7 +1137,7 @@ if __name__=="__main__":
     data.update(hamilton_report)
     
     comment =f"Ending {sunday_date_str}"
-    sheet_name= saturday_date_str.replace("/","-")
+    sheet_name= sunday_date_str.replace("/","-")
     filename=f"{path}.xlsx"
     file_name_with_fullpath = os.path.join(storage_path,filename)
     prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
