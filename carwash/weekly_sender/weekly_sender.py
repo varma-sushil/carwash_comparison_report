@@ -1013,7 +1013,7 @@ if __name__=="__main__":
     smtp_password = emailConfig.SMTP_PASSWORD
     
     
-    cc_emails=["abhishekmeher@reluconsultancy.in"]
+    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com"]
     
     # path = get_week_dates_for_storage()
     # storage_path = create_storage_directory(path)
