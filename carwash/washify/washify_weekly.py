@@ -140,6 +140,7 @@ def conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,ret
     
     try:
         rate = arm_plans_sold/sum([retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday])
+        rate= rate*100
         rate = round(rate,2)
     
     except Exception as e:

@@ -472,6 +472,7 @@ def conversion_rate_hamilton(arm_plans_sold_cnt,wash_purchases_total_cnt,wash_pu
     rate = 0
     try:
         rate = arm_plans_sold_cnt/ sum([wash_purchases_total_cnt,wash_purchases_total_cnt2])
+        rate =rate*100
         rate = round(rate,2)
     except Exception as e:
         print(f"Exception in conversion_rate_hamilton() {e}")
