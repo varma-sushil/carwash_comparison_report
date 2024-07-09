@@ -305,6 +305,17 @@ def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
     
     return result
 
+def add_commas(value):
+    # Check if the value is an integer or can be converted to an integer
+    try:
+        num = float(value)
+        if num >= 1000:
+            return "{:,}".format(num)
+    except ValueError:
+        pass
+    
+    # Return the original value if it's not an integer or less than 1000
+    return value                
 
 #new xl maps functions 
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
@@ -888,7 +899,9 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         for col in range(len(xl_map[row])):
             val = xl_map[row][col]
             cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
-
+            
+            val = add_commas(val)
+            
             if row == 1 and col != 0:
                 cell.fill = bg_color
                 cell.font = font_color
@@ -959,27 +972,63 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             worksheet.column_dimensions[column_letter].width = first_col_width
         else:
             worksheet.column_dimensions[column_letter].width = column_width
-            
-    #apply borders 
-    thin_border_sides = Border(
+       
+    
+    # Define the border style
+
+
+    thick_border = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'))
+    
+    thick_border_bottom = Border(
     left=Side(style='thick'),
     right=Side(style='thick'),
-    #top=Side(style='thin'),
-    #bottom=Side(style='thin')
-    )
-    thin_border_bottom = Border(
-    #left=Side(style='thin'),
-    #right=Side(style='thin'),
-    #top=Side(style='thin'),
-    bottom=Side(style='thick')
-    )
-    
-    for row in worksheet.iter_rows(min_row=3, max_row=22, min_col=2, max_col=4):
-        for cell in row:
-            if row==21:
-                cell.border = thin_border_bottom
-            else:
-                cell.border = thin_border_sides
+    bottom=Side(style='thick'))
+
+
+
+
+    # Apply the border to a range of cells (e.g., A1:C3)
+    # for row in worksheet.iter_rows(min_row=3, max_row=21, min_col=2, max_col=4):
+    #     for cell in row:
+    #         cell.border = thin_border
+
+    for row in range(3,23):
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
+        
+        if row==22:
+            cell1.border=thick_border_bottom
+            cell2.border=thick_border_bottom
+            cell3.border=thick_border_bottom
+        else:
+            cell1.border=thick_border
+            cell2.border=thick_border
+            cell3.border=thick_border
+            
+        for row in worksheet.iter_rows():
+            for cell in row:
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                    cell.number_format = '#,##0.00'
+        #Doller sysmbol     
+        for row in range(8,15):
+            cell1 = worksheet.cell(row=row,column=2)
+            cell2 = worksheet.cell(row=row,column=3)
+            cell3 = worksheet.cell(row=row,column=4)
+            
+            cell1.border=thick_border
+            cell2.border=thick_border
+            cell3.border=thick_border
+            
+            cells=[cell1,cell2,cell3]
+            for cell in cells:
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                    cell.number_format = '"$"#,##0.00'     
+        
+        
+
 
     #applying bold font
     # Define a bold font style
@@ -989,7 +1038,11 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         for cell in row:
             cell.font = bold_font
             
-    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=2, max_col=4):
+    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=2, max_col=4):
         for cell in row:
             cell.font = bold_font
     # Save the modified workbook

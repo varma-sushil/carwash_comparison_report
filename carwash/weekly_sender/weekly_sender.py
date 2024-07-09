@@ -8,7 +8,11 @@ import openpyxl
 from openpyxl.styles import PatternFill, Font
 import json
 
-
+try: 
+    from openpyxl.cell import get_column_letter
+except ImportError:
+    from openpyxl.utils import get_column_letter
+from openpyxl.styles import Border, Side
 
 
 # Add the path to the parent directory of "washify" to sys.path
@@ -298,7 +302,17 @@ def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
         print(f"Exception Average_retail_visit_IL_function() {e}")
     
     return result
-
+def add_commas(value):
+    # Check if the value is an integer or can be converted to an integer
+    try:
+        num = float(value)
+        if num >= 1000:
+            return "{:,}".format(num)
+    except ValueError:
+        pass
+    
+    # Return the original value if it's not an integer or less than 1000
+    return value        
 
 #new xl maps functions 
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
@@ -882,7 +896,9 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         for col in range(len(xl_map[row])):
             val = xl_map[row][col]
             cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
-
+            
+            val = add_commas(val)
+            
             if row == 1 and col != 0:
                 cell.fill = bg_color
                 cell.font = font_color
@@ -943,7 +959,89 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
     worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
     worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
+    
+    #setting cloumn width as deafult 
+    column_width = 20  # You can change this value to whatever width you need
+    first_col_width =25
+    for col in range(1, 24):  # Columns A to W are 1 to 23
+        column_letter = get_column_letter(col)
+        if col==1:
+            worksheet.column_dimensions[column_letter].width = first_col_width
+        else:
+            worksheet.column_dimensions[column_letter].width = column_width
+       
+    
+    # Define the border style
 
+
+    thick_border = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'))
+    
+    thick_border_bottom = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'),
+    bottom=Side(style='thick'))
+
+
+
+
+    # Apply the border to a range of cells (e.g., A1:C3)
+    # for row in worksheet.iter_rows(min_row=3, max_row=21, min_col=2, max_col=4):
+    #     for cell in row:
+    #         cell.border = thin_border
+
+    for row in range(3,23):
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
+        
+        if row==22:
+            cell1.border=thick_border_bottom
+            cell2.border=thick_border_bottom
+            cell3.border=thick_border_bottom
+        else:
+            cell1.border=thick_border
+            cell2.border=thick_border
+            cell3.border=thick_border
+            
+        for row in worksheet.iter_rows():
+            for cell in row:
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                    cell.number_format = '#,##0.00'
+        #Doller sysmbol     
+        for row in range(8,15):
+            cell1 = worksheet.cell(row=row,column=2)
+            cell2 = worksheet.cell(row=row,column=3)
+            cell3 = worksheet.cell(row=row,column=4)
+            
+            cell1.border=thick_border
+            cell2.border=thick_border
+            cell3.border=thick_border
+            
+            cells=[cell1,cell2,cell3]
+            for cell in cells:
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                    cell.number_format = '"$"#,##0.00'     
+        
+        
+
+
+    #applying bold font
+    # Define a bold font style
+    bold_font = Font(bold=True)
+
+    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
     # Save the modified workbook
     workbook.save(filename)
 
