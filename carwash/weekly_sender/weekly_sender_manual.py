@@ -8,6 +8,12 @@ import openpyxl
 from openpyxl.styles import PatternFill, Font
 import json
 
+try: 
+    from openpyxl.cell import get_column_letter
+except ImportError:
+    from openpyxl.utils import get_column_letter
+from openpyxl.styles import Border, Side
+
 
 
 
@@ -943,7 +949,49 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
     worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
     worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
+    
+    #setting cloumn width as deafult 
+    column_width = 20  # You can change this value to whatever width you need
+    first_col_width =25
+    for col in range(1, 24):  # Columns A to W are 1 to 23
+        column_letter = get_column_letter(col)
+        if col==1:
+            worksheet.column_dimensions[column_letter].width = first_col_width
+        else:
+            worksheet.column_dimensions[column_letter].width = column_width
+            
+    #apply borders 
+    thin_border_sides = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'),
+    #top=Side(style='thin'),
+    #bottom=Side(style='thin')
+    )
+    thin_border_bottom = Border(
+    #left=Side(style='thin'),
+    #right=Side(style='thin'),
+    #top=Side(style='thin'),
+    bottom=Side(style='thick')
+    )
+    
+    for row in worksheet.iter_rows(min_row=3, max_row=22, min_col=2, max_col=4):
+        for cell in row:
+            if row==21:
+                cell.border = thin_border_bottom
+            else:
+                cell.border = thin_border_sides
 
+    #applying bold font
+    # Define a bold font style
+    bold_font = Font(bold=True)
+
+    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=2, max_col=4):
+        for cell in row:
+            cell.font = bold_font
     # Save the modified workbook
     workbook.save(filename)
 
@@ -1014,7 +1062,7 @@ if __name__=="__main__":
     smtp_password = emailConfig.SMTP_PASSWORD
     
     
-    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com"]
+    #cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com"]
     
     # path = get_week_dates_for_storage()
     # storage_path = create_storage_directory(path)
@@ -1148,7 +1196,7 @@ if __name__=="__main__":
     
     #Sending email to email address
     body = f'weekly report Ending {sunday_date_str}'
-    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)#
     
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
