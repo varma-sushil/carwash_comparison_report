@@ -302,29 +302,34 @@ def arm_plans_sold(section):
 
 
 def arm_plans_recharged(section):
+    data=None
     arm_plans_recharged_lst = []
     reports  = section.get("reports")   
     subtotals  = section.get("subtotals")   
     
-    for report in reports:
-        arm_plans_recharged_structure = {
-            "Arm_plan_recharged_description":report.get("description"),
-            "Arm_plan_recharged_price":report.get("price"),
-            "Arm_plan_recharged_quantity":report.get("quantity"),
-            "Arm_plan_recharged_amount":report.get("amount")
-        } 
-        arm_plans_recharged_lst.append(arm_plans_recharged_structure)
-        
-    for subtotal in subtotals:
-        arm_plans_recharged_structure = {
-            "Arm_plan_recharged_description":subtotal.get("description"),
-            "Arm_plan_recharged_price":subtotal.get("price"),
-            "Arm_plan_recharged_quantity":subtotal.get("quantity"),
-            "Arm_plan_recharged_amount":subtotal.get("amount")
-        } 
-        arm_plans_recharged_lst.append(arm_plans_recharged_structure)
+    # for report in reports:
+    #     arm_plans_recharged_structure = {
+    #         "Arm_plan_recharged_description":report.get("description"),
+    #         "Arm_plan_recharged_price":report.get("price"),
+    #         "Arm_plan_recharged_quantity":report.get("quantity"),
+    #         "Arm_plan_recharged_amount":report.get("amount")
+    #     } 
+    #     arm_plans_recharged_lst.append(arm_plans_recharged_structure)
+    data = subtotals[0].get("amount")
     
-    return arm_plans_recharged_lst
+    return data
+    
+        
+    # for subtotal in subtotals:
+    #     arm_plans_recharged_structure = {
+    #         "Arm_plan_recharged_description":subtotal.get("description"),
+    #         "Arm_plan_recharged_price":subtotal.get("price"),
+    #         "Arm_plan_recharged_quantity":subtotal.get("quantity"),
+    #         "Arm_plan_recharged_amount":subtotal.get("amount")
+    #     } 
+    #     arm_plans_recharged_lst.append(arm_plans_recharged_structure)
+    
+    # return arm_plans_recharged_lst
 
 def arm_planes_reedemed(section):
     data={}
@@ -809,8 +814,9 @@ def report_data_extractor(report_data):
                 
                 
             elif text=="ARM PLANS RECHARGED-":
-                arm_plans_recharged(section)
-                
+                arm_reachrged_amt =arm_plans_recharged(section)
+                print("arm plans rechanged:",arm_reachrged_amt)
+                single_site_report["arm_plans_recharged_amt"]=arm_reachrged_amt
                 
             elif text=="ARM PLANS REDEEMED-":
                 arm_plans_reedemed_value= arm_planes_reedemed(section)
@@ -954,14 +960,21 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     extracted_data1= report_data_extractor(report_data)
                     car_count_monday_to_friday = extracted_data1.get("car_count",0)
                     arm_plans_reedemed_monday_to_friday_cnt = extracted_data1.get("arm_plans_reedemed_cnt",0)
-                    arm_plans_reedemed_monday_to_friday_amt = extracted_data1.get("arm_plans_reedemed_amt",0)
+                    arm_plans_reedemed_monday_to_friday_amt = abs(extracted_data1.get("arm_plans_reedemed_amt",0))#need abs because will nee to mek it postive 
+                    arm_plans_recharged_amt_monday_to_friday_amt =extracted_data1.get("arm_plans_recharged_amt",0)
+                    
                     retail_car_count_monday_to_friday=(car_count_monday_to_friday - arm_plans_reedemed_monday_to_friday_cnt)
                     
                     net_sales_amt= extracted_data1.get("net_sales",0.0)
-                    retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
-                    
+                    # retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
                     total_revenue_val = round(extracted_data1.get("total_revenue",0.0),2)
                     
+                    if client_name=="Sudz - Beverly":
+                        retail_revenue__monday_to_friday = round((total_revenue_val - arm_plans_recharged_amt_monday_to_friday_amt),2)
+                    else:
+                        retail_revenue__monday_to_friday = round((net_sales_amt - arm_plans_reedemed_monday_to_friday_amt),2)
+                        
+                        
                     arm_plans_sold_cnt1 = extracted_data1.get("arm_plans_sold_cnt")
                     labour_hours_monday_to_friday=client.get_labour_hours(reportOn,request_id1_1)
                     cars_per_labour_hour_monday_to_friday = round((car_count_monday_to_friday/labour_hours_monday_to_friday),2) if labour_hours_monday_to_friday !=0 else "" 
@@ -986,15 +999,22 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     extracted_data2= report_data_extractor(report_data)
                     car_count_saturday_sunday = extracted_data2.get("car_count",0)
                     arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
-                    arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt")
+                    arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt",0)
+                    arm_plans_recharged_amt_saturday_sunday_amt =extracted_data2.get("arm_plans_recharged_amt",0)
                     
                     retail_car_count_saturday_sunday =(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
                     
                     net_sales_amt2= extracted_data2.get("net_sales",0.0)
-                    retail_revenue__saturday_sunday = round((net_sales_amt2 - arm_plans_reedemed_saturday_sunday_amt),2)
                     
                     total_revenue_val2 = round(extracted_data2.get("total_revenue",0.0),2)
                     
+                    print(f"retail rev : total rev {total_revenue_val2}-{arm_plans_recharged_amt_saturday_sunday_amt} ={total_revenue_val2-arm_plans_recharged_amt_saturday_sunday_amt}")
+                    
+                    if client_name=="Sudz - Beverly":
+                        retail_revenue__saturday_sunday = round((total_revenue_val2 - arm_plans_recharged_amt_saturday_sunday_amt),2)
+                    else:
+                        retail_revenue__saturday_sunday = round((net_sales_amt2- arm_plans_reedemed_saturday_sunday_amt),2)
+                        
                     arm_plans_sold_cnt2 = extracted_data2.get("arm_plans_sold_cnt")
                     
                     labour_hours_saturday_sunday=client.get_labour_hours(reportOn,request_id2_2)
@@ -1025,7 +1045,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
                     combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                     combined_data["conversion_rate"]= conversion_rate
-                # print(f"combined data:{combined_data}")
+                print(f"combined data:{combined_data}")
                 site_watch_report[client_name]=combined_data
         
         
@@ -1912,18 +1932,18 @@ def prepare_xlmap(data,comment="The comment section"):
 
 if __name__=="__main__":
     # import pandas as pd
-    monday_date_str, sunday_date_str = get_week_dates()
-    print(monday_date_str,sunday_date_str)
-    monday_date_str="2024-06-03"
-    friday_date_str = "2024-06-07"
-    saturday_date_str = "2024-06-08"
-    sunday_date_str="2024-06-09"  #YMD
+    # monday_date_str, sunday_date_str = get_week_dates()
+    # print(monday_date_str,sunday_date_str)
+    monday_date_str="2024-06-10"
+    friday_date_str = "2024-06-14"
+    saturday_date_str = "2024-06-15"
+    sunday_date_str="2024-06-16"  #YMD
     
-    # report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    # print("\n"*6)
-    # print(report)
-    # with open("sitewatch_report.json","w") as f:
-    #     json.dump(report,f,indent=4)
+    report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    print("\n"*6)
+    print(report)
+    with open("sitewatch_report.json","w") as f:
+        json.dump(report,f,indent=4)
     # with open("SPKLUS-002.json",'r') as f:
     #     data = json.load(f)
         
@@ -1931,8 +1951,8 @@ if __name__=="__main__":
     
     # df.to_excel("sitewatch.xlsx")
     
-    with open("sitewatch_report_old.json",'r') as f:
-        data=json.load(f)
+    # with open("sitewatch_report_old.json",'r') as f:
+    #     data=json.load(f)
     # data = report
-    prepare_xlmap(data)
+    #prepare_xlmap(data)
     
