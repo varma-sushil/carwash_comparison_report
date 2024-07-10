@@ -1007,7 +1007,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             
         for row in worksheet.iter_rows():
             for cell in row:
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                row_index = cell.row
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000  and row_index not in [3,4,5,6,7,20,22]:
                     cell.number_format = '#,##0.00'
         #Doller sysmbol     
         for row in range(8,15):
@@ -1053,6 +1054,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 # Your existing code
 
 def get_week_dates_for_storage():
+    "will retun in '%m_%Y' ==> 07-2024"
     # Get the current date
     today = datetime.today()
     

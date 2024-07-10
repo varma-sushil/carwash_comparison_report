@@ -1010,7 +1010,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             
         for row in worksheet.iter_rows():
             for cell in row:
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                row_index = cell.row
+                if isinstance(cell.value, (int, float)) and cell.value >= 1000 and row_index not in [3,4,5,6,7,20,22]:
                     cell.number_format = '#,##0.00'
         #Doller sysmbol     
         for row in range(8,15):
@@ -1204,29 +1205,29 @@ if __name__=="__main__":
     storage_path = create_storage_directory(path)
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    monday_date_str="2024-06-24"
-    friday_date_str = "2024-06-28"
-    saturday_date_str = "2024-06-29"
-    sunday_date_str="2024-06-30"  #Y-M-D
+    monday_date_str="2024-06-10"
+    friday_date_str = "2024-06-14"
+    saturday_date_str = "2024-06-15"
+    sunday_date_str="2024-06-16"  #Y-M-D
     
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     ##testing dates 
-    monday_date_str =  "06/24/2024"
-    friday_date_str =  "06/28/2024"
-    saturday_date_str = "06/29/2024"
-    sunday_date_str  =  "06/30/2024"  #M/D/Y
+    monday_date_str =  "06/10/2024"
+    friday_date_str =  "06/14/2024"
+    saturday_date_str = "06/15/2024"
+    sunday_date_str  =  "06/16/2024"  #M/D/Y
     
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     ##for hamilton dates
-    monday_date_str = "2024-06-24"
-    friday_date_str = "2024-06-28"
-    saturday_date_str = "2024-06-29"
-    sunday_date_str  = "2024-06-30"
+    monday_date_str = "2024-06-10"
+    friday_date_str = "2024-06-14"
+    saturday_date_str = "2024-06-15"
+    sunday_date_str  = "2024-06-16"
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
