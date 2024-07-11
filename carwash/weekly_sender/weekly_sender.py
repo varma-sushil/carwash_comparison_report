@@ -1005,27 +1005,28 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             cell2.border=thick_border
             cell3.border=thick_border
             
-        for row in worksheet.iter_rows():
-            for cell in row:
-                row_index = cell.row
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000  and row_index not in [3,4,5,6,7,20,22]:
-                    cell.number_format = '#,##0.00'
-        #Doller sysmbol     
-        for row in range(8,15):
-            cell1 = worksheet.cell(row=row,column=2)
-            cell2 = worksheet.cell(row=row,column=3)
-            cell3 = worksheet.cell(row=row,column=4)
-            
-            cell1.border=thick_border
-            cell2.border=thick_border
-            cell3.border=thick_border
-            
-            cells=[cell1,cell2,cell3]
-            for cell in cells:
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
-                    cell.number_format = '"$"#,##0.00'     
+    for row in worksheet.iter_rows():
+        for cell in row:
+            row_index = cell.row
+            if isinstance(cell.value, (int, float)) and row_index in [17,18,19]:
+                cell.number_format = '#,##0.0'
+            elif isinstance(cell.value, (int, float)): #:
+                cell.number_format = '#,##0'
+    #Doller sysmbol     
+    for row in range(8,13):
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
         
+        cell1.border=thick_border
+        cell2.border=thick_border
+        cell3.border=thick_border
         
+        cells=[cell1,cell2,cell3]
+        for cell in cells:
+            if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                cell.number_format = '"$"#,##0'     
+    
 
 
     #applying bold font

@@ -1008,27 +1008,28 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             cell2.border=thick_border
             cell3.border=thick_border
             
-        for row in worksheet.iter_rows():
-            for cell in row:
-                row_index = cell.row
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000 and row_index not in [3,4,5,6,7,20,22]:
-                    cell.number_format = '#,##0.00'
-        #Doller sysmbol     
-        for row in range(8,15):
-            cell1 = worksheet.cell(row=row,column=2)
-            cell2 = worksheet.cell(row=row,column=3)
-            cell3 = worksheet.cell(row=row,column=4)
-            
-            cell1.border=thick_border
-            cell2.border=thick_border
-            cell3.border=thick_border
-            
-            cells=[cell1,cell2,cell3]
-            for cell in cells:
-                if isinstance(cell.value, (int, float)) and cell.value >= 1000:
-                    cell.number_format = '"$"#,##0.00'     
+    for row in worksheet.iter_rows():
+        for cell in row:
+            row_index = cell.row
+            if isinstance(cell.value, (int, float)) and row_index in [17,18,19]:
+                cell.number_format = '#,##0.0'
+            elif isinstance(cell.value, (int, float)): #:
+                cell.number_format = '#,##0'
+    #Doller sysmbol     
+    for row in range(8,13):
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
         
+        cell1.border=thick_border
+        cell2.border=thick_border
+        cell3.border=thick_border
         
+        cells=[cell1,cell2,cell3]
+        for cell in cells:
+            if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                cell.number_format = '"$"#,##0'     
+    
 
 
     #applying bold font
@@ -1048,6 +1049,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             cell.font = bold_font
     # Save the modified workbook
     workbook.save(filename)
+
 
 
 
@@ -1201,33 +1203,33 @@ if __name__=="__main__":
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="06-2024"
+    path="test"#"06-2024"
     storage_path = create_storage_directory(path)
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    monday_date_str="2024-06-10"
-    friday_date_str = "2024-06-14"
-    saturday_date_str = "2024-06-15"
-    sunday_date_str="2024-06-16"  #Y-M-D
+    monday_date_str="2024-07-01"
+    friday_date_str = "2024-07-05"
+    saturday_date_str = "2024-07-06"
+    sunday_date_str="2024-07-07"  #Y-M-D
     
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     ##testing dates 
-    monday_date_str =  "06/10/2024"
-    friday_date_str =  "06/14/2024"
-    saturday_date_str = "06/15/2024"
-    sunday_date_str  =  "06/16/2024"  #M/D/Y
+    monday_date_str =  "07/01/2024"
+    friday_date_str =  "07/05/2024"
+    saturday_date_str = "07/06/2024"
+    sunday_date_str  =  "07/07/2024"  #M/D/Y
     
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     ##for hamilton dates
-    monday_date_str = "2024-06-10"
-    friday_date_str = "2024-06-14"
-    saturday_date_str = "2024-06-15"
-    sunday_date_str  = "2024-06-16"
+    monday_date_str = "2024-07-01"
+    friday_date_str = "2024-07-05"
+    saturday_date_str = "2024-07-06"
+    sunday_date_str  = "2024-07-07"
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
