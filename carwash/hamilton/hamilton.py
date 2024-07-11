@@ -391,11 +391,11 @@ class hamiltonClient:
         except Exception as e:
             print(f"Exception in get_dail_report_v2() {e}")
         
-    def get_days_for_Total_membership(self):
+    def get_days_for_Total_membership(self,monday):
 
 
-        # Get the current date
-        current_date = datetime.now()
+        # Get the old date 
+        current_date = datetime.strptime(monday, "%Y-%m-%d")#.now()#
         
         # Get the date 30 days before the current date
         date_30_days_ago = current_date - timedelta(days=30)
@@ -410,7 +410,7 @@ class hamiltonClient:
         return current_date_str,date_30_days_ago_str
 
 
-    def get_total_plan_members(self):
+    def get_total_plan_members(self,monday):
         "will return total plan members by considering last 30days"
         total_plan_members = 0
         
@@ -434,7 +434,7 @@ class hamiltonClient:
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         }
 
-        endDate,startDate = self.get_days_for_Total_membership()
+        endDate,startDate = self.get_days_for_Total_membership(monday)
         json_data = {
             'startDate': startDate,
             'endDate': endDate,
@@ -565,7 +565,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     
     arm_plans_sold_cnt = sum([arm_plans_sold1,arm_plans_sold2])
     
-    total_arm_planmembers_cnt = client.get_total_plan_members()
+    total_arm_planmembers_cnt = client.get_total_plan_members(monday_date_str)
     
     final_data["total_revenue"] = sum([total_revenue,total_revenue2])
     final_data["arm_plans_sold_cnt"] = arm_plans_sold_cnt
