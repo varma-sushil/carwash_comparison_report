@@ -1073,7 +1073,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     site_watch_report[client_name]=combined_data
                     if combined_data:
                         is_location_code_success=True
-                    success_location_code = locationCode,slno
+                        success_location_code = locationCode,slno
                     if is_location_code_success:
                         break #break loop
                 
