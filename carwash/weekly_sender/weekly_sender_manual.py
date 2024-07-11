@@ -1013,6 +1013,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             row_index = cell.row
             if isinstance(cell.value, (int, float)) and row_index in [17,18,19]:
                 cell.number_format = '#,##0.0'
+            elif isinstance(cell.value, (int, float)) and row_index in [13,14,21]:
+                cell.number_format = '#,##0.00'
             elif isinstance(cell.value, (int, float)): #:
                 cell.number_format = '#,##0'
     #Doller sysmbol     
@@ -1049,7 +1051,6 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             cell.font = bold_font
     # Save the modified workbook
     workbook.save(filename)
-
 
 
 
