@@ -398,14 +398,14 @@ class hamiltonClient:
         current_date = datetime.strptime(monday, "%Y-%m-%d")#.now()#
         
         # Get the date 30 days before the current date
-        date_30_days_ago = current_date - timedelta(days=30)
+        date_30_days_ago = current_date - timedelta(days=29)
         
         # Format both dates to the desired format
         current_date_str = current_date.strftime('%Y-%m-%d')
         date_30_days_ago_str = date_30_days_ago.strftime('%Y-%m-%d')
         
-        # print(f"Current Date: {current_date_str}")
-        # print(f"Date 30 Days Ago: {date_30_days_ago_str}")
+        print(f"Current Date: {current_date_str}")
+        print(f"Date 29 Days Ago: {date_30_days_ago_str}")
         
         return current_date_str,date_30_days_ago_str
 
@@ -565,7 +565,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     
     arm_plans_sold_cnt = sum([arm_plans_sold1,arm_plans_sold2])
     
-    total_arm_planmembers_cnt = client.get_total_plan_members(monday_date_str)
+    total_arm_planmembers_cnt = client.get_total_plan_members(sunday_date_str)
     
     final_data["total_revenue"] = sum([total_revenue,total_revenue2])
     final_data["arm_plans_sold_cnt"] = arm_plans_sold_cnt
@@ -616,5 +616,5 @@ if __name__ == "__main__":
     
     # print(hamilton_report)
     
-    print(client.get_total_plan_members())
+    print(client.get_total_plan_members("2024-07-07"))
 

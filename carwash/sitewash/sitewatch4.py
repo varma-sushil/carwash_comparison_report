@@ -3,7 +3,7 @@ import time
 import requests
 import pickle
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 import json
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -408,6 +408,99 @@ class sitewatchClient():
     
         return laborHours
 
+    def get_plan_analysis_request_id(self,date,reportOn,timeout=60):
+        request_id = None
+        try:
+            headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            #'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjIuMjAwIiwic3R6IjoiLTA1OjAwOjAwIiwianRpIjoiOTMyNWZmNmQtZWQwNi00NzViLTg1YzctYTUzY2U3NWM5ZjJmIiwiZW1wIjoyMiwiZWlkIjozMDk1MDAwMDEsImxvYyI6IlNEWldJTC0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMDg1NjYyNX0.SgZbMMmFxr95LP5FqQgOfQ4ktbq6xfQFNEQveK8pAEE',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            # 'Cookie': '_ga=GA1.2.938265008.1718553024; _gid=GA1.2.170212385.1720769994; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjIuMjAwIiwic3R6IjoiLTA1OjAwOjAwIiwianRpIjoiOTMyNWZmNmQtZWQwNi00NzViLTg1YzctYTUzY2U3NWM5ZjJmIiwiZW1wIjoyMiwiZWlkIjozMDk1MDAwMDEsImxvYyI6IlNEWldJTC0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMDg1NjYyNX0.SgZbMMmFxr95LP5FqQgOfQ4ktbq6xfQFNEQveK8pAEE',
+            'DNT': '1',
+            'Pragma': 'no-cache',
+            'Referer': 'https://sitewatch.cloud/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            }
+            session  = requests.Session()
+            
+            with open(self.cookies_file,'rb') as f:
+                cookies = pickle.load(f)
+
+            session.cookies = cookies
+            session.headers = headers  
+            now = datetime.now(timezone.utc)
+            formatted_time = now.strftime("T%H:%M:%S.%f")[:-3] + 'Z'
+            date_time = f"{date}{formatted_time}"  #2024-07-07T07:53:04.769Z
+            url = f'https://sitewatch.cloud/api/pass-report/analysis?cb={self.cb_value}&allowCallback=1&date={date_time}&heartbeatID={self.heartbeatID}&level=summary&paperSize=letter&period=month&reportOn={reportOn}'
+            response = session.get(url,timeout=timeout)
+            print(f"response : {response}",response.json())
+            if response.status_code==200:
+                request_id = response.json().get("requestID")
+        
+        except Exception as e:
+            print(f"exception in get_analysis_request_id() {e}")
+            
+        return request_id
+        
+    def get_total_plan_members(self,requestID,reportOn,timeout=60):
+        total_members = None
+        
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            #'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjIuMjAwIiwic3R6IjoiLTA1OjAwOjAwIiwianRpIjoiOTMyNWZmNmQtZWQwNi00NzViLTg1YzctYTUzY2U3NWM5ZjJmIiwiZW1wIjoyMiwiZWlkIjozMDk1MDAwMDEsImxvYyI6IlNEWldJTC0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMDg1NjYyNX0.SgZbMMmFxr95LP5FqQgOfQ4ktbq6xfQFNEQveK8pAEE',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            # 'Cookie': '_ga=GA1.2.938265008.1718553024; _gid=GA1.2.170212385.1720769994; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOiIyNy4zLjIuMjAwIiwic3R6IjoiLTA1OjAwOjAwIiwianRpIjoiOTMyNWZmNmQtZWQwNi00NzViLTg1YzctYTUzY2U3NWM5ZjJmIiwiZW1wIjoyMiwiZWlkIjozMDk1MDAwMDEsImxvYyI6IlNEWldJTC0wMDIiLCJhc3Npc3RlZCI6ZmFsc2UsImV4cCI6MTcyMDg1NjYyNX0.SgZbMMmFxr95LP5FqQgOfQ4ktbq6xfQFNEQveK8pAEE',
+            'DNT': '1',
+            'Pragma': 'no-cache',
+            'Referer': 'https://sitewatch.cloud/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }  
+        session  = requests.Session()
+            
+        with open(self.cookies_file,'rb') as f:
+            cookies = pickle.load(f)
+
+        session.cookies = cookies
+        session.headers = headers  
+        
+        try:
+            params = {
+            'cb': self.cb_value,
+            'heartbeatID': self.heartbeatID,
+            'reportOn': reportOn,
+            'requestID': requestID,
+            }
+            
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params)
+            print("resp  in total memebers :",response.status_code)
+            if response.status_code==200:
+               
+                statistics = response.json().get("statistics")
+                month  = statistics.get("month")
+                total_members = month.get("endingMembers")
+                
+        except Exception as e :
+            print("Exception in get_total_plan_members() {e}")
+        
+        return total_members
+        
+
 if __name__=="__main__":
     # print("HeartBeatID :",generate_heartbeatID())
     # print("cb_value :",generate_cb_value())
@@ -438,10 +531,15 @@ if __name__=="__main__":
     # report_data = client.get_report(reportOn,req_id)
     
     # print(report_data)
-    print('Testing data ')
-    req_id2 = client.get_activity_by_date_proft_request_id(reportOn,'2024-06-03','2024-06-09')
-    print(req_id2)
-    print(client.get_labour_hours(reportOn,req_id2))
+    # print('Testing data ')
+    # req_id2 = client.get_activity_by_date_proft_request_id(reportOn,'2024-06-03','2024-06-09')
+    # print(req_id2)
+    # print(client.get_labour_hours(reportOn,req_id2))
+    
+    date= "2024-07-07"
+    req_id = client.get_plan_analysis_request_id(date,reportOn)
+    print("reqid:",req_id)
+    print(client.get_total_plan_members(req_id,reportOn))
     
 
         

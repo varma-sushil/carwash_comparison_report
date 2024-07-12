@@ -1057,14 +1057,18 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data.update(sat_sun_data)
                         
                         arm_plans_sold_total_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2])
-                        total_arm_planmembers_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2,
-                                                                        arm_plans_reedemed_monday_to_friday_cnt,
-                                                                        arm_plans_reedemed_saturday_sunday_cnt])
+                        # total_arm_planmembers_cnt = sum([arm_plans_sold_cnt1,arm_plans_sold_cnt2,
+                        #                                                 arm_plans_reedemed_monday_to_friday_cnt,
+                        #                                                 arm_plans_reedemed_saturday_sunday_cnt])
                         
                         total_retail_car_cnt = sum([retail_car_count_monday_to_friday,retail_car_count_saturday_sunday])
                         conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2) if total_retail_car_cnt !=0 else ""
                         #combines values update 
                         #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
+                        total_members_req_id = client.get_plan_analysis_request_id(sunday_date_str,reportOn)
+                        
+                        total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
+                        
                         combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
                         combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
                         combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
