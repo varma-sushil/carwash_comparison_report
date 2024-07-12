@@ -16,10 +16,10 @@ def get_week_dates():
     current_week_sunday = current_week_monday + timedelta(days=6)
     
     # Format the dates in mm/dd/yyyy format
-    monday_date_str = current_week_monday.strftime("%m/%d/%Y")
-    friday_date_str = current_week_friday.strftime("%m/%d/%Y")
-    saturday_date_str = current_week_saturday.strftime("%m/%d/%Y")
-    sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
+    monday_date_str = current_week_monday.strftime("%Y-%m-%d")
+    friday_date_str = current_week_friday.strftime("%Y-%m-%d")
+    saturday_date_str = current_week_saturday.strftime("%Y-%m-%d")
+    sunday_date_str = current_week_sunday.strftime("%Y-%m-%d")
     
     return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
 
