@@ -438,7 +438,7 @@ class sitewatchClient():
             session.headers = headers  
             now = datetime.now(timezone.utc)
             formatted_time = now.strftime("T%H:%M:%S.%f")[:-3] + 'Z'
-            date_time = f"{date}{formatted_time}"  #2024-07-07T07:53:04.769Z
+            date_time = f"{date}T22:00:00.000Z"  #2024-07-07T07:53:04.769Z
             url = f'https://sitewatch.cloud/api/pass-report/analysis?cb={self.cb_value}&allowCallback=1&date={date_time}&heartbeatID={self.heartbeatID}&level=summary&paperSize=letter&period=month&reportOn={reportOn}'
             response = session.get(url,timeout=timeout)
             print(f"response : {response}",response.json())
