@@ -398,14 +398,14 @@ class hamiltonClient:
         current_date = datetime.strptime(monday, "%Y-%m-%d")#.now()#
         
         # Get the date 30 days before the current date
-        date_30_days_ago = current_date - timedelta(days=29)
+        date_30_days_ago = current_date - timedelta(days=30)
         
         # Format both dates to the desired format
         current_date_str = current_date.strftime('%Y-%m-%d')
         date_30_days_ago_str = date_30_days_ago.strftime('%Y-%m-%d')
         
         print(f"Current Date: {current_date_str}")
-        print(f"Date 29 Days Ago: {date_30_days_ago_str}")
+        print(f"Date 30 Days Ago: {date_30_days_ago_str}")
         
         return current_date_str,date_30_days_ago_str
 
