@@ -1057,7 +1057,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 # Your existing code
 
 def get_week_dates_for_storage():
-    "will retun in '%m_%Y' ==> 07-2024"
+    "will retun in '%Y' ==> 2024"
     # Get the current date
     today = datetime.today()
     
@@ -1069,7 +1069,7 @@ def get_week_dates_for_storage():
     
     # Format the dates in dd/mm/yyyy format
     #monday_date_str = current_week_monday.strftime("%m/%d/%Y")
-    sunday_date_str = current_week_sunday.strftime("%m_%Y")
+    sunday_date_str = current_week_sunday.strftime("%Y") #%m_%Y
     
     #old ret f"{monday_date_str}-{sunday_date_str}".replace('/','_')
     return sunday_date_str

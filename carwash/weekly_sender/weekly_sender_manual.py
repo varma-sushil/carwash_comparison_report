@@ -1060,7 +1060,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 # Your existing code
 
 def get_week_dates_for_storage():
-    "will retun in '%m_%Y' ==> 07-2024"
+    "will retun in '%Y' ==> 2024"
     # Get the current date
     today = datetime.today()
     
@@ -1072,7 +1072,7 @@ def get_week_dates_for_storage():
     
     # Format the dates in dd/mm/yyyy format
     #monday_date_str = current_week_monday.strftime("%m/%d/%Y")
-    sunday_date_str = current_week_sunday.strftime("%m_%Y")
+    sunday_date_str = current_week_sunday.strftime("%Y") #%m_%Y
     
     #old ret f"{monday_date_str}-{sunday_date_str}".replace('/','_')
     return sunday_date_str
@@ -1204,7 +1204,7 @@ if __name__=="__main__":
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="test"#"06-2024"
+    path="07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1255,7 +1255,7 @@ if __name__=="__main__":
     body = f'weekly report Ending {sunday_date_str}'
     #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)#
     
-    # prepare_xlmap(data,comment,sheet_name=sheet_name)
+    #prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
     
 
