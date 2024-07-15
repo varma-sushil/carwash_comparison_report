@@ -40,7 +40,23 @@ def get_week_dates():
     
     return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
 
+def generate_past_4_weeks_days(date_str):
+    # Convert the string date to a datetime object
+    date_format = "%m/%d/%Y"
+    monday = datetime.strptime(date_str, date_format)
+    
+    # Subtract one day
+    one_day_before = monday - timedelta(days=1)
+    four_weeks_before = monday - timedelta(days=(7*4) + 1)
 
+    # Format the dates in "dd/mm/yyyy" format
+    formatted_date = one_day_before.strftime("%m/%d/%Y")
+    four_weeks_before_fmt = four_weeks_before.strftime("%m/%d/%Y")
+
+    print("One day before the current date:", formatted_date)
+    print("4 weeks before day :", four_weeks_before_fmt)
+
+    return four_weeks_before_fmt, formatted_date
 def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
     try:
         # Try to load an existing workbook
