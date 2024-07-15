@@ -338,6 +338,21 @@ def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
         
     return xl_map
 
+def set_colour(val,row,col,worksheet,colours):
+    darkgreen_format,light_green_format,darkred_format,lightred_format =colours
+    cell=worksheet.cell(row,col)
+    if val>=20:
+       cell.fill = darkgreen_format
+    
+    elif val >=10:
+        cell.fill = light_green_format
+        
+        
+    elif val>=-10:
+        cell.fill = darkred_format
+    elif val>=-20:
+       cell.fill = lightred_format
+
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
     # Load the existing workbook using openpyxl
     try:
@@ -410,7 +425,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         xl_map[index+2][0]=index_names[index]
     
     Fuller_Cicero = data.get("Fuller-Cicero")  
-    
+
     if Fuller_Cicero:
         Fuller_Cicero_index=6
         update_place_to_xlmap(xl_map,Fuller_Cicero_index,Fuller_Cicero)
@@ -897,7 +912,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             val = xl_map[row][col]
             cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
             
-            val = add_commas(val)
+            #val = add_commas(val)
             
             if row == 1 and col != 0:
                 cell.fill = bg_color
@@ -992,15 +1007,18 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     #         cell.border = thin_border
 
     for row in range(3,23):
+        cell0 = worksheet.cell(row=row,column=1)
         cell1 = worksheet.cell(row=row,column=2)
         cell2 = worksheet.cell(row=row,column=3)
         cell3 = worksheet.cell(row=row,column=4)
         
-        if row==22:
+        if row in [7,12,13,19,21,22]:
+            cell0.border=thick_border_bottom
             cell1.border=thick_border_bottom
             cell2.border=thick_border_bottom
             cell3.border=thick_border_bottom
         else:
+            cell0.border=thick_border
             cell1.border=thick_border
             cell2.border=thick_border
             cell3.border=thick_border
@@ -1020,30 +1038,69 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         cell2 = worksheet.cell(row=row,column=3)
         cell3 = worksheet.cell(row=row,column=4)
         
-        cell1.border=thick_border
-        cell2.border=thick_border
-        cell3.border=thick_border
+        # cell1.border=thick_border
+        # cell2.border=thick_border
+        # cell3.border=thick_border
         
         cells=[cell1,cell2,cell3]
         for cell in cells:
             if isinstance(cell.value, (int, float)) and cell.value >= 1000:
                 cell.number_format = '"$"#,##0'     
     
-
+    #finding past week averages for Total car count
+    all_locations = [Sudz_Beverly,Fuller_Calumet,
+                    Fuller_Cicero,Fuller_Matteson,
+                    Fuller_Elgin,Splash_Peoria,Getaway_Macomb,Getaway_Morton,
+                    Getaway_Ottawa,Getaway_Peru,Sparkle_Belair,
+                    Sparkle_Evans,Sparkle_Furrys_Ferry,Sparkle_Greenwood,
+                    Sparkle_Grovetown_1,Sparkle_Grovetown_2,Sparkle_North_Augusta,
+                    Sparkle_Peach_Orchard,Sparkle_Windsor_Spring]
+    
+    
+    lst_main = ["Totals","ILL",
+                "GA / SC"]
+    ga_sc = all_locations[10:]
+    ill = all_locations[0:10]
+    ill_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ill if loc_data]
+    ill_sum_past = sum(ill_past_4_weeks_car_cnt)/4
+    current_ill_week_cnt = xl_map[6][2]
+    ill_average_percent = ((current_ill_week_cnt - ill_sum_past)/ ill_sum_past)*100
+    
+    ga_sc_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ga_sc if loc_data]
+    ga_sc_sum_past = sum(ga_sc_past_4_weeks_car_cnt)/4
+    current_ga_sc_week_cnt = xl_map[6][3]
+    ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100
+    
+    totals_past = ill_sum_past +ga_sc_sum_past
+    totals_current = xl_map[6][1]
+    total_average_percent = ((totals_current-totals_past)/totals_past)*100
+    
+    colours = darkgreen_format,light_green_format,darkred_format,lightred_format
+    print(f"ill avg : {ill_average_percent}")
+    print(f"ga_sc average :{ga_sc_average_percent}")
+    print(f"total_average : {total_average_percent}")
+    set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
+    set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
+    set_colour(total_average_percent,7,2,worksheet,colours) #for total total
+    
 
     #applying bold font
     # Define a bold font style
     bold_font = Font(bold=True)
+    
+    for row in worksheet.iter_rows(min_row=7, max_row=7, min_col=1, max_col=4):
+        for cell in row:
+            cell.font = bold_font
 
-    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=2, max_col=4):
+    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
             
-    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=2, max_col=4):
+    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
             
-    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=2, max_col=4):
+    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
     # Save the modified workbook
