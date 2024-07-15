@@ -11,6 +11,7 @@ from openpyxl.styles import Font
 import xlsxwriter
 
 from sitewatch4 import sitewatchClient
+from sitewatch4 import generate_past_4_weeks_days
 import random
 
 import sys
@@ -1032,7 +1033,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         
                         total_revenue_val2 = round(extracted_data2.get("total_revenue",0.0),2)
                         
-                        print(f"retail rev : total rev {total_revenue_val2}-{arm_plans_recharged_amt_saturday_sunday_amt} ={total_revenue_val2-arm_plans_recharged_amt_saturday_sunday_amt}")
+                        #print(f"retail rev : total rev {total_revenue_val2}-{arm_plans_recharged_amt_saturday_sunday_amt} ={total_revenue_val2-arm_plans_recharged_amt_saturday_sunday_amt}")
                         
                         if client_name=="Sudz - Beverly":
                             retail_revenue__saturday_sunday = round((total_revenue_val2 - arm_plans_recharged_amt_saturday_sunday_amt),2)
@@ -1069,10 +1070,19 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         
                         total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
                         
+                        past_week_day1, past_week_day2= generate_past_4_weeks_days(monday_date_str)
+                        
+                        request_id3 = client.get_general_sales_report_request_id(reportOn,id,idname,past_week_day1, past_week_day2)
+                        report_data3 = client.get_report(reportOn,request_id3)
+                        extracted_data3= report_data_extractor(report_data3)
+                        past_4_week_cnt = extracted_data3.get("car_count",0)
+                        print(f"past week cnt : {past_4_week_cnt}")
+                        
                         combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
                         combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
                         combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                         combined_data["conversion_rate"]= conversion_rate
+                        combined_data["past_4_week_cnt"]=past_4_week_cnt
                     print(f"combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:

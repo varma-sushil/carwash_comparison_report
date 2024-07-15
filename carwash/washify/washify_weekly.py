@@ -7,6 +7,7 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
 
+from washify import generate_past_4_weeks_days
 
 
 # Add the path to the parent directory of "washify" to sys.path
@@ -223,11 +224,16 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 total_arm_planmembers_cnt = client.get_club_plan_members(location_code)
                 
+                past_4_week_day1,past_4_week_day2 = generate_past_4_weeks_days(monday_date_str)
+                past_4_week_cnt = client.get_car_count_report([location_code],past_4_week_day1,past_4_week_day2)
+                past_4_week_cnt = past_4_week_cnt.get("car_count")
+                print(f"past week cnt :{past_4_week_cnt}")
                 arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])
                 single_site_report["total_revenue"] = sum([total_revenue_monday_fri,total_revenue_sat_sun])
                 single_site_report["arm_plans_sold_cnt"] = arm_plans_sold
                 single_site_report["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                 single_site_report["conversion_rate"] = conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday)
+                single_site_report["past_4_week_cnt"] = past_4_week_cnt
                
                 if "1631" in location_name: # 1631 E Jackson St
                     final_report["Getaway-Macomb"] = single_site_report
@@ -247,9 +253,14 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
     return final_report
 
 if __name__=="__main__":
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
+        #testing dates 
+    monday_date_str =  "06/03/2024"
+    friday_date_str =  "06/07/2024"
+    saturday_date_str = "06/08/2024"
+    sunday_date_str  =  "06/09/2024"  #M/D/Y
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # print(data)
     

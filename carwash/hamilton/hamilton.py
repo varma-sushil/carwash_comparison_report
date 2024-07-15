@@ -7,6 +7,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime, timedelta
+from hamilton_weekly import generate_past_4_weeks_days
 
 import csv
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -567,6 +568,41 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     
     total_arm_planmembers_cnt = client.get_total_plan_members(sunday_date_str)
     
+    
+    #past 4 weeks data 
+    past_4_week_day1,past_4_week_day2 = generate_past_4_weeks_days(monday_date_str)
+    items = client.get_dail_report_v2(past_4_week_day1,past_4_week_day2)
+    
+    wash_purchases_total_cnt3 = 0
+    reedeemd_total_cnt3 = 0
+    retail_revenue3=0.0
+    total_revenue3 = 0.0
+    arm_plans_sold3 = 0
+    
+    for item in items :
+        itemtyp = item.get("ItemType")
+        discount = item.get("Discount")
+        flag= item.get("Flag")
+        price = item.get("Price")
+        
+        if flag:
+            reedeemd_total_cnt3+=1
+        
+        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+            wash_purchases_total_cnt3+=1
+            retail_revenue3+=price
+        
+        if not (flag or   discount): 
+            total_revenue3+=price
+            
+        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+            arm_plans_sold3+=1
+        
+    past_4_week_cnt = sum([wash_purchases_total_cnt3,reedeemd_total_cnt3])
+    final_data["past_4_week_cnt"] = past_4_week_cnt
+    
+    print(f"past week cnt : {past_4_week_cnt}")
+    
     final_data["total_revenue"] = sum([total_revenue,total_revenue2])
     final_data["arm_plans_sold_cnt"] = arm_plans_sold_cnt
     final_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
@@ -574,6 +610,8 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     # final_data[""]
     place_format = {}
     place_format["Splash-Peoria"] = final_data
+    
+    print(place_format)
     
     return  place_format
   
@@ -612,7 +650,7 @@ if __name__ == "__main__":
     # with open("hamiltin_data.json","w") as f:
     #     json.dump(dail_report_v2,f,indent=4)
     
-    # hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # print(hamilton_report)
     
