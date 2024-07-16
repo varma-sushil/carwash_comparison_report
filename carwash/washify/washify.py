@@ -8,6 +8,7 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -15,6 +16,49 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 file_path="washift.xlsx"
+
+load_dotenv()
+
+class Config:
+    # get environment variables as a dictionary
+    env_vars           = os.environ
+    PROXY_USER_NAME    = env_vars.get('PROXY_USER_NAME')
+    PROXY_PASSWORD     = env_vars.get('PROXY_PASSWORD')
+    PROXY_HOST         = env_vars.get('PROXY_HOST')
+    PROXY_PORT         = env_vars.get('PROXY_PORT')
+    PROXY_ZONE         = env_vars.get("PROXY_ZONE")
+    IS_PROXY           =env_vars.get("IS_PROXY")
+
+
+
+# Bright Data proxy credentials
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+
+# # Proxy URL format for datacenter proxy
+proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+IS_PROXY = Config.IS_PROXY
+# # Proxy URL format for datacenter proxy
+proxies =None
+# print(IS_PROXY)
+if IS_PROXY:
+    proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+    proxies={"http":proxy_url,"http":proxy_url}
 
 def get_week_dates():
     # Get the current date
@@ -112,7 +156,7 @@ proxy = {
 
 class washifyClient():
     def __init__(self,) -> None:
-        pass
+        self.proxies = proxies
 
     def login(self,username,password,companyName,userType,proxy)->bool:
         """login fucntion
@@ -154,7 +198,7 @@ class washifyClient():
             }
         
         try:
-            response = requests.post('https://washifyapi.com:8298/api/AccountLogin/ValidateUserCredentials', headers=headers, json=json_data,proxies=proxy)
+            response = requests.post('https://washifyapi.com:8298/api/AccountLogin/ValidateUserCredentials', headers=headers, json=json_data,proxies=self.proxies)
             if response.status_code==200:
                 data = response.json()
                 print(len(data['data']))
@@ -258,7 +302,7 @@ class washifyClient():
             'CommonCompanySettings': self.get_common_data(),
         }
         try:
-            response = requests.post('https://washifyapi.com:8298/api/UserRoles/GetRoleId', headers=headers, json=json_data,proxies=proxy)
+            response = requests.post('https://washifyapi.com:8298/api/UserRoles/GetRoleId', headers=headers, json=json_data,proxies=self.proxies)
             if response.status_code==200:
                 msg = response.json().get("message")
                 login_passed =True if msg=="Success" else False
@@ -294,7 +338,7 @@ class washifyClient():
             'CommonCompanySettings': self.get_common_data(),
         }
         try:
-            response = requests.post('https://washifyapi.com:8298/api/CommonMethod/getUserLocations', headers=headers, json=json_data)
+            response = requests.post('https://washifyapi.com:8298/api/CommonMethod/getUserLocations', headers=headers, json=json_data,proxies=self.proxies)
             if response.status_code==200:
                 data = response.json().get("data")
                 data = { location.get("locationName").split("-")[-1].strip() :location.get("locationID") for location in data if location.get("locationID")!=0}
@@ -389,6 +433,7 @@ class washifyClient():
             'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
             headers=headers,
             json=json_data,
+            proxies=self.proxies
         )
             if response.status_code==200:
                 data = response.json()
@@ -435,6 +480,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashPackage',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json()
@@ -542,6 +588,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialWashDiscounts',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
 
             if response.status_code==200:
@@ -732,6 +779,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialPackagesDiscount',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json()
@@ -828,6 +876,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialUnlimitedSales',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json().get("data")
@@ -928,6 +977,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialGiftcardsale',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             
             if response.status_code==200:
@@ -1072,6 +1122,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             
             if response.status_code==200:
@@ -1163,6 +1214,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialPaymentNew',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json()
@@ -1268,6 +1320,7 @@ class washifyClient():
                 'https://washifyapi.com:8298/api/Dashboard/DashBoardDailyStatisticList',
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json().get("data")

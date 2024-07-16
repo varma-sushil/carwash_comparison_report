@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime, timedelta
 from hamilton_weekly import generate_past_4_weeks_days
+from dotenv import load_dotenv
+
 
 import csv
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -17,10 +19,55 @@ cookie_file_path = os.path.join(cookies_path, "cookie.json")
 
 data2 = os.path.join(current_file_path, "data2.json")
 
+#proxy support
+
+dotenv_path="/home/ubuntu/CAR_WASH_2/carwash_weekly/.env"
+load_dotenv()
+
+class Config:
+    # get environment variables as a dictionary
+    env_vars           = os.environ
+    PROXY_USER_NAME    = env_vars.get('PROXY_USER_NAME')
+    PROXY_PASSWORD     = env_vars.get('PROXY_PASSWORD')
+    PROXY_HOST         = env_vars.get('PROXY_HOST')
+    PROXY_PORT         = env_vars.get('PROXY_PORT')
+    PROXY_ZONE         = env_vars.get("PROXY_ZONE")
+    IS_PROXY           =env_vars.get("IS_PROXY")
+
+
+
+# Bright Data proxy credentials
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+
+# # Proxy URL format for datacenter proxy
+proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+IS_PROXY = Config.IS_PROXY
+# # Proxy URL format for datacenter proxy
+proxies =None
+# print(IS_PROXY)
+if IS_PROXY:
+    proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+    proxies={"http":proxy_url,"https":proxy_url}
 
 class hamiltonClient:
     def __init__(self) -> None:
-        pass
+        self.proxies = proxies
 
     def login(self, login_data: dict, proxy) -> bool:
         session = requests.Session()
@@ -28,7 +75,7 @@ class hamiltonClient:
             response = session.post(
                 "https://hamiltonservices.com/web/",
                 data=login_data,
-                proxies={"http": proxy},
+                proxies=self.proxies,
             )
             if response.status_code == 200:
                 with open(cookie_file_path, "wb") as f:
@@ -74,6 +121,7 @@ class hamiltonClient:
             cookies=self.get_ccokies(),
             headers=headers,
             json=data,
+            proxies=self.proxies
         )
 
         data = {
@@ -107,6 +155,7 @@ class hamiltonClient:
             cookies=self.get_ccokies(),
             headers=headers,
             data=data,
+            proxies=self.proxies
         )
 
         _return = self.extract(response.text)
@@ -125,6 +174,7 @@ class hamiltonClient:
             cookies=self.get_ccokies(),
             headers=headers,
             data=data,
+            proxies=self.proxies
         )
 
         _return.update(self.extract2(response.text))
@@ -382,6 +432,7 @@ class hamiltonClient:
             cookies=cookies,
             headers=headers,
             json=json_data,
+            proxies=self.proxies
         )
             if response.status_code==200:
                 data= response.json().get("Data")
@@ -447,6 +498,7 @@ class hamiltonClient:
                 cookies=cookies,
                 headers=headers,
                 json=json_data,
+                proxies=self.proxies
             )
             if response.status_code==200:
                 

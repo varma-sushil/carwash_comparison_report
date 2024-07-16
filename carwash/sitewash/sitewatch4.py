@@ -5,13 +5,61 @@ import pickle
 import os
 from datetime import datetime, timedelta,timezone
 import json
+from dotenv import load_dotenv
 
+dotenv_path="/home/ubuntu/CAR_WASH_2/carwash_weekly/.env"
+load_dotenv()
+
+class Config:
+    # get environment variables as a dictionary
+    env_vars           = os.environ
+    PROXY_USER_NAME    = env_vars.get('PROXY_USER_NAME')
+    PROXY_PASSWORD     = env_vars.get('PROXY_PASSWORD')
+    PROXY_HOST         = env_vars.get('PROXY_HOST')
+    PROXY_PORT         = env_vars.get('PROXY_PORT')
+    PROXY_ZONE         = env_vars.get("PROXY_ZONE")
+    IS_PROXY           =env_vars.get("IS_PROXY")
+
+
+
+# Bright Data proxy credentials
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+
+# # Proxy URL format for datacenter proxy
+proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+
+username = Config.PROXY_USER_NAME
+password = Config.PROXY_PASSWORD
+zone = Config.PROXY_ZONE
+
+# # Proxy configuration
+# # proxy_host = 'zproxy.lum-superproxy.io'
+proxy_host = Config.PROXY_HOST
+proxy_port = Config.PROXY_PORT
+IS_PROXY = Config.IS_PROXY
+# # Proxy URL format for datacenter proxy
+proxies =None
+# print(IS_PROXY)
+if IS_PROXY:
+    proxy_url = f'http://{username}-zone-{zone}:{password}@{proxy_host}:{proxy_port}'
+    proxies={"http":proxy_url,"https":proxy_url}
+
+print(f"proxies in sitewatch:{proxies}")
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
 
 cookies_path = os.path.join(current_file_path,"cookies")
 
 cookies_file = os.path.join(cookies_path,"sitewatch_cookies.pkl")
+
+
 
 def get_week_dates():
     # Get the current date
@@ -64,6 +112,7 @@ class sitewatchClient():
         self.heartbeatID =generate_heartbeatID()
         self.cb_value  = generate_cb_value()
         self.cookies_file = cookies_file
+        self.proxies= proxies
 
     def login(self,employeeCode,password,locationCode,remember=0,timeout=60):
         """used for loginto the site and return jwt token for further processing
@@ -104,7 +153,7 @@ class sitewatchClient():
         }
 
         try:
-            response = session.post('https://sitewatch.cloud/api/auth/authenticate', headers=headers, data=data,timeout=timeout)
+            response = session.post('https://sitewatch.cloud/api/auth/authenticate', headers=headers, data=data,timeout=timeout,proxies=self.proxies)
             print("Login response:",response)
             if response.status_code==200:
                 token = response.json().get("token")
@@ -164,7 +213,7 @@ class sitewatchClient():
         }
         authenticated=False
         try:
-            response = session.get('https://sitewatch.cloud/api/auth/session',params=params,timeout=timeout)
+            response = session.get('https://sitewatch.cloud/api/auth/session',params=params,timeout=timeout,proxies=self.proxies)
             # print(response.json())
             if response.status_code==200:
                 authenticated = response.json().get("authenticated")
@@ -261,7 +310,7 @@ class sitewatchClient():
             'https://sitewatch.cloud/api/gsreport/gsreport',
                 params=params,
                 json=json_data,
-                timeout=timeout
+                timeout=timeout,proxies=self.proxies
             )
             if response.status_code==200:
                 data = response.json().get("requestID")
@@ -314,7 +363,7 @@ class sitewatchClient():
         session.cookies =cookies
         session.headers = headers
         try:
-            response = session.get('https://sitewatch.cloud/api/request/results', params=params,timeout=timeout)
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params,timeout=timeout,proxies=self.proxies)
             if response.status_code==200:
                 data = response.json()
             print("response:",response)
@@ -370,7 +419,7 @@ class sitewatchClient():
             response = session.get(
             'https://sitewatch.cloud/api/activity-by-date-profit-center',
             params=params,
-            headers=headers,timeout=timeout
+            headers=headers,timeout=timeout,proxies=self.proxies
         )
             if response.status_code==200:
                 requestID = response.json().get("requestID")
@@ -416,7 +465,7 @@ class sitewatchClient():
         }
 
         try:
-            response = session.get('https://sitewatch.cloud/api/request/results', params=params, headers=headers)
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params, headers=headers,proxies=self.proxies)
             if response.status_code==200:
                 data = response.json()
                 profitCenterData = data.get("profitCenterData")[0]
@@ -459,7 +508,7 @@ class sitewatchClient():
             formatted_time = now.strftime("T%H:%M:%S.%f")[:-3] + 'Z'
             date_time = f"{date}T22:00:00.000Z"  #2024-07-07T07:53:04.769Z
             url = f'https://sitewatch.cloud/api/pass-report/analysis?cb={self.cb_value}&allowCallback=1&date={date_time}&heartbeatID={self.heartbeatID}&level=summary&paperSize=letter&period=month&reportOn={reportOn}'
-            response = session.get(url,timeout=timeout)
+            response = session.get(url,timeout=timeout,proxies=self.proxies)
             print(f"response : {response}",response.json())
             if response.status_code==200:
                 request_id = response.json().get("requestID")
@@ -506,7 +555,7 @@ class sitewatchClient():
             'requestID': requestID,
             }
             
-            response = session.get('https://sitewatch.cloud/api/request/results', params=params)
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
             print("resp  in total memebers :",response.status_code)
             if response.status_code==200:
                
@@ -515,7 +564,7 @@ class sitewatchClient():
                 total_members = month.get("endingMembers")
                 
         except Exception as e :
-            print("Exception in get_total_plan_members() {e}")
+            print(f"Exception in get_total_plan_members() {e}")
         
         return total_members
         
