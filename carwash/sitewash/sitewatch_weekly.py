@@ -1070,19 +1070,30 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         
                         total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
                         
+                        #Past 4 weeks logic 
                         past_week_day1, past_week_day2= generate_past_4_weeks_days(monday_date_str)
                         
                         request_id3 = client.get_general_sales_report_request_id(reportOn,id,idname,past_week_day1, past_week_day2)
                         report_data3 = client.get_report(reportOn,request_id3)
                         extracted_data3= report_data_extractor(report_data3)
                         past_4_week_cnt = extracted_data3.get("car_count",0)
+                        past_4_week_arm_plans_sold =extracted_data3.get("arm_plans_sold_cnt")
+                        past_4_weeks_arm_plans_reedemed_cnt = extracted_data3.get("arm_plans_reedemed_cnt",0)
+                        past_4_weeks_retail_car_count = past_4_week_cnt - past_4_weeks_arm_plans_reedemed_cnt
+                        past_4_weeks_total_revenue = extracted_data3.get("total_revenue")
+                        
                         print(f"past week cnt : {past_4_week_cnt}")
+                        past_4_weeks_conversion_rate = (past_4_week_arm_plans_sold/past_4_weeks_retail_car_count)*100
+                        print(f"past 4 weeks conversion rate: {past_4_weeks_conversion_rate}, camp : {conversion_rate-past_4_weeks_conversion_rate}")
                         
                         combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
                         combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt
                         combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                         combined_data["conversion_rate"]= conversion_rate
+                        
                         combined_data["past_4_week_cnt"]=past_4_week_cnt
+                        combined_data["past_4_week_conversion_rate"] = past_4_weeks_conversion_rate
+                        combined_data["past_4_weeks_total_revenue"] = past_4_weeks_total_revenue
                     print(f"combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:
@@ -1999,6 +2010,11 @@ if __name__=="__main__":
     friday_date_str = "2024-06-14"
     saturday_date_str = "2024-06-15"
     sunday_date_str="2024-06-16"  #YMD
+    
+    monday_date_str="2024-07-01"
+    friday_date_str = "2024-07-05"
+    saturday_date_str = "2024-07-06"
+    sunday_date_str="2024-07-07"  #Y-M-D
     
     report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     print("\n"*6)
