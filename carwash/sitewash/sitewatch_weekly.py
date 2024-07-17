@@ -1091,7 +1091,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                         combined_data["conversion_rate"]= conversion_rate
                         
-                        combined_data["past_4_week_cnt"]=past_4_week_cnt
+                        combined_data["past_4_week_cnt"]=past_4_week_cnt #total car count past 4weeks 
                         combined_data["past_4_week_conversion_rate"] = past_4_weeks_conversion_rate
                         combined_data["past_4_weeks_total_revenue"] = past_4_weeks_total_revenue
                     print(f"combined data:{combined_data}")
