@@ -214,9 +214,10 @@ class sitewatchClient():
         authenticated=False
         try:
             response = session.get('https://sitewatch.cloud/api/auth/session',params=params,timeout=timeout,proxies=self.proxies)
-            # print(response.json())
+            print("session check:",response.json())
             if response.status_code==200:
                 authenticated = response.json().get("authenticated")
+                print("sesssion check :",response.json())
                 authenticated=True
                 print("authentication success")
         except Exception as e:

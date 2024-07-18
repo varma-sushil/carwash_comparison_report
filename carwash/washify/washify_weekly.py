@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
+import traceback
 
 from washify import generate_past_4_weeks_days
 
@@ -225,8 +226,15 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 total_arm_planmembers_cnt = client.get_club_plan_members(location_code)
                 
                 past_4_week_day1,past_4_week_day2 = generate_past_4_weeks_days(monday_date_str)
-                past_4_week_cnt = client.get_car_count_report([location_code],past_4_week_day1,past_4_week_day2)
-                past_4_week_cnt = past_4_week_cnt.get("car_count")
+                past_4_week_cnt_report = client.get_car_count_report([location_code],past_4_week_day1,past_4_week_day2)
+                total_arm_plans3 = client.GetRevenuReportFinancialUnlimitedSales([location_code],past_4_week_day1,past_4_week_day2)
+                past_4_weeks_reveunu_summary = client.GetRevenuReportFinancialRevenueSummary([location_code],past_4_week_day1,past_4_week_day2)
+                past_4_week_cnt = past_4_week_cnt_report.get("car_count")
+                past_4_weeks_retail_car_count = past_4_week_cnt_report.get("retail_car_count")
+                
+                past_4_week_conversion_rate  = conversion_rate_washify(total_arm_plans3,past_4_weeks_retail_car_count,0)
+                past_4_weeks_total_revenue =past_4_weeks_reveunu_summary.get("total",0.0)
+                
                 print(f"past week cnt :{past_4_week_cnt}")
                 arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])
                 single_site_report["total_revenue"] = sum([total_revenue_monday_fri,total_revenue_sat_sun])
@@ -234,6 +242,8 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 single_site_report["total_arm_planmembers_cnt"] = total_arm_planmembers_cnt
                 single_site_report["conversion_rate"] = conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,retail_car_count_saturday_to_sunday)
                 single_site_report["past_4_week_cnt"] = past_4_week_cnt
+                single_site_report["past_4_week_conversion_rate"] = past_4_week_conversion_rate
+                single_site_report["past_4_weeks_total_revenue"]  = past_4_weeks_total_revenue
                
                 if "1631" in location_name: # 1631 E Jackson St
                     final_report["Getaway-Macomb"] = single_site_report
@@ -248,7 +258,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
         
     except Exception as e:
-        print(f"Exception generate_weeklyrepoer washify {e}")
+        print(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
     
     return final_report
 
@@ -259,13 +269,18 @@ if __name__=="__main__":
     friday_date_str =  "06/07/2024"
     saturday_date_str = "06/08/2024"
     sunday_date_str  =  "06/09/2024"  #M/D/Y
+    
+    monday_date_str =  "07/01/2024"
+    friday_date_str =  "07/05/2024"
+    saturday_date_str = "07/06/2024"
+    sunday_date_str  =  "07/07/2024"  #M/D/Y
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    # print(data)
+    print(data)
     
-    # with open("washify_data.json","w") as f:
-    #     json.dump(data,f,indent=4)
+    with open("washify_data.json","w") as f:
+        json.dump(data,f,indent=4)
     
     clinet = washifyClient()
     monday_str  = "06/03/2024"

@@ -649,9 +649,12 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
             
         if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
             arm_plans_sold3+=1
-        
+    
+     
     past_4_week_cnt = sum([wash_purchases_total_cnt3,reedeemd_total_cnt3])
     final_data["past_4_week_cnt"] = past_4_week_cnt
+    final_data["past_4_week_conversion_rate"] = conversion_rate_hamilton(arm_plans_sold3,wash_purchases_total_cnt3,0)
+    final_data["past_4_weeks_total_revenue"] =total_revenue3
     
     print(f"past week cnt : {past_4_week_cnt}")
     
@@ -695,6 +698,11 @@ if __name__ == "__main__":
     friday_date_str = "2024-06-07"
     saturday_date_str = "2024-06-08"
     sunday_date_str  = "2024-06-09"
+    
+    monday_date_str = "2024-07-01"
+    friday_date_str = "2024-07-05"
+    saturday_date_str = "2024-07-06"
+    sunday_date_str  = "2024-07-07"
     # dail_report_v2 = client.get_dail_report_v2(monday_date_str,friday_date_str)
     
     # print(f"Daily report v2 : {dail_report_v2}")
