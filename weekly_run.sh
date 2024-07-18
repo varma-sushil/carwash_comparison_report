@@ -27,7 +27,7 @@ fi
 export PYTHONPATH="$PARENT_DIR/carwash"
 
 # Ensure required modules are installed
-pip install -r "$PARENT_DIR/requirements.txt" >> "$LOG_FILE" 2>&1
+# pip install -r "$PARENT_DIR/requirements.txt" >> "$LOG_FILE" 2>&1
 
 # Run the Python script and log the output
 echo "Running $SCRIPT..." | tee -a "$LOG_FILE"
