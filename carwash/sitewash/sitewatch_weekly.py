@@ -1094,6 +1094,8 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data["past_4_week_cnt"]=past_4_week_cnt #total car count past 4weeks 
                         combined_data["past_4_week_conversion_rate"] = past_4_weeks_conversion_rate
                         combined_data["past_4_weeks_total_revenue"] = past_4_weeks_total_revenue
+                        combined_data["past_4_weeks_arm_plans_sold_cnt"]= past_4_week_arm_plans_sold
+                        combined_data["past_4_weeks_retail_car_count"] = past_4_weeks_retail_car_count
                     print(f"combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:
@@ -1420,9 +1422,18 @@ def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
         
     return xl_map
 
-def prepare_xlmap(data,comment="The comment section"):
-    workbook = xlsxwriter.Workbook("test.xlsx")
-    worksheet = workbook.add_worksheet("sheet1")
+def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
+    # Load the existing workbook using openpyxl
+    try:
+        workbook = openpyxl.load_workbook(filename)
+        worksheet = workbook.create_sheet(sheet_name)
+    except Exception as _:
+        print(f"creating neww xl file !! {filename}")
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+        worksheet.title = sheet_name
+    
+    
     xl_map = [
     [""],
     ["","","","","","","","","","","","","","","","","","","","","","","",],
@@ -1483,7 +1494,7 @@ def prepare_xlmap(data,comment="The comment section"):
         xl_map[index+2][0]=index_names[index]
     
     Fuller_Cicero = data.get("Fuller-Cicero")  
-    
+
     if Fuller_Cicero:
         Fuller_Cicero_index=6
         update_place_to_xlmap(xl_map,Fuller_Cicero_index,Fuller_Cicero)
@@ -1492,7 +1503,14 @@ def prepare_xlmap(data,comment="The comment section"):
     if Fuller_Matteson:
         Fuller_Matteson_index=7
         update_place_to_xlmap(xl_map,Fuller_Matteson_index,Fuller_Matteson)
+    
+    Fuller_Elgin = data.get("Fuller-Elgin")
+    
+    if Fuller_Elgin:
+        Fuller_Elgin_index = 8
+        update_place_to_xlmap(xl_map,Fuller_Elgin_index,Fuller_Elgin)
         
+      
     Sparkle_Belair = data.get("Sparkle-Belair")
     
     if Sparkle_Belair:
@@ -1580,6 +1598,33 @@ def prepare_xlmap(data,comment="The comment section"):
         Getaway_Macomb_index = 10
         update_place_to_xlmap(xl_map,Getaway_Macomb_index,Getaway_Macomb)
         
+    Getaway_Morton = data.get("Getaway-Morton")
+    
+    if Getaway_Morton:
+        Getaway_Morton_index=11
+        update_place_to_xlmap(xl_map,Getaway_Morton_index,Getaway_Morton)
+        
+    Getaway_Ottawa = data.get("Getaway-Ottawa")
+    
+    if Getaway_Ottawa:
+        Getaway_Ottawa_index = 12
+        update_place_to_xlmap(xl_map,Getaway_Ottawa_index,Getaway_Ottawa)
+        
+    Getaway_Peru = data.get("Getaway-Peru")    
+    
+    if Getaway_Peru:
+        Getaway_Peru_index = 13
+        update_place_to_xlmap(xl_map,Getaway_Peru_index,Getaway_Peru)
+        
+    
+    #Hamilton 
+    
+    Splash_Peoria = data.get("Splash-Peoria")
+    
+    if Splash_Peoria:
+        Splash_Peoria_index = 9
+        update_place_to_xlmap(xl_map,Splash_Peoria_index,Splash_Peoria)
+
     #computation for first three columns 
     # sum([ xl_map[2][i+1] for i in range(3,13)])
     
@@ -1795,9 +1840,9 @@ def prepare_xlmap(data,comment="The comment section"):
     cost_per_labour_hour_saturday_to_sunday_GA_SC_val = cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC)
     xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC_val,2)
     
-    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total
+    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total if staff_hours_saturday_to_sunday_Total!=0 else ""
     
-    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2)
+    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2) if cost_per_labour_hour_saturday_to_sunday_Total else ""
     
     # Total cars per man hour
     
@@ -1913,94 +1958,320 @@ def prepare_xlmap(data,comment="The comment section"):
  
         
       
-    darkred_format = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
-    lightred_format = workbook.add_format({'bold': True,"bg_color":"#d98484"})
-    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
-    light_green_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
-    darkgreen_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+    # Define cell styles (assuming they are the same as before)
+    bg_color = PatternFill(start_color='0b3040', end_color='0b3040', fill_type='solid')
+    font_color = Font(color='FFFFFF')
+
+    bg_color_index = PatternFill(start_color='ADD8E6', end_color='ADD8E6', fill_type='solid')
+    font_color_index = Font(color='000000')
+
+    darkgreen_format = PatternFill(start_color='0ee85e', end_color='0ee85e', fill_type='solid')
+    light_green_format = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
+    darkred_format = PatternFill(start_color='FC0303', end_color='FC0303', fill_type='solid')
+    lightred_format = PatternFill(start_color='D98484', end_color='D98484', fill_type='solid')
+    yellow=  PatternFill(start_color='D0D48A', end_color='D0D48A', fill_type='solid')
     
     #writing to  actual sheet
     #first row comment section
-    worksheet.write_row(0,0,["This is comment"])   
+    # Write comments in the first row
+    # worksheet.append([comment])
     
-    cell_format = workbook.add_format({
-        'bg_color': '#0b3040',
-        'font_color': 'white'})  #column format
-
-    cell_format_index = workbook.add_format({
-            'bg_color': '#ADD8E6',
-            'font_color': 'black'})
-
     for row in range(len(xl_map)):
         for col in range(len(xl_map[row])):
-            print(f"index ({row},{col})")
             val = xl_map[row][col]
-            if row==1 and col!=0:
-                worksheet.write_row(row,col,[f"{val}"],cell_format)  #col names 
-            elif col==0 and row>1 and row <22:
-                worksheet.write_row(row,col,[f"{val}"],cell_format_index)  #index rowes
+            cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
             
-            elif val and row==12 and col>0: #Avg. Retail Visit colouring
-                if val > 10: 
-                    worksheet.write_row(row,col,[val],darkgreen_format)  
-                elif val > 5:
-                    worksheet.write_row(row,col,[val],light_green_format)  
-                elif val< -5:
-                    worksheet.write_row(row,col,[val],lightred_format)
-                elif val < -10:
-                    worksheet.write_row(row,col,[val],darkred_format)
-            
-            elif val and row in [16,17,18,20] and col>0:
-                if val > 20:
-                    worksheet.write_row(row,col,[val],darkgreen_format)  
-                
-                elif val > 10:
-                     worksheet.write_row(row,col,[val],light_green_format)  
+            # val = add_commas(val)
+            # val = float(val)
+            # print("type:",type(val),val)
+            if row == 1 and col != 0:
+                cell.fill = bg_color
+                cell.font = font_color
+
+            elif col == 0 and 1 < row < 22:
+                cell.fill = bg_color_index
+                cell.font = font_color_index
+
+            elif val  and row == 12 and col > 0:
+                if val >= 10:
+                    cell.fill = darkgreen_format
                     
-                elif val < -10 :
-                    worksheet.write_row(row,col,[val],lightred_format)
-                
-                elif val < -20 :
-                    worksheet.write_row(row,col,[val],darkred_format)
-                else:
-                    worksheet.write_row(row,col,[val]) 
-            
-            elif val:
-                worksheet.write_row(row,col,[val])   #which has values
-                
-            elif row==6 and col>3:                   #Totals empty rowes 
-                worksheet.write_row(row,col,[""])
-                
-            elif row in [18] and col>3:  # 11,12,13,
-                worksheet.write_row(row,col,[""]) #empty rowes 3 empty 
-            
-            elif row==22:
-                worksheet.write_row(row,col,[""]) #empty rowes 1 before legends
-            
-            elif row>22 and col>0:
-                worksheet.write_row(row,col,[""]) #empty rowes  before legends
-            else:
-                worksheet.write_row(row,col,[f"This is ({row},{col})"])
-                
-    legend_start_row=23
-                
+                elif val>=5 and val <10: # [5,9] (inclusive intervals)
+                    cell.fill = light_green_format
+                    
+                elif val>=-5 and val <5:  # [-5,4]
+                    cell.fill = lightred_format
+        
+                elif  val <=-10 and val<-5:
+                    cell.fill = darkred_format
+
+            elif val  and row in [16, 17, 18, 20] and col > 0:
+                if val >= 20:
+                    cell.fill = darkgreen_format
+                elif val>=10 and val <20:
+                    cell.fill = light_green_format
+                elif val>=-10 and val <10:
+                    cell.fill = lightred_format
+                elif val <=-20 or val<-10:
+                    cell.fill = darkred_format
+
+            # elif row == 5 and col > 2:
+            #     cell.value = ""
+
+            # elif row in [17] and col > 2:
+            #     cell.value = ""
+
+            # elif row == 21:
+            #     cell.value = ""
+
+            # elif row > 21 and col > 0:
+            #     cell.value = ""
+
     # Add legend or additional information below the table
-    very_concerningformat = workbook.add_format({'bold': True,"bg_color":"#fc0303"})
-    concerningformat = workbook.add_format({'bold': True,"bg_color":"#d98484"})
-    neutral_format = workbook.add_format({'bold': True,"bg_color":"#d0d48a"})
-    positive_format = workbook.add_format({'bold': True,"bg_color":"#8ad493"})
-    very_positive_format = workbook.add_format({'bold': True,"bg_color":"#0ee85e"})
+    legend_start_row = 24
 
-    worksheet.write(legend_start_row, 0, 'Legend')
-    worksheet.write(legend_start_row + 1, 0, 'Very Concerning',very_concerningformat)
-    worksheet.write(legend_start_row + 2, 0, 'Concerning',concerningformat)
-    worksheet.write(legend_start_row + 3, 0, 'Neutral',neutral_format)
-    worksheet.write(legend_start_row + 4, 0, 'Positive',positive_format)
-    worksheet.write(legend_start_row + 5, 0, 'Very Positive',very_positive_format)
-            
-            
+    legend_styles = {
+        "Very Concerning": PatternFill(start_color="fc0303", end_color="fc0303", fill_type="solid"),
+        "Concerning": PatternFill(start_color="d98484", end_color="d98484", fill_type="solid"),
+        "Neutral": PatternFill(start_color="d0d48a", end_color="d0d48a", fill_type="solid"),
+        "Positive": PatternFill(start_color="8ad493", end_color="8ad493", fill_type="solid"),
+        "Very Positive": PatternFill(start_color="0ee85e", end_color="0ee85e", fill_type="solid"),
+    }
 
-    workbook.close() 
+    worksheet.cell(row=legend_start_row, column=1, value='Legend')
+    worksheet.cell(row=legend_start_row + 1, column=1, value='Very Concerning').fill = legend_styles["Very Concerning"]
+    worksheet.cell(row=legend_start_row + 2, column=1, value='Concerning').fill = legend_styles["Concerning"]
+    worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
+    worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
+    worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
+    
+    #setting cloumn width as deafult 
+    column_width = 20  # You can change this value to whatever width you need
+    first_col_width =25
+    for col in range(1, 24):  # Columns A to W are 1 to 23
+        column_letter = get_column_letter(col)
+        if col==1:
+            worksheet.column_dimensions[column_letter].width = first_col_width
+        else:
+            worksheet.column_dimensions[column_letter].width = column_width
+       
+    
+    # Define the border style
+
+
+    thick_border = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'))
+    
+    thick_border_bottom = Border(
+    left=Side(style='thick'),
+    right=Side(style='thick'),
+    bottom=Side(style='thick'))
+
+
+
+
+    # Apply the border to a range of cells (e.g., A1:C3)
+    # for row in worksheet.iter_rows(min_row=3, max_row=21, min_col=2, max_col=4):
+    #     for cell in row:
+    #         cell.border = thin_border
+
+    for row in range(3,23):
+        cell0 = worksheet.cell(row=row,column=1)
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
+        
+        if row in [7,12,13,19,21,22]:
+            cell0.border=thick_border_bottom
+            cell1.border=thick_border_bottom
+            cell2.border=thick_border_bottom
+            cell3.border=thick_border_bottom
+        else:
+            cell0.border=thick_border
+            cell1.border=thick_border
+            cell2.border=thick_border
+            cell3.border=thick_border
+            
+    for row in worksheet.iter_rows():
+        for cell in row:
+            row_index = cell.row
+            if isinstance(cell.value, (int, float)) and row_index in [17,18,19]:
+                cell.number_format = '#,##0.0'
+            elif isinstance(cell.value, (int, float)) and row_index in [13,14,21]:
+                cell.number_format = '#,##0.00'
+            elif isinstance(cell.value, (int, float)): #:
+                cell.number_format = '#,##0'
+    #Doller sysmbol     
+    for row in range(8,13):
+        cell1 = worksheet.cell(row=row,column=2)
+        cell2 = worksheet.cell(row=row,column=3)
+        cell3 = worksheet.cell(row=row,column=4)
+        
+        # cell1.border=thick_border
+        # cell2.border=thick_border
+        # cell3.border=thick_border
+        
+        cells=[cell1,cell2,cell3]
+        for cell in cells:
+            if isinstance(cell.value, (int, float)) and cell.value >= 1000:
+                cell.number_format = '"$"#,##0'     
+    
+    #finding past week averages for Total car count
+    all_locations = [Sudz_Beverly,Fuller_Calumet,
+                    Fuller_Cicero,Fuller_Matteson,
+                    Fuller_Elgin,Splash_Peoria,Getaway_Macomb,Getaway_Morton,
+                    Getaway_Ottawa,Getaway_Peru,Sparkle_Belair,
+                    Sparkle_Evans,Sparkle_Furrys_Ferry,Sparkle_Greenwood,
+                    Sparkle_Grovetown_1,Sparkle_Grovetown_2,Sparkle_North_Augusta,
+                    Sparkle_Peach_Orchard,Sparkle_Windsor_Spring]
+    
+    
+    lst_main = ["Totals","ILL",
+                "GA / SC"]
+    ga_sc = all_locations[10:]
+    ill = all_locations[0:10]
+    ill_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ill if loc_data]
+    ill_sum_past = sum(ill_past_4_weeks_car_cnt)/4
+    current_ill_week_cnt = xl_map[6][2]
+    ill_average_percent = ((current_ill_week_cnt - ill_sum_past)/ ill_sum_past)*100
+    
+    ga_sc_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ga_sc if loc_data]
+    ga_sc_sum_past = sum(ga_sc_past_4_weeks_car_cnt)/4
+    current_ga_sc_week_cnt = xl_map[6][3]
+    ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100
+    
+    totals_past = ill_sum_past +ga_sc_sum_past
+    totals_current = xl_map[6][1]
+    total_average_percent = ((totals_current-totals_past)/totals_past)*100
+    
+    ill_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ill if loc_data]
+    ill_total_revenue_avg = sum(ill_total_revenue_past_4_weeks)/4
+    ill_curent_revenue = xl_map[11][2]
+    ill_avg_revenue_change  = ((ill_curent_revenue-ill_total_revenue_avg)/ill_total_revenue_avg)*100
+    
+    ga_sc_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ga_sc if loc_data]
+    ga_sc_avg_revenue = sum(ga_sc_total_revenue_past_4_weeks)/4
+    ga_sc_curent_revenue  = xl_map[11][3]
+    
+    ga_sc_avg_revenue_change = ((ga_sc_curent_revenue - ga_sc_avg_revenue)/ga_sc_avg_revenue)*100
+    
+    total_revenue_past_4_avg_total = ill_total_revenue_avg + ga_sc_avg_revenue
+    total_reveneu_curent = ill_curent_revenue + ga_sc_curent_revenue
+    
+    total_revenue_total_change = ((total_reveneu_curent - total_revenue_past_4_avg_total)/total_revenue_past_4_avg_total)*100
+    
+    
+    ill_past_4_weeks_arm_plan_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ill if loc_data]
+    ill_past_4_weeks_arm_plan_sold_sum = sum(ill_past_4_weeks_arm_plan_sold)
+    
+    ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
+    ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
+    
+    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
+    
+    ill_current_conversation_rate = xl_map[20][2]
+    ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
+    
+    ga_sc_past_4_weeks_arm_plans_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_weeks_arm_plans_sold_sum = sum(ga_sc_past_4_weeks_arm_plans_sold)
+    
+    ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
+    
+    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
+    
+    ga_sc_current_conversation_rate  = xl_map[20][3]
+    ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
+    
+    past_total_arm_plans_sold = ill_past_4_weeks_arm_plan_sold_sum + ga_sc_past_4_weeks_arm_plans_sold_sum
+    
+    past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
+    
+    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
+    
+    current_total_conversation_rate = xl_map[20][1]
+    
+    total_conversation_change = current_total_conversation_rate - past_total_conversation_change
+    
+    
+    
+    
+    colours = darkgreen_format,light_green_format,darkred_format,lightred_format
+    print(f"ill avg : {ill_average_percent}")
+    print("ill avg revenue:",ill_avg_revenue_change)
+    print("ga sc avg revenue :",ga_sc_avg_revenue_change)
+    print("total revenue total change:",total_revenue_total_change)
+    print(f"ga_sc average :{ga_sc_average_percent}")
+    print(f"total_average : {total_average_percent}")
+    print("ill conversation change :",ill_conversation_rate_change)
+    print("gasc conversation chane :",ga_sc_conversation_change)
+    print("total conversation change :",total_conversation_change)
+    set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
+    set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
+    set_colour(total_average_percent,7,2,worksheet,colours) #for total total
+    
+    set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
+    set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
+    set_colour(total_revenue_total_change,12,2,worksheet,colours)
+    set_colour(ill_conversation_rate_change,21,3,worksheet,colours)
+    set_colour(ga_sc_conversation_change,21,4,worksheet,colours)
+    set_colour(total_conversation_change,21,2,worksheet,colours)
+    
+    
+    
+    loc_names = ["Sudz - Beverly",'Fuller-Calumet',
+                "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
+                "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
+                "Getaway-Ottawa","Getaway-Peru","Sparkle-Belair",
+                "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
+                "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
+                "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
+    
+    for index,place_dictionary in enumerate(all_locations):
+        current_week_total_cars = xl_map[6][index+4]
+        past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
+        change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
+        set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
+        
+        print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
+        change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
+        set_colour(change_in_conversationrate,21,index+5,worksheet,colours) #conversation rate colours
+        
+        print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
+        current_revenue_total = place_dictionary.get("total_revenue")
+        past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
+        change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
+        print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
+        set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
+        
+        print("\n"*2)
+        
+    
+    
+
+    #applying bold font
+    # Define a bold font style
+    bold_font = Font(bold=True)
+    
+    for row in worksheet.iter_rows(min_row=7, max_row=7, min_col=1, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+
+    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=1, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=1, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+            
+    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=1, max_col=4):
+        for cell in row:
+            cell.font = bold_font
+    # Save the modified workbook
+    workbook.save(filename)
+
 
 if __name__=="__main__":
     # import pandas as pd

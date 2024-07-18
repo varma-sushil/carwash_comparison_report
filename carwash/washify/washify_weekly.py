@@ -244,6 +244,8 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 single_site_report["past_4_week_cnt"] = past_4_week_cnt
                 single_site_report["past_4_week_conversion_rate"] = past_4_week_conversion_rate
                 single_site_report["past_4_weeks_total_revenue"]  = past_4_weeks_total_revenue
+                single_site_report["past_4_weeks_arm_plans_sold_cnt"] = total_arm_plans3
+                single_site_report["past_4_weeks_retail_car_count"]  = past_4_weeks_retail_car_count
                
                 if "1631" in location_name: # 1631 E Jackson St
                     final_report["Getaway-Macomb"] = single_site_report

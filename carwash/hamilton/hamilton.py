@@ -655,6 +655,8 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     final_data["past_4_week_cnt"] = past_4_week_cnt
     final_data["past_4_week_conversion_rate"] = conversion_rate_hamilton(arm_plans_sold3,wash_purchases_total_cnt3,0)
     final_data["past_4_weeks_total_revenue"] =total_revenue3
+    final_data["past_4_weeks_arm_plans_sold_cnt"] = arm_plans_sold3
+    final_data["past_4_weeks_retail_car_count"]  = wash_purchases_total_cnt3
     
     print(f"past week cnt : {past_4_week_cnt}")
     
