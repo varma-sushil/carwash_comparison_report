@@ -353,8 +353,22 @@ def set_colour(val,row,col,worksheet,colours):
         
     elif val>=-10:
         cell.fill = darkred_format
-    elif val>=-20:
+    else : #val>=-20
        cell.fill = lightred_format
+
+def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
+    chnage = None
+    past_4_car_cnt_avg = past_4_car_cnt/4
+    chnage = ((curent_car_cnt- past_4_car_cnt_avg)/past_4_car_cnt_avg)*100
+
+    return chnage
+
+def chnage_total_revenue_fun(curent_revenue,past_4_revenue):
+    chnage = None
+    past_4_revenue_avg = past_4_revenue/4
+    chnage = ((curent_revenue- past_4_revenue_avg)/past_4_revenue_avg)*100
+
+    return chnage
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
     # Load the existing workbook using openpyxl
@@ -1079,13 +1093,109 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     totals_current = xl_map[6][1]
     total_average_percent = ((totals_current-totals_past)/totals_past)*100
     
+    ill_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ill if loc_data]
+    ill_total_revenue_avg = sum(ill_total_revenue_past_4_weeks)/4
+    ill_curent_revenue = xl_map[11][2]
+    ill_avg_revenue_change  = ((ill_curent_revenue-ill_total_revenue_avg)/ill_total_revenue_avg)*100
+    
+    ga_sc_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ga_sc if loc_data]
+    ga_sc_avg_revenue = sum(ga_sc_total_revenue_past_4_weeks)/4
+    ga_sc_curent_revenue  = xl_map[11][3]
+    
+    ga_sc_avg_revenue_change = ((ga_sc_curent_revenue - ga_sc_avg_revenue)/ga_sc_avg_revenue)*100
+    
+    total_revenue_past_4_avg_total = ill_total_revenue_avg + ga_sc_avg_revenue
+    total_reveneu_curent = ill_curent_revenue + ga_sc_curent_revenue
+    
+    total_revenue_total_change = ((total_reveneu_curent - total_revenue_past_4_avg_total)/total_revenue_past_4_avg_total)*100
+    
+    
+    ill_past_4_weeks_arm_plan_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ill if loc_data]
+    ill_past_4_weeks_arm_plan_sold_sum = sum(ill_past_4_weeks_arm_plan_sold)
+    
+    ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
+    ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
+    
+    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
+    
+    ill_current_conversation_rate = xl_map[20][2]
+    ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
+    
+    ga_sc_past_4_weeks_arm_plans_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_weeks_arm_plans_sold_sum = sum(ga_sc_past_4_weeks_arm_plans_sold)
+    
+    ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
+    
+    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
+    
+    ga_sc_current_conversation_rate  = xl_map[20][3]
+    ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
+    
+    past_total_arm_plans_sold = ill_past_4_weeks_arm_plan_sold_sum + ga_sc_past_4_weeks_arm_plans_sold_sum
+    
+    past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
+    
+    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
+    
+    current_total_conversation_rate = xl_map[20][1]
+    
+    total_conversation_change = current_total_conversation_rate - past_total_conversation_change
+    
+    
+    
+    
     colours = darkgreen_format,light_green_format,darkred_format,lightred_format
     print(f"ill avg : {ill_average_percent}")
+    print("ill avg revenue:",ill_avg_revenue_change)
+    print("ga sc avg revenue :",ga_sc_avg_revenue_change)
+    print("total revenue total change:",total_revenue_total_change)
     print(f"ga_sc average :{ga_sc_average_percent}")
     print(f"total_average : {total_average_percent}")
+    print("ill conversation change :",ill_conversation_rate_change)
+    print("gasc conversation chane :",ga_sc_conversation_change)
+    print("total conversation change :",total_conversation_change)
     set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
     set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
     set_colour(total_average_percent,7,2,worksheet,colours) #for total total
+    
+    set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
+    set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
+    set_colour(total_revenue_total_change,12,2,worksheet,colours)
+    set_colour(ill_conversation_rate_change,21,3,worksheet,colours)
+    set_colour(ga_sc_conversation_change,21,4,worksheet,colours)
+    set_colour(total_conversation_change,21,2,worksheet,colours)
+    
+    
+    
+    loc_names = ["Sudz - Beverly",'Fuller-Calumet',
+                "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
+                "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
+                "Getaway-Ottawa","Getaway-Peru","Sparkle-Belair",
+                "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
+                "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
+                "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
+    
+    for index,place_dictionary in enumerate(all_locations):
+        current_week_total_cars = xl_map[6][index+4]
+        past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
+        change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
+        set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
+        
+        print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
+        change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
+        set_colour(change_in_conversationrate,21,index+5,worksheet,colours) #conversation rate colours
+        
+        print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
+        current_revenue_total = place_dictionary.get("total_revenue")
+        past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
+        change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
+        print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
+        set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
+        
+        print("\n"*2)
+        
+    
     
 
     #applying bold font
