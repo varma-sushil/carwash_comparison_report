@@ -356,6 +356,42 @@ def set_colour(val,row,col,worksheet,colours):
     else : #val>=-20
        cell.fill = lightred_format
 
+def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
+    """This will do colur coding of for the xl sheet
+
+    Args:
+        current_week (_type_): _description_
+        past_4_weeks (_type_): _description_
+    """
+    darkgreen_format,light_green_format,darkred_format,lightred_format =colours
+    cell=worksheet.cell(row,col)
+    postivte_20_percent_val = past_4_weeks + past_4_weeks*0.20
+    postive_10_percent_val  = past_4_weeks + past_4_weeks*0.10
+    
+    negative_20_percent_val = past_4_weeks + past_4_weeks*(-0.20)
+    negative_10_percent_val = past_4_weeks + past_4_weeks*(-0.10)
+    
+    print(f"postive 20 percent : {postivte_20_percent_val}")
+    print(f"positive 10 percent val : {postive_10_percent_val}")
+    print(f"negative 20 percent val : {negative_20_percent_val}")
+    print(f"negative 10 percent val : {negative_10_percent_val}")
+    
+    if current_week>=postivte_20_percent_val:
+        cell.fill = darkgreen_format
+    
+    elif current_week >= postive_10_percent_val:
+        cell.fill = light_green_format
+        
+    elif current_week <= negative_20_percent_val:
+        cell.fill = darkred_format
+    
+    elif current_week <= negative_10_percent_val :
+        cell.fill = lightred_format
+        
+    # else:
+    #     print("no colour")
+ 
+
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
     chnage = None
     past_4_car_cnt_avg = past_4_car_cnt/4
@@ -366,8 +402,8 @@ def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
 def chnage_total_revenue_fun(curent_revenue,past_4_revenue):
     chnage = None
     past_4_revenue_avg = past_4_revenue/4
-    chnage = ((curent_revenue- past_4_revenue_avg)/past_4_revenue_avg)*100
-
+    chnage = ((curent_revenue - past_4_revenue_avg)/past_4_revenue_avg)*100
+    print(f"change:{chnage} = ({curent_revenue}-{past_4_revenue_avg})/{past_4_revenue_avg}")
     return chnage
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
@@ -868,6 +904,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     for i in range(3,22):
         xl_map[revenue_row][i+1]= do_sum_location(xl_map,[[9,i+1],[10,i+1]])
     
+    #Average_retail_visit
     average_retail_visit_row = 12
     for i in range(3,22):
         retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
@@ -877,6 +914,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         xl_map[average_retail_visit_row][i+1]=   round(average_retail_visit_val,2) if average_retail_visit_val else ""
     
     
+    #Average member visit
     average_member_visit_row = 13
     for i in range(3,22):
         total_revenue = xl_map[11][i+1]
@@ -1154,17 +1192,24 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     print(f"total_average : {total_average_percent}")
     print("ill conversation change :",ill_conversation_rate_change)
     print("gasc conversation chane :",ga_sc_conversation_change)
+    print(f"conversation rate in ga sc :{ga_sc_current_conversation_rate},- {ga_sc_past_4_conversation_rate }")
     print("total conversation change :",total_conversation_change)
-    set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
-    set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
-    set_colour(total_average_percent,7,2,worksheet,colours) #for total total
+    # set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
+    set_colour_new(current_ill_week_cnt,ill_sum_past,7,3,worksheet,colours)  #Total cars ill
+    # set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
+    set_colour_new(current_ga_sc_week_cnt,ga_sc_sum_past,7,4,worksheet,colours)
+    # set_colour(total_average_percent,7,2,worksheet,colours) #for total total
+    set_colour_new(totals_current,totals_past,7,2,worksheet,colours)  #total  cars total
     
-    set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
-    set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
-    set_colour(total_revenue_total_change,12,2,worksheet,colours)
-    set_colour(ill_conversation_rate_change,21,3,worksheet,colours)
-    set_colour(ga_sc_conversation_change,21,4,worksheet,colours)
-    set_colour(total_conversation_change,21,2,worksheet,colours)
+    # set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
+    set_colour_new(ill_curent_revenue,ill_total_revenue_avg,12,3,worksheet,colours)
+    # set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
+    set_colour_new(ga_sc_curent_revenue,ga_sc_avg_revenue,12,4,worksheet,colours)  #ga sc revenue 
+    # set_colour(total_revenue_total_change,12,2,worksheet,colours)
+    set_colour_new(total_reveneu_curent,total_revenue_past_4_avg_total,12,2,worksheet,colours) #totalk revenue 
+    set_colour_new(ill_current_conversation_rate,ill_past_4_conversation_rate,21,3,worksheet,colours)  #conversation rate
+    set_colour_new(ga_sc_current_conversation_rate,ga_sc_past_4_conversation_rate,21,4,worksheet,colours)
+    set_colour_new(current_total_conversation_rate,past_total_conversation_change,21,2,worksheet,colours)
     
     
     
@@ -1180,18 +1225,24 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         current_week_total_cars = xl_map[6][index+4]
         past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
         change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
-        set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
+        #set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
+        set_colour_new(current_week_total_cars,past_4_week_total_cars,7,index+5,worksheet,colours)
         
         print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
+        current_week_conversatio_rate = place_dictionary.get("conversion_rate")
+        past_4_week_conversation_rate =  place_dictionary.get("past_4_week_conversion_rate")
         change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
-        set_colour(change_in_conversationrate,21,index+5,worksheet,colours) #conversation rate colours
+        set_colour_new(current_week_conversatio_rate,past_4_week_conversation_rate,21,index+5,worksheet,colours) #conversation rate colours
         
-        print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
+        #print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
         current_revenue_total = place_dictionary.get("total_revenue")
         past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
         change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
         print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
         set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
+        
+        
+        
         
         print("\n"*2)
         
