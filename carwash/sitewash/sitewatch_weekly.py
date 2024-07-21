@@ -12,6 +12,7 @@ import xlsxwriter
 
 from sitewatch4 import sitewatchClient
 from sitewatch4 import generate_past_4_weeks_days
+from sitewatch4 import generate_past_4_week_days_full
 import random
 
 import sys
@@ -1084,7 +1085,48 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         
                         print(f"past week cnt : {past_4_week_cnt}")
                         past_4_weeks_conversion_rate = (past_4_week_arm_plans_sold/past_4_weeks_retail_car_count)*100
-                        print(f"past 4 weeks conversion rate: {past_4_weeks_conversion_rate}, camp : {conversion_rate-past_4_weeks_conversion_rate}")
+                        
+                        #Past 4 weeks splieed days mon-day st -sun
+                        full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
+                        
+                        combined_data["past_4_week_car_cnt_mon_fri"]=0
+                        combined_data["past_4_week_labour_hours_mon_fri"]=0
+                        
+                        combined_data["past_4_week_car_cnt_sat_sun"]=0
+                        combined_data["past_4_week_labour_hours_sat_sun"]=0
+                        for single_week in full_weeks_lst:
+                            mon = single_week[0]
+                            fri = single_week[1]
+                            sat =single_week[2]
+                            sun = single_week[3]
+                            request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
+                            report_data4 = client.get_report(reportOn,request_id4)
+                            extracted_data4 = report_data_extractor(report_data4)
+                            
+                            request_id4_2 =client.get_activity_by_date_proft_request_id(reportOn,mon, fri) #for labour hours
+                            labour_hours_mon_fri=client.get_labour_hours(reportOn,request_id4_2)
+                            
+                            request_id5_2 =client.get_activity_by_date_proft_request_id(reportOn,sat, sun) #for labour hours
+                            labour_hours_sat_sun=client.get_labour_hours(reportOn,request_id5_2)
+                            
+                            request_id5 = client.get_general_sales_report_request_id(reportOn,id,idname,sat, sun)
+                            report_data5 = client.get_report(reportOn,request_id5)
+                            extracted_data5 = report_data_extractor(report_data5)
+                            
+                            
+                            car_cnt_mon_friday = extracted_data4.get("car_count",0)
+                            car_cnt_sat_sun    = extracted_data5.get("car_count",0)
+                            combined_data["past_4_week_car_cnt_mon_fri"] = combined_data.get("past_4_week_car_cnt_mon_fri",0)+car_cnt_mon_friday
+                            combined_data["past_4_week_car_cnt_sat_sun"] = combined_data.get("past_4_week_car_cnt_sat_sun",0)+ car_cnt_sat_sun
+                            combined_data["past_4_week_labour_hours_mon_fri"] = combined_data.get("past_4_week_labour_hours_mon_fri",0) + labour_hours_mon_fri
+                            combined_data["past_4_week_labour_hours_sat_sun"] = combined_data.get("past_4_week_labour_hours_sat_sun",0) + labour_hours_sat_sun
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                         
                         combined_data["total_revenue"] = sum([total_revenue_val,total_revenue_val2])
                         combined_data["arm_plans_sold_cnt"] = arm_plans_sold_total_cnt

@@ -84,7 +84,7 @@ def generate_past_4_weeks_days(date_str):
     
     # Subtract one day
     one_day_before = monday - timedelta(days=1)
-    four_weeks_before = monday - timedelta(days=(7*4) + 1)
+    four_weeks_before = monday - timedelta(days=(7*4))
 
     # Format the dates in "dd/mm/yyyy" format
     formatted_date = one_day_before.strftime("%Y-%m-%d")
@@ -95,6 +95,36 @@ def generate_past_4_weeks_days(date_str):
 
     return four_weeks_before_fmt, formatted_date
 
+def generate_past_4_week_days_full(mondaystr):
+    "this will generat mon,fri,sat stunda list of dates or all 4 weeks "
+    # Convert the string date to a datetime object
+    date_format = "%Y-%m-%d"
+    input_date = datetime.strptime(mondaystr, date_format)
+    
+    # Calculate one day before the input date and four weeks (28 days) before the input date
+    one_day_before = input_date - timedelta(days=1)
+    four_weeks_before = input_date - timedelta(days=7*4)
+
+    # Initialize a list to store the required days
+    required_days = []
+
+    # Iterate through the range of dates
+    current_date = four_weeks_before
+    while current_date <= one_day_before:
+        # Check if the current date is a Monday, Friday, Saturday, or Sunday
+        if current_date.weekday() in [0, 4, 5, 6]:  # 0=Monday, 4=Friday, 5=Saturday, 6=Sunday
+            required_days.append(current_date.strftime(date_format))
+        current_date += timedelta(days=1)
+
+    # Print the result
+
+    full_days = [required_days[i:i + 4] for i in range(0, len(required_days), 4)]
+    
+    #     print(day)
+
+    return full_days
+
+    
 
 def generate_heartbeatID():
     return round(random.random() * 1e7)

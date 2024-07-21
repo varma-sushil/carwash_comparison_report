@@ -9,6 +9,7 @@ from openpyxl.styles import Font
 import traceback
 
 from washify import generate_past_4_weeks_days
+from washify import generate_past_4_week_days_full
 
 
 # Add the path to the parent directory of "washify" to sys.path
@@ -225,6 +226,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 total_arm_planmembers_cnt = client.get_club_plan_members(location_code)
                 
+                #past week logis 
                 past_4_week_day1,past_4_week_day2 = generate_past_4_weeks_days(monday_date_str)
                 past_4_week_cnt_report = client.get_car_count_report([location_code],past_4_week_day1,past_4_week_day2)
                 total_arm_plans3 = client.GetRevenuReportFinancialUnlimitedSales([location_code],past_4_week_day1,past_4_week_day2)
@@ -234,6 +236,32 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 past_4_week_conversion_rate  = conversion_rate_washify(total_arm_plans3,past_4_weeks_retail_car_count,0)
                 past_4_weeks_total_revenue =past_4_weeks_reveunu_summary.get("total",0.0)
+                
+                single_site_report["past_4_week_car_cnt_mon_fri"]=0
+                single_site_report["past_4_week_labour_hours_mon_fri"]=0
+                
+                single_site_report["past_4_week_car_cnt_sat_sun"]=0
+                single_site_report["past_4_week_labour_hours_sat_sun"]=0
+                full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
+                for single_week in full_weeks_lst:
+                    mon = single_week[0]
+                    fri = single_week[1]
+                    sat =single_week[2]
+                    sun = single_week[3]
+                    past_4_week_car_cnt_mon_fri_report = client.get_car_count_report([location_code],mon,fri)
+                    past_4_week_car_cnt_sat_sun_report = client.get_car_count_report([location_code],sat,sun)
+                    
+                    past_4_week_car_cnt_mon_fri        = past_4_week_car_cnt_mon_fri_report.get("car_count")
+                    past_4_week_car_cnt_sat_sun       = past_4_week_car_cnt_sat_sun_report.get("car_count")
+                    
+                    past_4_week_labour_hours_mon_fri  = past_4_week_car_cnt_mon_fri_report.get("totalhrs")
+                    
+                    past_4_week_labour_hours_sat_sun  = past_4_week_car_cnt_sat_sun_report.get("totalhrs")
+                    single_site_report["past_4_week_car_cnt_mon_fri"] = single_site_report.get("past_4_week_car_cnt_mon_fri",0) +  past_4_week_car_cnt_mon_fri 
+                    single_site_report["past_4_week_car_cnt_sat_sun"] = single_site_report.get("past_4_week_car_cnt_sat_sun",0) + past_4_week_car_cnt_sat_sun
+                        
+                    single_site_report["past_4_week_labour_hours_mon_fri"] = single_site_report.get("past_4_week_labour_hours_mon_fri",0) + past_4_week_labour_hours_mon_fri
+                    single_site_report["past_4_week_labour_hours_sat_sun"] = single_site_report.get("past_4_week_labour_hours_sat_sun",0) + past_4_week_labour_hours_sat_sun
                 
                 print(f"past week cnt :{past_4_week_cnt}")
                 arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])
