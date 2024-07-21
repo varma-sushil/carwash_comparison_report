@@ -6,6 +6,7 @@ carwash/weekly_sender/data/*
 all_data.json
 all_data_curent.json
 *.log
+hamiltin_data.json
 
 
 
