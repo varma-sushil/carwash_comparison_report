@@ -7,7 +7,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime, timedelta
-from hamilton_weekly import generate_past_4_weeks_days
+from hamilton_weekly import generate_past_4_weeks_days,generate_past_4_week_days_full
 from dotenv import load_dotenv
 
 
@@ -313,7 +313,35 @@ class hamiltonClient:
         # Write the DataFrame to an Excel file
         df.to_excel(filename, index=False, header=False)
 
+    def get_car_count(self,items):
+        "This function will return car count"
 
+        wash_purchases_total_cnt3 = 0
+        reedeemd_total_cnt3 = 0
+        retail_revenue3=0.0
+        total_revenue3 = 0.0
+        arm_plans_sold3 = 0
+        
+        for item in items :
+            itemtyp = item.get("ItemType")
+            discount = item.get("Discount")
+            flag= item.get("Flag")
+            price = item.get("Price")
+            
+            if flag:
+                reedeemd_total_cnt3+=1
+            
+            elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+                wash_purchases_total_cnt3+=1
+                retail_revenue3+=price
+            
+            if not (flag or   discount): 
+                total_revenue3+=price
+                
+            if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+                arm_plans_sold3+=1
+                
+        return sum([wash_purchases_total_cnt3,reedeemd_total_cnt3])
 
     def get_daily_report(self, proxy) -> int:
         data = None
@@ -658,6 +686,28 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     final_data["past_4_weeks_arm_plans_sold_cnt"] = arm_plans_sold3
     final_data["past_4_weeks_retail_car_count"]  = wash_purchases_total_cnt3
     
+    final_data["past_4_week_car_cnt_mon_fri"]=0
+    # final_data["past_4_week_labour_hours_mon_fri"]=0
+    
+    final_data["past_4_week_car_cnt_sat_sun"]=0
+    # final_data["past_4_week_labour_hours_sat_sun"]=0
+    
+    full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
+    for single_week in full_weeks_lst:
+        mon = single_week[0]
+        fri = single_week[1]
+        sat =single_week[2]
+        sun = single_week[3]
+        items = client.get_dail_report_v2(mon,fri)
+        past_week_car_count_mon_fri = client.get_car_count(items)
+        final_data["past_4_week_car_cnt_mon_fri"] = final_data.get("past_4_week_car_cnt_mon_fri",0) +  past_week_car_count_mon_fri
+        
+        items2 = client.get_dail_report_v2(sat,sun)
+        past_week_car_count_sat_sun = client.get_car_count(items2)
+        final_data["past_4_week_car_cnt_sat_sun"] = final_data.get("past_4_week_car_cnt_sat_sun",0) + past_week_car_count_sat_sun
+        
+        
+    
     print(f"past week cnt : {past_4_week_cnt}")
     
     final_data["total_revenue"] = sum([total_revenue,total_revenue2])
@@ -714,7 +764,8 @@ if __name__ == "__main__":
     
     hamilton_report = generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    # print(hamilton_report)
+    with open("hamiltin_data.json","w") as f:
+        json.dump(hamilton_report,f,indent=4)
     
     print(client.get_total_plan_members("2024-07-07"))
 
