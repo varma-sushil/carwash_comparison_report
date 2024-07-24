@@ -242,6 +242,16 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                 
                 single_site_report["past_4_week_car_cnt_sat_sun"]=0
                 single_site_report["past_4_week_labour_hours_sat_sun"]=0
+
+                single_site_report["past_4_week_retail_car_count_mon_fri"]=0
+                single_site_report["past_4_week_retail_car_count_sat_sun"]=0
+
+                single_site_report['past_4_week_retail_revenue_mon_fri'] = 0
+                single_site_report['past_4_week_retail_revenue_sat_sun'] = 0
+
+                single_site_report['past_4_week_total_revenue_mon_fri'] = 0
+                single_site_report['past_4_week_total_revenue_sat_sun'] = 0
+
                 full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
                 for single_week in full_weeks_lst:
                     mon = single_week[0]
@@ -249,19 +259,40 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                     sat =single_week[2]
                     sun = single_week[3]
                     past_4_week_car_cnt_mon_fri_report = client.get_car_count_report([location_code],mon,fri)
+                    past_4_week_retail_revenue_summary_report_mon_fri = client.GetRevenuReportFinancialRevenueSummary([location_code],mon,fri)
+
                     past_4_week_car_cnt_sat_sun_report = client.get_car_count_report([location_code],sat,sun)
+                    past_4_week_retail_revenue_summary_report_sat_sun = client.GetRevenuReportFinancialRevenueSummary([location_code],sat,sun)
                     
-                    past_4_week_car_cnt_mon_fri        = past_4_week_car_cnt_mon_fri_report.get("car_count")
-                    past_4_week_car_cnt_sat_sun       = past_4_week_car_cnt_sat_sun_report.get("car_count")
+                    past_4_week_car_cnt_mon_fri = past_4_week_car_cnt_mon_fri_report.get("car_count")
+                    past_4_week_car_cnt_sat_sun  = past_4_week_car_cnt_sat_sun_report.get("car_count")
                     
-                    past_4_week_labour_hours_mon_fri  = past_4_week_car_cnt_mon_fri_report.get("totalhrs")
-                    
-                    past_4_week_labour_hours_sat_sun  = past_4_week_car_cnt_sat_sun_report.get("totalhrs")
+                    past_4_week_labour_hours_mon_fri = past_4_week_car_cnt_mon_fri_report.get("totalhrs")
+                    past_4_week_labour_hours_sat_sun = past_4_week_car_cnt_sat_sun_report.get("totalhrs")
+
+                    past_4_week_retail_car_count_mon_fri = past_4_week_car_cnt_mon_fri_report.get('retail_car_count')
+                    past_4_week_retail_car_count_sat_sun = past_4_week_car_cnt_sat_sun_report.get('retail_car_count')
+
+                    past_4_week_retail_revenue_mon_fri = past_4_week_retail_revenue_summary_report_mon_fri.get('netPrice', 0)
+                    past_4_week_retail_revenue_sat_sun = past_4_week_retail_revenue_summary_report_sat_sun.get('netPrice', 0)
+
+                    past_4_week_total_revenue_mon_fri = past_4_week_retail_revenue_summary_report_mon_fri.get('total', 0)
+                    past_4_week_total_revenue_sat_sun = past_4_week_retail_revenue_summary_report_sat_sun.get('total', 0)
+
                     single_site_report["past_4_week_car_cnt_mon_fri"] = single_site_report.get("past_4_week_car_cnt_mon_fri",0) +  past_4_week_car_cnt_mon_fri 
                     single_site_report["past_4_week_car_cnt_sat_sun"] = single_site_report.get("past_4_week_car_cnt_sat_sun",0) + past_4_week_car_cnt_sat_sun
                         
                     single_site_report["past_4_week_labour_hours_mon_fri"] = single_site_report.get("past_4_week_labour_hours_mon_fri",0) + past_4_week_labour_hours_mon_fri
                     single_site_report["past_4_week_labour_hours_sat_sun"] = single_site_report.get("past_4_week_labour_hours_sat_sun",0) + past_4_week_labour_hours_sat_sun
+
+                    single_site_report["past_4_week_retail_car_count_mon_fri"] += past_4_week_retail_car_count_mon_fri
+                    single_site_report["past_4_week_retail_car_count_sat_sun"] += past_4_week_retail_car_count_sat_sun
+                    
+                    single_site_report['past_4_week_retail_revenue_mon_fri'] += past_4_week_retail_revenue_mon_fri
+                    single_site_report['past_4_week_retail_revenue_sat_sun'] += past_4_week_retail_revenue_sat_sun
+
+                    single_site_report['past_4_week_total_revenue_mon_fri'] += past_4_week_total_revenue_mon_fri
+                    single_site_report['past_4_week_total_revenue_sat_sun'] += past_4_week_total_revenue_sat_sun
                 
                 print(f"past week cnt :{past_4_week_cnt}")
                 arm_plans_sold = sum([total_arm_plans1,total_arm_plans2])

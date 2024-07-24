@@ -559,6 +559,40 @@ def conversion_rate_hamilton(arm_plans_sold_cnt,wash_purchases_total_cnt,wash_pu
         print(f"Exception in conversion_rate_hamilton() {e}")
     return rate
 
+def find_retail_revenue_and_total_revenue(items):
+    wash_purchases_total_cnt = 0
+    reedeemd_total_cnt = 0
+    retail_revenue=0.0
+    total_revenue = 0.0
+    arm_plans_sold = 0
+    
+    for item in items :
+        itemtyp = item.get("ItemType")
+        discount = item.get("Discount")
+        flag= item.get("Flag")
+        price = item.get("Price")
+        
+        if flag:            #Reedemed
+            reedeemd_total_cnt+=1
+        
+        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+            wash_purchases_total_cnt+=1
+            retail_revenue+=price
+        
+        if not (flag or   discount): #total revenue monday- friday
+            total_revenue+=price
+            
+        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+            arm_plans_sold+=1
+
+    return {
+        'reedeemd_total_cnt':reedeemd_total_cnt,
+        'wash_purchases_total_cnt':wash_purchases_total_cnt,
+        'retail_revenue':retail_revenue,
+        'total_revenue':total_revenue,
+        'arm_plans_sold':arm_plans_sold
+    }
+
 def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
     final_data = {}
     proxy_url = None
@@ -570,34 +604,37 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     
     items = client.get_dail_report_v2(monday_date_str,friday_date_str)
     
-
+    data_v1 = find_retail_revenue_and_total_revenue(items)
+    wash_purchases_total_cnt = data_v1['wash_purchases_total_cnt']
+    retail_revenue = data_v1['retail_revenue']
+    total_revenue = data_v1['total_revenue']
+    reedeemd_total_cnt = data_v1['reedeemd_total_cnt']
+    arm_plans_sold1 = data_v1['arm_plans_sold']
     
-    wash_purchases_total_cnt = 0
-    reedeemd_total_cnt = 0
-    retail_revenue=0.0
-    total_revenue = 0.0
-    arm_plans_sold1 = 0
+    # wash_purchases_total_cnt = 0
+    # reedeemd_total_cnt = 0
+    # retail_revenue=0.0
+    # total_revenue = 0.0
+    # arm_plans_sold1 = 0
     
-    for item in items :
-        itemtyp = item.get("ItemType")
-        discount = item.get("Discount")
-        flag= item.get("Flag")
-        price = item.get("Price")
+    # for item in items :
+    #     itemtyp = item.get("ItemType")
+    #     discount = item.get("Discount")
+    #     flag= item.get("Flag")
+    #     price = item.get("Price")
         
-        if flag:                    #Reedemed
-            reedeemd_total_cnt+=1
+    #     if flag:                    #Reedemed
+    #         reedeemd_total_cnt+=1
         
-        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
-            wash_purchases_total_cnt+=1
-            retail_revenue+=price
+    #     elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+    #         wash_purchases_total_cnt+=1
+    #         retail_revenue+=price
         
-        if not (flag or   discount): #total revenue monday- friday
-            total_revenue+=price
+    #     if not (flag or   discount): #total revenue monday- friday
+    #         total_revenue+=price
             
-        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
-            arm_plans_sold1+=1
-
-            
+    #     if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+    #         arm_plans_sold1+=1
         
     
     final_data["car_count_monday_to_friday"] = sum([wash_purchases_total_cnt,reedeemd_total_cnt])
@@ -605,44 +642,51 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     final_data["retail_car_count_monday_to_friday"] = wash_purchases_total_cnt
     final_data["retail_revenue_monday_to_friday"] = retail_revenue
     final_data["total_revenue_monday_to_friday"] =  total_revenue
-    final_data["labour_hours_monday_to_friday"]  = "" #update
-    final_data["cars_per_labour_hour_monday_to_friday"] = "" #update
+    final_data["labour_hours_monday_to_friday"]  = ""
+    final_data["cars_per_labour_hour_monday_to_friday"] = ""
     
     #for saturday to sunday
     items = client.get_dail_report_v2(saturday_date_str, sunday_date_str)
+
+    data_v2 = find_retail_revenue_and_total_revenue(items)
+    wash_purchases_total_cnt2 = data_v2['wash_purchases_total_cnt']
+    retail_revenue2 = data_v2['retail_revenue']
+    total_revenue2 = data_v2['total_revenue']
+    reedeemd_total_cnt2 = data_v2['reedeemd_total_cnt']
+    arm_plans_sold2 = data_v2['arm_plans_sold']
     
-    wash_purchases_total_cnt2 = 0
-    reedeemd_total_cnt2 = 0
-    retail_revenue2=0.0
-    total_revenue2 = 0.0
-    arm_plans_sold2 = 0
+    # wash_purchases_total_cnt2 = 0
+    # reedeemd_total_cnt2 = 0
+    # retail_revenue2=0.0
+    # total_revenue2 = 0.0
+    # arm_plans_sold2 = 0
     
-    for item in items :
-        itemtyp = item.get("ItemType")
-        discount = item.get("Discount")
-        flag= item.get("Flag")
-        price = item.get("Price")
+    # for item in items :
+    #     itemtyp = item.get("ItemType")
+    #     discount = item.get("Discount")
+    #     flag= item.get("Flag")
+    #     price = item.get("Price")
         
-        if flag:
-            reedeemd_total_cnt2+=1
+    #     if flag:
+    #         reedeemd_total_cnt2+=1
         
-        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
-            wash_purchases_total_cnt2+=1
-            retail_revenue2+=price
+    #     elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+    #         wash_purchases_total_cnt2+=1
+    #         retail_revenue2+=price
         
-        if not (flag or   discount): 
-            total_revenue2+=price
+    #     if not (flag or   discount): 
+    #         total_revenue2+=price
             
-        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
-            arm_plans_sold2+=1
+    #     if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+    #         arm_plans_sold2+=1
             
     final_data["car_count_saturday_sunday"] = sum([wash_purchases_total_cnt2,reedeemd_total_cnt2])
     final_data["arm_plans_reedemed_saturday_sunday"] = "" #update
     final_data["retail_car_count_saturday_sunday"]   = wash_purchases_total_cnt2
     final_data["retail_revenue_saturday_sunday"]    = retail_revenue2
     final_data["total_revenue_saturday_sunday"]    = total_revenue2
-    final_data["labour_hours_saturday_sunday"]     = "" #update
-    final_data["cars_per_labour_hour_saturday_sunday"] = "" #update
+    final_data["labour_hours_saturday_sunday"]     = ""
+    final_data["cars_per_labour_hour_saturday_sunday"] = ""
     
     arm_plans_sold_cnt = sum([arm_plans_sold1,arm_plans_sold2])
     
@@ -652,35 +696,37 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     #past 4 weeks data 
     past_4_week_day1,past_4_week_day2 = generate_past_4_weeks_days(monday_date_str)
     items = client.get_dail_report_v2(past_4_week_day1,past_4_week_day2)
+
+    data_v3 = find_retail_revenue_and_total_revenue(items)
     
-    wash_purchases_total_cnt3 = 0
-    reedeemd_total_cnt3 = 0
-    retail_revenue3=0.0
-    total_revenue3 = 0.0
-    arm_plans_sold3 = 0
+    wash_purchases_total_cnt3 = data_v3['wash_purchases_total_cnt']
+    reedeemd_total_cnt3 = data_v3['reedeemd_total_cnt']
+    retail_revenue3= data_v3['retail_revenue']
+    total_revenue3 = data_v3['total_revenue']
+    arm_plans_sold3 = data_v3['arm_plans_sold']
     
-    for item in items :
-        itemtyp = item.get("ItemType")
-        discount = item.get("Discount")
-        flag= item.get("Flag")
-        price = item.get("Price")
+    # for item in items :
+    #     itemtyp = item.get("ItemType")
+    #     discount = item.get("Discount")
+    #     flag= item.get("Flag")
+    #     price = item.get("Price")
         
-        if flag:
-            reedeemd_total_cnt3+=1
+    #     if flag:
+    #         reedeemd_total_cnt3+=1
         
-        elif itemtyp=="Wash" and not (flag or discount): #wash purchase
-            wash_purchases_total_cnt3+=1
-            retail_revenue3+=price
+    #     elif itemtyp=="Wash" and not (flag or discount): #wash purchase
+    #         wash_purchases_total_cnt3+=1
+    #         retail_revenue3+=price
         
-        if not (flag or   discount): 
-            total_revenue3+=price
+    #     if not (flag or   discount): 
+    #         total_revenue3+=price
             
-        if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
-            arm_plans_sold3+=1
+    #     if itemtyp in ["WashClubReactivation","WashClubSignUp","AppWashClubSignUp"] :# WashClubSignUp,  # arm plans sold 
+    #         arm_plans_sold3+=1
     
      
     past_4_week_cnt = sum([wash_purchases_total_cnt3,reedeemd_total_cnt3])
-    final_data["past_4_week_cnt"] = past_4_week_cnt
+    final_data["past_4_week_cnt"] = past_4_week_cnt # Past 4 week Total car count mon-sun
     final_data["past_4_week_conversion_rate"] = conversion_rate_hamilton(arm_plans_sold3,wash_purchases_total_cnt3,0)
     final_data["past_4_weeks_total_revenue"] =total_revenue3
     final_data["past_4_weeks_arm_plans_sold_cnt"] = arm_plans_sold3
@@ -691,6 +737,15 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     
     final_data["past_4_week_car_cnt_sat_sun"]=0
     # final_data["past_4_week_labour_hours_sat_sun"]=0
+
+    final_data["past_4_week_retail_car_count_mon_fri"]=0
+    final_data["past_4_week_retail_car_count_sat_sun"]=0
+
+    final_data['past_4_week_retail_revenue_mon_fri'] = 0
+    final_data['past_4_week_retail_revenue_sat_sun'] = 0
+
+    final_data['past_4_week_total_revenue_mon_fri'] = 0
+    final_data['past_4_week_total_revenue_sat_sun'] = 0
     
     full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
     for single_week in full_weeks_lst:
@@ -698,14 +753,36 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         fri = single_week[1]
         sat =single_week[2]
         sun = single_week[3]
+
         items = client.get_dail_report_v2(mon,fri)
         past_week_car_count_mon_fri = client.get_car_count(items)
+
+        data_mon_fri = find_retail_revenue_and_total_revenue(items)
+        wash_purchases_total_cnt4 = data_mon_fri['wash_purchases_total_cnt']
+        reedeemd_total_cnt4 = data_mon_fri['reedeemd_total_cnt']
+        retail_revenue4= data_mon_fri['retail_revenue']
+        total_revenue4 = data_mon_fri['total_revenue']
+        arm_plans_sold4 = data_mon_fri['arm_plans_sold']
+
         final_data["past_4_week_car_cnt_mon_fri"] = final_data.get("past_4_week_car_cnt_mon_fri",0) +  past_week_car_count_mon_fri
-        
+        final_data["past_4_week_retail_car_count_mon_fri"] += wash_purchases_total_cnt4
+        final_data['past_4_week_retail_revenue_mon_fri'] += retail_revenue4
+        final_data['past_4_week_total_revenue_mon_fri'] += total_revenue4
+
         items2 = client.get_dail_report_v2(sat,sun)
         past_week_car_count_sat_sun = client.get_car_count(items2)
+
+        data_sat_sun = find_retail_revenue_and_total_revenue(items2)
+        wash_purchases_total_cnt5 = data_sat_sun['wash_purchases_total_cnt']
+        reedeemd_total_cnt5 = data_sat_sun['reedeemd_total_cnt']
+        retail_revenue5= data_sat_sun['retail_revenue']
+        total_revenue5 = data_sat_sun['total_revenue']
+        arm_plans_sold5 = data_sat_sun['arm_plans_sold']
+
         final_data["past_4_week_car_cnt_sat_sun"] = final_data.get("past_4_week_car_cnt_sat_sun",0) + past_week_car_count_sat_sun
-        
+        final_data["past_4_week_retail_car_count_sat_sun"] += wash_purchases_total_cnt5
+        final_data['past_4_week_retail_revenue_sat_sun'] += retail_revenue5
+        final_data['past_4_week_total_revenue_sat_sun'] += total_revenue5
         
     
     print(f"past week cnt : {past_4_week_cnt}")

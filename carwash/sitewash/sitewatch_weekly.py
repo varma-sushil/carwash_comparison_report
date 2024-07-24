@@ -1090,15 +1090,27 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
                         
                         combined_data["past_4_week_car_cnt_mon_fri"]=0
-                        combined_data["past_4_week_labour_hours_mon_fri"]=0
-                        
                         combined_data["past_4_week_car_cnt_sat_sun"]=0
+
+                        combined_data["past_4_week_labour_hours_mon_fri"]=0                     
                         combined_data["past_4_week_labour_hours_sat_sun"]=0
+
+                        combined_data["past_4_week_retail_car_count_mon_fri"]=0
+                        combined_data["past_4_week_retail_car_count_sat_sun"]=0
+
+                        combined_data['past_4_week_retail_revenue_mon_fri'] = 0
+                        combined_data['past_4_week_retail_revenue_sat_sun'] = 0
+
+                        combined_data['past_4_week_total_revenue_mon_fri'] = 0
+                        combined_data['past_4_week_total_revenue_sat_sun'] = 0
+
+
                         for single_week in full_weeks_lst:
                             mon = single_week[0]
                             fri = single_week[1]
                             sat =single_week[2]
                             sun = single_week[3]
+
                             request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
                             report_data4 = client.get_report(reportOn,request_id4)
                             extracted_data4 = report_data_extractor(report_data4)
@@ -1113,14 +1125,46 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             report_data5 = client.get_report(reportOn,request_id5)
                             extracted_data5 = report_data_extractor(report_data5)
                             
-                            
-                            car_cnt_mon_friday = extracted_data4.get("car_count",0)
+                            # Mon-Friday
+                            car_cnt_mon_fri = extracted_data4.get("car_count",0)
+                            arm_plans_reedemed_cnt_mon_fri = extracted_data4.get("arm_plans_reedemed_cnt", 0)
+                            net_sales_amt_mon_fri = extracted_data4.get("net_sales",0.0)
+                            total_revenue_val_mon_fri = round(extracted_data4.get("total_revenue",0.0),2)
+                            retail_car_count_mon_fri = (car_cnt_mon_fri-arm_plans_reedemed_cnt_mon_fri)
+                            arm_plans_reedemed_mon_fri_amt = abs(extracted_data4.get("arm_plans_reedemed_amt",0))
+                            arm_plans_recharged_amt_mon_fri_amt = extracted_data4.get("arm_plans_recharged_amt",0)
+                            total_revenue_mon_fri = round(extracted_data4.get("total_revenue",0.0),2)
+
+                            # Sat-Sun
                             car_cnt_sat_sun    = extracted_data5.get("car_count",0)
-                            combined_data["past_4_week_car_cnt_mon_fri"] = combined_data.get("past_4_week_car_cnt_mon_fri",0)+car_cnt_mon_friday
+                            arm_plans_reedemed_cnt_sat_sun = extracted_data5.get("arm_plans_reedemed_cnt", 0)
+                            net_sales_amt_sat_sun = extracted_data5.get("net_sales",0.0)
+                            total_revenue_val_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
+                            retail_car_count_sat_sun = (car_cnt_sat_sun-arm_plans_reedemed_cnt_sat_sun)
+                            arm_plans_reedemed_sat_sun_amt = abs(extracted_data5.get("arm_plans_reedemed_amt",0))
+                            arm_plans_recharged_amt_sat_sun_amt = extracted_data5.get("arm_plans_recharged_amt",0)
+                            total_revenue_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
+
+                            if client_name=="Sudz - Beverly":
+                                combined_data['past_4_week_retail_revenue_mon_fri'] += round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
+                                combined_data['past_4_week_retail_revenue_sat_sun'] += round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
+                            else:
+                                combined_data['past_4_week_retail_revenue_mon_fri'] += round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
+                                combined_data['past_4_week_retail_revenue_sat_sun'] += round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
+
+                            retail_car_count_sat_sun = (car_cnt_sat_sun-arm_plans_reedemed_cnt_sat_sun)
+
+                            combined_data["past_4_week_car_cnt_mon_fri"] = combined_data.get("past_4_week_car_cnt_mon_fri",0)+car_cnt_mon_fri
                             combined_data["past_4_week_car_cnt_sat_sun"] = combined_data.get("past_4_week_car_cnt_sat_sun",0)+ car_cnt_sat_sun
+
                             combined_data["past_4_week_labour_hours_mon_fri"] = combined_data.get("past_4_week_labour_hours_mon_fri",0) + labour_hours_mon_fri
                             combined_data["past_4_week_labour_hours_sat_sun"] = combined_data.get("past_4_week_labour_hours_sat_sun",0) + labour_hours_sat_sun
-                            
+
+                            combined_data["past_4_week_retail_car_count_mon_fri"] = combined_data.get("past_4_week_retail_car_count_mon_fri", 0)+retail_car_count_mon_fri
+                            combined_data["past_4_week_retail_car_count_sat_sun"] = combined_data.get("past_4_week_retail_car_count_sat_sun", 0)+retail_car_count_sat_sun
+
+                            combined_data['past_4_week_total_revenue_mon_fri'] += total_revenue_mon_fri
+                            combined_data['past_4_week_total_revenue_sat_sun'] += total_revenue_sat_sun
                             
                             
                             
@@ -1138,6 +1182,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data["past_4_weeks_total_revenue"] = past_4_weeks_total_revenue
                         combined_data["past_4_weeks_arm_plans_sold_cnt"]= past_4_week_arm_plans_sold
                         combined_data["past_4_weeks_retail_car_count"] = past_4_weeks_retail_car_count
+
                     print(f"combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:
