@@ -375,6 +375,9 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
         current_week (_type_): _description_
         past_4_weeks (_type_): _description_
     """
+    if not all([current_week, past_4_weeks]):
+        return
+    
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
     postivte_10_percent_val = past_4_weeks + past_4_weeks*0.10
@@ -410,6 +413,10 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         current_week (_type_): _description_
         past_4_weeks (_type_): _description_
     """
+
+    if not all([current_week, past_4_weeks]):
+        return
+    
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
     postivte_20_percent_val = past_4_weeks + past_4_weeks*0.20
@@ -437,6 +444,12 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         
     else:
         print("no colour")
+
+def handle_zero_divison(a, b):
+    if b == 0:
+        return ''
+    else:
+        return a/b
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
     # Load the existing workbook using openpyxl
@@ -1451,8 +1464,6 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
                 "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
     
-    print('ALL LOcation: ', all_locations)
-    
     for index,place_dictionary in enumerate(all_locations):
         current_week_total_cars = xl_map[6][index+4]
         past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
@@ -1506,32 +1517,25 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         curr_week_total_revenue_sat_sun = xl_map[10][index+4]
         set_colour_new(curr_week_total_revenue_sat_sun, past_4_week_total_revenue_sat_sun_avg, 11, index+5, worksheet, colours)
 
-        try:
-            past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_4_car_count_mon_fri_avg+past_4_car_count_sat_sun_avg)
-            curr_avg_ratail_visit = xl_map[12][index+4]
-            set_colour_new(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
-        except Exception as e:
-                print(e)
+        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_4_car_count_mon_fri_avg+past_4_car_count_sat_sun_avg)
+        curr_avg_ratail_visit = xl_map[12][index+4]
+        set_colour_new(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
-        past_4_week_labour_hours_mon_fri_avg = place_dictionary.get('past_4_week_labour_hours_mon_fri', 0)/4
+        past_4_week_labour_hours_mon_fri_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_mon_fri', 0),place_dictionary.get('past_4_week_labour_hours_mon_fri', 0))
         if xl_map[16][index+4] != '':
             curr_week_labour_hours_mon_fri_avg = xl_map[16][index+4]
             set_colour_new(curr_week_labour_hours_mon_fri_avg, past_4_week_labour_hours_mon_fri_avg, 17, index+5, worksheet, colours)
 
-        past_4_week_labour_hours_sat_sun_avg = place_dictionary.get('past_4_week_labour_hours_sat_sun', 0)/4
+        past_4_week_labour_hours_sat_sun_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_sat_sun', 0),place_dictionary.get('past_4_week_labour_hours_sat_sun', 0))
         if xl_map[17][index+4] != '':
             curr_week_labour_hours_sat_sun_avg = xl_map[17][index+4]
             set_colour_new(curr_week_labour_hours_sat_sun_avg, past_4_week_labour_hours_sat_sun_avg, 18, index+5, worksheet, colours)
 
-
         # Total Cars Per Man Hour
         if xl_map[18][index+4] != '':
-            try:
-                past_4_week_total_cars_per_man_hour = (past_4_car_count_mon_fri_avg+past_4_car_count_sat_sun_avg)/(past_4_week_labour_hours_mon_fri_avg+past_4_week_labour_hours_sat_sun_avg)
-                curr_total_cars_per_man_hour = xl_map[18][index+4]
-                set_colour_new(curr_total_cars_per_man_hour, past_4_week_total_cars_per_man_hour, 19, index+5, worksheet, colours)
-            except Exception as e:
-                print(e)
+            past_4_week_total_cars_per_man_hour = (past_4_car_count_mon_fri_avg+past_4_car_count_sat_sun_avg)/(past_4_week_labour_hours_mon_fri_avg+past_4_week_labour_hours_sat_sun_avg)
+            curr_total_cars_per_man_hour = xl_map[18][index+4]
+            set_colour_new(curr_total_cars_per_man_hour, past_4_week_total_cars_per_man_hour, 19, index+5, worksheet, colours)
 
         
         print("\n"*2)

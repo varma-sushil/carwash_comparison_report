@@ -363,6 +363,9 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
         current_week (_type_): _description_
         past_4_weeks (_type_): _description_
     """
+    if not all([current_week, past_4_weeks]):
+        return
+        
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
     postivte_10_percent_val = past_4_weeks + past_4_weeks*0.10
@@ -398,6 +401,10 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         current_week (_type_): _description_
         past_4_weeks (_type_): _description_
     """
+
+    if not all([current_week, past_4_weeks]):
+        return
+    
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
     postivte_20_percent_val = past_4_weeks + past_4_weeks*0.20
@@ -440,6 +447,12 @@ def chnage_total_revenue_fun(curent_revenue,past_4_revenue):
     chnage = ((curent_revenue - past_4_revenue_avg)/past_4_revenue_avg)*100
     print(f"change:{chnage} = ({curent_revenue}-{past_4_revenue_avg})/{past_4_revenue_avg}")
     return chnage
+
+def handle_zero_divison(a, b):
+    if b == 0:
+        return ''
+    else:
+        return a/b
 
 def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
     # Load the existing workbook using openpyxl
@@ -1511,12 +1524,12 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         curr_avg_ratail_visit = xl_map[12][index+4]
         set_colour_new(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
-        past_4_week_labour_hours_mon_fri_avg = place_dictionary.get('past_4_week_labour_hours_mon_fri', 0)/4
+        past_4_week_labour_hours_mon_fri_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_mon_fri', 0),place_dictionary.get('past_4_week_labour_hours_mon_fri', 0))
         if xl_map[16][index+4] != '':
             curr_week_labour_hours_mon_fri_avg = xl_map[16][index+4]
             set_colour_new(curr_week_labour_hours_mon_fri_avg, past_4_week_labour_hours_mon_fri_avg, 17, index+5, worksheet, colours)
 
-        past_4_week_labour_hours_sat_sun_avg = place_dictionary.get('past_4_week_labour_hours_sat_sun', 0)/4
+        past_4_week_labour_hours_sat_sun_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_sat_sun', 0),place_dictionary.get('past_4_week_labour_hours_sat_sun', 0))
         if xl_map[17][index+4] != '':
             curr_week_labour_hours_sat_sun_avg = xl_map[17][index+4]
             set_colour_new(curr_week_labour_hours_sat_sun_avg, past_4_week_labour_hours_sat_sun_avg, 18, index+5, worksheet, colours)
@@ -1712,11 +1725,11 @@ if __name__=="__main__":
     path="test" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    monday_date_str="2024-07-01"
-    friday_date_str = "2024-07-05"
-    saturday_date_str = "2024-07-06"
-    sunday_date_str="2024-07-07"  #Y-M-D
+    # # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # monday_date_str="2024-07-01"
+    # friday_date_str = "2024-07-05"
+    # saturday_date_str = "2024-07-06"
+    # sunday_date_str="2024-07-07"  #Y-M-D
     
     # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
@@ -1732,10 +1745,10 @@ if __name__=="__main__":
     # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # #for hamilton dates
-    # monday_date_str = "2024-07-01"
-    # friday_date_str = "2024-07-05"
-    # saturday_date_str = "2024-07-06"
-    # sunday_date_str  = "2024-07-07"
+    monday_date_str = "2024-07-01"
+    friday_date_str = "2024-07-05"
+    saturday_date_str = "2024-07-06"
+    sunday_date_str  = "2024-07-07"
     
     # # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
     # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
