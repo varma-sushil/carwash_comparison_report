@@ -264,14 +264,14 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                     past_4_week_car_cnt_sat_sun_report = client.get_car_count_report([location_code],sat,sun)
                     past_4_week_retail_revenue_summary_report_sat_sun = client.GetRevenuReportFinancialRevenueSummary([location_code],sat,sun)
                     
-                    past_4_week_car_cnt_mon_fri = past_4_week_car_cnt_mon_fri_report.get("car_count")
-                    past_4_week_car_cnt_sat_sun  = past_4_week_car_cnt_sat_sun_report.get("car_count")
+                    past_4_week_car_cnt_mon_fri = past_4_week_car_cnt_mon_fri_report.get("car_count", 0)
+                    past_4_week_car_cnt_sat_sun  = past_4_week_car_cnt_sat_sun_report.get("car_count", 0)
                     
-                    past_4_week_labour_hours_mon_fri = past_4_week_car_cnt_mon_fri_report.get("totalhrs")
-                    past_4_week_labour_hours_sat_sun = past_4_week_car_cnt_sat_sun_report.get("totalhrs")
+                    past_4_week_labour_hours_mon_fri = past_4_week_car_cnt_mon_fri_report.get("totalhrs", 0)
+                    past_4_week_labour_hours_sat_sun = past_4_week_car_cnt_sat_sun_report.get("totalhrs", 0)
 
-                    past_4_week_retail_car_count_mon_fri = past_4_week_car_cnt_mon_fri_report.get('retail_car_count')
-                    past_4_week_retail_car_count_sat_sun = past_4_week_car_cnt_sat_sun_report.get('retail_car_count')
+                    past_4_week_retail_car_count_mon_fri = past_4_week_car_cnt_mon_fri_report.get('retail_car_count', 0)
+                    past_4_week_retail_car_count_sat_sun = past_4_week_car_cnt_sat_sun_report.get('retail_car_count', 0)
 
                     past_4_week_retail_revenue_mon_fri = past_4_week_retail_revenue_summary_report_mon_fri.get('netPrice', 0)
                     past_4_week_retail_revenue_sat_sun = past_4_week_retail_revenue_summary_report_sat_sun.get('netPrice', 0)
