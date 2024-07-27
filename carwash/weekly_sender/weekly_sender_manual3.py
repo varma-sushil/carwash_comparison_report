@@ -1651,7 +1651,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         print("Avg. Retail Visit")
         past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg)
         curr_avg_ratail_visit = xl_map[12][index+4]
-        set_colour_new(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
+        set_colour_for_avg_retail(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
         #Cars Per Labor Hour Mon - Fri
         past_4_week_labour_hours_mon_fri_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_mon_fri', 0),place_dictionary.get('past_4_week_labour_hours_mon_fri', 0))
@@ -1774,7 +1774,7 @@ if __name__=="__main__":
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="test_10_2" #"07-2024"#"06-2024"
+    path="test_10_3" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
