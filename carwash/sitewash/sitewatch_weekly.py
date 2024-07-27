@@ -13,6 +13,7 @@ import xlsxwriter
 from sitewatch4 import sitewatchClient
 from sitewatch4 import generate_past_4_weeks_days
 from sitewatch4 import generate_past_4_week_days_full
+import traceback 
 import random
 
 import sys
@@ -1025,7 +1026,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         extracted_data2= report_data_extractor(report_data)
                         car_count_saturday_sunday = extracted_data2.get("car_count",0)
                         arm_plans_reedemed_saturday_sunday_cnt = extracted_data2.get("arm_plans_reedemed_cnt",0)
-                        arm_plans_reedemed_saturday_sunday_amt = extracted_data2.get("arm_plans_reedemed_amt",0)
+                        arm_plans_reedemed_saturday_sunday_amt = abs(extracted_data2.get("arm_plans_reedemed_amt",0))
                         arm_plans_recharged_amt_saturday_sunday_amt =extracted_data2.get("arm_plans_recharged_amt",0)
                         
                         retail_car_count_saturday_sunday =(car_count_saturday_sunday- arm_plans_reedemed_saturday_sunday_cnt)
@@ -1104,7 +1105,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data['past_4_week_total_revenue_mon_fri'] = 0
                         combined_data['past_4_week_total_revenue_sat_sun'] = 0
 
-
+                        cnt=0
                         for single_week in full_weeks_lst:
                             mon = single_week[0]
                             fri = single_week[1]
@@ -1127,6 +1128,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             
                             # Mon-Friday
                             car_cnt_mon_fri = extracted_data4.get("car_count",0)
+                            print(f"car cnt 1 ; {car_cnt_mon_fri}")
                             arm_plans_reedemed_cnt_mon_fri = extracted_data4.get("arm_plans_reedemed_cnt", 0)
                             net_sales_amt_mon_fri = extracted_data4.get("net_sales",0.0)
                             total_revenue_val_mon_fri = round(extracted_data4.get("total_revenue",0.0),2)
@@ -1137,6 +1139,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
 
                             # Sat-Sun
                             car_cnt_sat_sun    = extracted_data5.get("car_count",0)
+                            print(f"car count2 : {car_cnt_sat_sun}")
                             arm_plans_reedemed_cnt_sat_sun = extracted_data5.get("arm_plans_reedemed_cnt", 0)
                             net_sales_amt_sat_sun = extracted_data5.get("net_sales",0.0)
                             total_revenue_val_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
@@ -1146,12 +1149,22 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             total_revenue_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
 
                             if client_name=="Sudz - Beverly":
-                                combined_data['past_4_week_retail_revenue_mon_fri'] += round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
-                                combined_data['past_4_week_retail_revenue_sat_sun'] += round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
+                                past_4_week_retail_revenue_sat_sun = round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
+                                past_4_week_retail_revenue_mon_fri = round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
+                                combined_data['past_4_week_retail_revenue_mon_fri'] = combined_data.get("past_4_week_retail_revenue_mon_fri",0)+ past_4_week_retail_revenue_mon_fri
+                                combined_data['past_4_week_retail_revenue_sat_sun'] = combined_data.get("past_4_week_retail_revenue_sat_sun",0) + past_4_week_retail_revenue_sat_sun
+                                # print(f"retail revenue mon fri : {combined_data['past_4_week_retail_revenue_mon_fri']}")
+                                # print(f" retail revenue sat sun : {combined_data['past_4_week_retail_revenue_sat_sun']}")
+                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"] = round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"] = round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
                             else:
-                                combined_data['past_4_week_retail_revenue_mon_fri'] += round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
-                                combined_data['past_4_week_retail_revenue_sat_sun'] += round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
+                                past_4_week_retail_revenue_mon_fri  = round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
+                                past_4_week_retail_revenue_sat_sun  =  round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
+                                combined_data['past_4_week_retail_revenue_mon_fri'] = combined_data.get("past_4_week_retail_revenue_mon_fri",0) + past_4_week_retail_revenue_mon_fri
+                                combined_data['past_4_week_retail_revenue_sat_sun'] = combined_data.get("past_4_week_retail_revenue_sat_sun",0) + past_4_week_retail_revenue_sat_sun
 
+                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"]  = round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"]  = round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
                             retail_car_count_sat_sun = (car_cnt_sat_sun-arm_plans_reedemed_cnt_sat_sun)
 
                             combined_data["past_4_week_car_cnt_mon_fri"] = combined_data.get("past_4_week_car_cnt_mon_fri",0)+car_cnt_mon_fri
@@ -1166,6 +1179,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             combined_data['past_4_week_total_revenue_mon_fri'] += total_revenue_mon_fri
                             combined_data['past_4_week_total_revenue_sat_sun'] += total_revenue_sat_sun
                             
+                            cnt+=1    
                             
                             
                             
@@ -1211,7 +1225,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     
                     
             except Exception as e:
-                print(f"Excetion for this loctaion {client_name} {e}")                 
+                print(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")                 
     
     return site_watch_report
 
@@ -1480,884 +1494,13 @@ def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
         result = Average_retail_visit_IL
     
     except Exception as e:
-        print(f"Exception Average_retail_visit_IL_function() {e}")
+        print(f"Exception Average_retail_visit_IL_function() {e} {traceback.print_exc() }")
     
     return result
 
 
 
-def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
-    "Will return updates place dictionary"
-    xl_map[2][place_index] = place_dictionary.get("car_count_monday_to_friday")
-    xl_map[3][place_index]=place_dictionary.get("car_count_saturday_sunday")
-    xl_map[4][place_index]=place_dictionary.get("retail_car_count_monday_to_friday")
-    xl_map[5][place_index]=place_dictionary.get("retail_car_count_saturday_sunday")
-    
-    xl_map[7][place_index]=place_dictionary.get("retail_revenue_monday_to_friday")
-    xl_map[8][place_index]=place_dictionary.get("retail_revenue_saturday_sunday")
-    xl_map[9][place_index]=place_dictionary.get("total_revenue_monday_to_friday")
-    xl_map[10][place_index]=place_dictionary.get("total_revenue_saturday_sunday")
-    
-    xl_map[14][place_index]=place_dictionary.get("labour_hours_monday_to_friday")
-    xl_map[15][place_index]=place_dictionary.get("labour_hours_saturday_sunday")
-    xl_map[16][place_index]=place_dictionary.get("cars_per_labour_hour_monday_to_friday")
-    xl_map[17][place_index]=place_dictionary.get("cars_per_labour_hour_saturday_sunday")
-    
-    xl_map[19][place_index] = place_dictionary.get("arm_plans_sold_cnt")
-    xl_map[20][place_index]= place_dictionary.get("conversion_rate")
-    xl_map[21][place_index] = place_dictionary.get("total_arm_planmembers_cnt")
-        
-    return xl_map
 
-def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_name="sheet1"):
-    # Load the existing workbook using openpyxl
-    try:
-        workbook = openpyxl.load_workbook(filename)
-        worksheet = workbook.create_sheet(sheet_name)
-    except Exception as _:
-        print(f"creating neww xl file !! {filename}")
-        workbook = openpyxl.Workbook()
-        worksheet = workbook.active
-        worksheet.title = sheet_name
-    
-    
-    xl_map = [
-    [""],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ["","","","","","","","","","","","","","","","","","","","","","","",],
-    ]
-    
-    cols = ["    ","Totals","ILL",
-                "GA / SC","Sudz - Beverly",'Fuller-Calumet',
-                "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
-                "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
-                "Getaway-Ottawa","Getaway-Peru","Sparkle-Belair",
-                "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
-                "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
-                "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
-
-    index_names =["Car Count Mon - Fri","Car Count Sat - Sun","Retail Car Count Mon - Fri",
-                "Retail Car Count Sat - Sun","Total Cars","Retail Revenue Mon - Fri",
-                "Retail Revenue Sat - Sun","Total Revenue Mon - Fri","Total Revenue Sat - Sun",
-                "Total Revenue","Avg. Retail Visit","Avg. Member Visit",
-                "Staff Hours Mon - Fri","Staff Hours Sat - Sun","Cars Per Labor Hour Mon - Fri",
-                "Cars Per Labor Hour Sat & Sun","Total Cars Per Man Hour","Total Club Plans Sold",
-                "Conversion Rate","Total Club Plan Members"]
-
-    xl_map[0][0] = comment #to maps
-    
-    
-    
-    for col in range(len(cols)): #column names to maps
-        xl_map[1][col]=cols[col]
-        
-    for index  in range(len(index_names)):  #index names to map
-        xl_map[index+2][0]=index_names[index]
-    
-    Fuller_Cicero = data.get("Fuller-Cicero")  
-
-    if Fuller_Cicero:
-        Fuller_Cicero_index=6
-        update_place_to_xlmap(xl_map,Fuller_Cicero_index,Fuller_Cicero)
-    Fuller_Matteson = data.get("Fuller-Matteson")
-    
-    if Fuller_Matteson:
-        Fuller_Matteson_index=7
-        update_place_to_xlmap(xl_map,Fuller_Matteson_index,Fuller_Matteson)
-    
-    Fuller_Elgin = data.get("Fuller-Elgin")
-    
-    if Fuller_Elgin:
-        Fuller_Elgin_index = 8
-        update_place_to_xlmap(xl_map,Fuller_Elgin_index,Fuller_Elgin)
-        
-      
-    Sparkle_Belair = data.get("Sparkle-Belair")
-    
-    if Sparkle_Belair:
-        Sparkle_Belair_index=14
-
-        update_place_to_xlmap(xl_map,Sparkle_Belair_index,Sparkle_Belair)
-        
-    Sparkle_Evans = data.get("Sparkle-Evans")
-    
-    if Sparkle_Evans:
-        Sparkle_Evans_index=15
-
-        update_place_to_xlmap(xl_map,Sparkle_Evans_index,Sparkle_Evans)
-
-    Sparkle_North_Augusta = data.get("Sparkle-North Augusta")
-    
-    if Sparkle_North_Augusta:
-        Sparkle_North_Augusta_index=20
-
-        update_place_to_xlmap(xl_map,Sparkle_North_Augusta_index,Sparkle_North_Augusta)
-    
-    Sparkle_Greenwood = data.get("Sparkle-Greenwood")
-    
-    if Sparkle_Greenwood:
-        Sparkle_Greenwood_index=17
-
-        update_place_to_xlmap(xl_map,Sparkle_Greenwood_index,Sparkle_Greenwood)
-    
-    
-    Sparkle_Grovetown_1 = data.get("Sparkle-Grovetown 1")
-    
-    if Sparkle_Grovetown_1:
-        Sparkle_Grovetown_1_index=18
-
-        update_place_to_xlmap(xl_map,Sparkle_Grovetown_1_index,Sparkle_Grovetown_1)
-        
-    Sparkle_Windsor_Spring = data.get("Sparkle-Windsor Spring")    
-    
-    if Sparkle_Windsor_Spring:
-        Sparkle_Windsor_Spring_index=22 
-        
-        update_place_to_xlmap(xl_map,Sparkle_Windsor_Spring_index,Sparkle_Windsor_Spring)
-        
-    Sparkle_Furrys_Ferry = data.get("Sparkle-Furrys Ferry")
-    
-    if Sparkle_Furrys_Ferry:
-        Sparkle_Furrys_Ferry_index= 16
-        
-        update_place_to_xlmap(xl_map,Sparkle_Furrys_Ferry_index,Sparkle_Furrys_Ferry)      
-
-    Sparkle_Peach_Orchard = data.get("Sparkle-Peach Orchard")
-    
-    if Sparkle_Peach_Orchard:
-        Sparkle_Peach_Orchard_index=21
-        
-        update_place_to_xlmap(xl_map,Sparkle_Peach_Orchard_index,Sparkle_Peach_Orchard)
-        
-    Sparkle_Grovetown_2 =  data.get("Sparkle-Grovetown 2")   
-      
-    if Sparkle_Grovetown_2:
-        Sparkle_Grovetown_2_index =19
-        
-        update_place_to_xlmap(xl_map,Sparkle_Grovetown_2_index,Sparkle_Grovetown_2)
-        
-    Fuller_Calumet = data.get("Fuller-Calumet")
-    
-    if Fuller_Calumet:
-        Fuller_Calumet_index= 5
-        
-        update_place_to_xlmap(xl_map,Fuller_Calumet_index,Fuller_Calumet)
-        
-        
-    Sudz_Beverly = data.get("Sudz - Beverly")
-    
-    if Sudz_Beverly:
-        Sudz_Beverly_index = 4
-        
-        update_place_to_xlmap(xl_map,Sudz_Beverly_index,Sudz_Beverly)
-        
-    ##Hamilton sites 
-    
-    Getaway_Macomb = data.get("Getaway-Macomb")
-    
-    if Getaway_Macomb:
-        Getaway_Macomb_index = 10
-        update_place_to_xlmap(xl_map,Getaway_Macomb_index,Getaway_Macomb)
-        
-    Getaway_Morton = data.get("Getaway-Morton")
-    
-    if Getaway_Morton:
-        Getaway_Morton_index=11
-        update_place_to_xlmap(xl_map,Getaway_Morton_index,Getaway_Morton)
-        
-    Getaway_Ottawa = data.get("Getaway-Ottawa")
-    
-    if Getaway_Ottawa:
-        Getaway_Ottawa_index = 12
-        update_place_to_xlmap(xl_map,Getaway_Ottawa_index,Getaway_Ottawa)
-        
-    Getaway_Peru = data.get("Getaway-Peru")    
-    
-    if Getaway_Peru:
-        Getaway_Peru_index = 13
-        update_place_to_xlmap(xl_map,Getaway_Peru_index,Getaway_Peru)
-        
-    
-    #Hamilton 
-    
-    Splash_Peoria = data.get("Splash-Peoria")
-    
-    if Splash_Peoria:
-        Splash_Peoria_index = 9
-        update_place_to_xlmap(xl_map,Splash_Peoria_index,Splash_Peoria)
-
-    #computation for first three columns 
-    # sum([ xl_map[2][i+1] for i in range(3,13)])
-    
-    #first index
-    car_count_monday_to_friday_ILL = do_sum(xl_map,2,range(3,13))
-    xl_map[2][2] = car_count_monday_to_friday_ILL
-    
-    car_count_monday_to_friday_GA_SC = do_sum(xl_map,2,range(13,22))
-    xl_map[2][3] = car_count_monday_to_friday_GA_SC
-    
-    car_count_monday_to_friday_Total = sum([car_count_monday_to_friday_ILL,car_count_monday_to_friday_GA_SC])
-    
-    xl_map[2][1]=car_count_monday_to_friday_Total
-    
-    
-    
-    #secound index 
-    car_count_saturday_to_sunday_ILL = do_sum(xl_map,3,range(3,13))
-    xl_map[3][2] = car_count_saturday_to_sunday_ILL
-    
-    car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,3,range(13,22))
-    xl_map[3][3] = car_count_saturday_to_sunday_GA_SC
-    
-    car_count_saturday_to_sunday_Total = sum([car_count_saturday_to_sunday_ILL, car_count_saturday_to_sunday_GA_SC])
-    
-    xl_map[3][1] = car_count_saturday_to_sunday_Total
-    
-    #third row 
-    
-    retail_car_count_monday_to_friday_ILL = do_sum(xl_map,4,range(3,13))
-    xl_map[4][2] = retail_car_count_monday_to_friday_ILL
-    
-    retail_car_count_monday_to_friday_GA_SC = do_sum(xl_map,4,range(13,22))
-    xl_map[4][3] = retail_car_count_monday_to_friday_GA_SC
-    
-    retail_car_count_monday_to_friday_Total = sum([retail_car_count_monday_to_friday_ILL,retail_car_count_monday_to_friday_GA_SC])
-    
-    xl_map[4][1]=retail_car_count_monday_to_friday_Total
-    
-    # Reatil car cound satruday to sunday
-    
-    retail_car_count_saturday_to_sunday_ILL = do_sum(xl_map,5,range(3,13))
-    xl_map[5][2] = retail_car_count_saturday_to_sunday_ILL
-    
-    retail_car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,5,range(13,22))
-    xl_map[5][3] = retail_car_count_saturday_to_sunday_GA_SC
-    
-    retail_car_count_saturday_to_sunday_Total = sum([retail_car_count_saturday_to_sunday_ILL,retail_car_count_saturday_to_sunday_GA_SC])
-    
-    xl_map[5][1]=retail_car_count_saturday_to_sunday_Total
-    
-    loc_1 = [[2,3],[3,3]]
-    total_cars_GA_SC=do_sum_location(xl_map,loc_1)
-    
-    xl_map[6][3]=total_cars_GA_SC
-    
-    loc_2=[[2,2],[3,2]]
-    total_cars_in_ILL = do_sum_location(xl_map,loc_2)
-    
-    xl_map[6][2] = total_cars_in_ILL
-    
-    loc_3=[[6,3],[6,2]]
-    
-    Total_cars_Total = do_sum_location(xl_map,loc_3)
-    xl_map[6][1]=Total_cars_Total
-    
-    #Retail Revenue Monday to Friday
-    retail_revenue_monday_to_friday_ILL = do_sum(xl_map,7,range(3,13))
-    xl_map[7][2] = retail_revenue_monday_to_friday_ILL
-    
-    retail_revenue_monday_to_friday_GA_SC = do_sum(xl_map,7,range(13,22))
-    xl_map[7][3] = retail_revenue_monday_to_friday_GA_SC
-    
-    retail_revenue_monday_to_friday_Total = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_monday_to_friday_GA_SC])
-    
-    xl_map[7][1]=retail_revenue_monday_to_friday_Total
-    
-    
-    #Reatil Revenue Saturda to Sunday
-    retail_revenue_saturday_to_sunday_ILL = do_sum(xl_map,8,range(3,13))
-    xl_map[8][2] = retail_revenue_saturday_to_sunday_ILL
-    
-    retail_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,8,range(13,22))
-    xl_map[8][3] = retail_revenue_saturday_to_sunday_GA_SC
-    
-    retail_revenue_saturday_to_sunday_Total = sum([retail_revenue_saturday_to_sunday_ILL,retail_revenue_saturday_to_sunday_GA_SC])
-    
-    xl_map[8][1]=retail_revenue_saturday_to_sunday_Total
-    
-    #Total Revnue Monday to Friday
-    Total_revenue_monday_to_friday_ILL = do_sum(xl_map,9,range(3,13))
-    xl_map[9][2] = Total_revenue_monday_to_friday_ILL
-    
-    Total_revenue_monday_to_friday_GA_SC = do_sum(xl_map,9,range(13,22))
-    xl_map[9][3] = Total_revenue_monday_to_friday_GA_SC
-    
-    Total_revenue_monday_to_friday = sum([Total_revenue_monday_to_friday_ILL,Total_revenue_monday_to_friday_GA_SC])
-    
-    xl_map[9][1]=Total_revenue_monday_to_friday
-    
-    # Total Revenue Saturday to Sunday
-    Total_revenue_saturday_to_sunday_ILL = do_sum(xl_map,10,range(3,13))
-    xl_map[10][2] = Total_revenue_saturday_to_sunday_ILL
-    
-    Total_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,10,range(13,22))
-    xl_map[10][3] = Total_revenue_saturday_to_sunday_GA_SC
-    
-    Total_revenue_saturday_sunday = sum([Total_revenue_saturday_to_sunday_ILL,Total_revenue_saturday_to_sunday_GA_SC])
-    
-    xl_map[10][1]=Total_revenue_saturday_sunday 
-    
-    # Total Revenue 
-    loc_4=[[9,2],[10,2]]
-    Total_revenue_ILL = do_sum_location(xl_map,loc_4)
-    xl_map[11][2] =Total_revenue_ILL
-    
-    loc_5=[[9,3],[10,3]]
-    Total_revenue_GA_SC = do_sum_location(xl_map,loc_5)
-    xl_map[11][3]= Total_revenue_GA_SC
-    
-    Total_revenue_Total = sum([Total_revenue_ILL,Total_revenue_GA_SC])
-    xl_map[11][1] =Total_revenue_Total
-    
-    #Average Retail Visit
-
-    
-    
-    Average_retail_visit_IL_val =Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
-                                     retail_revenue_saturday_to_sunday_ILL,
-                                     retail_car_count_monday_to_friday_ILL,
-                                     retail_car_count_saturday_to_sunday_ILL)
-    xl_map[12][2]=round(Average_retail_visit_IL_val,2)
-    
-    
-
-    Average_retail_visit__GA_SC_val = Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC
-                                                                            ,retail_revenue_saturday_to_sunday_GA_SC,
-                                                                            retail_car_count_monday_to_friday_GA_SC,
-                                                                            retail_car_count_saturday_to_sunday_GA_SC)
-    xl_map[12][3] = round(Average_retail_visit__GA_SC_val,2)
-    
-    Average_retail_visit_Total_val =Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
-                                        retail_revenue_saturday_to_sunday_Total,
-                                        retail_car_count_monday_to_friday_Total,
-                                        retail_car_count_saturday_to_sunday_Total)
-    xl_map[12][1] = round(Average_retail_visit_Total_val,2)
-    
-    #Average Member visit 
-    
-    Average_memeber_visit_ILL_val =Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
-                                       retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
-                                       retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL)
-    xl_map[13][2] = round(Average_memeber_visit_ILL_val,2)
-    
-    Average_memeber_visit_GA_SC_val = Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
-        retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC,total_cars_GA_SC)
-    
-    xl_map[13][3] = round(Average_memeber_visit_GA_SC_val,2)
-    
-    Average_memeber_visit_Total_val =Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
-                        ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
-                        retail_car_count_saturday_to_sunday_Total)
-    
-    xl_map[13][1] = round(Average_memeber_visit_Total_val,2)
-    
-    #Staff Hours Monday to Friday
-    
-    staff_hours_monday_to_friday_ILL = do_sum(xl_map,14,range(3,13))
-    xl_map[14][2] = staff_hours_monday_to_friday_ILL
-    
-    staff_hours_monday_to_friday_GA_SC = do_sum(xl_map,14,range(13,22))
-    
-    xl_map[14][3] = staff_hours_monday_to_friday_GA_SC
-    
-    staff_hours_monday_to_friday_Total = sum([staff_hours_monday_to_friday_ILL,staff_hours_monday_to_friday_GA_SC])
-    
-    xl_map[14][1] = staff_hours_monday_to_friday_Total
-    
-    
-    #Staff Hours Saturday to Sunday
-
-    staff_hours_saturday_to_sunday_ILL = do_sum(xl_map,15,range(3,13))
-    xl_map[15][2] = staff_hours_saturday_to_sunday_ILL
-    
-    staff_hours_saturday_to_sunday_GA_SC = do_sum(xl_map,15,range(13,22))
-    
-    xl_map[15][3] = staff_hours_saturday_to_sunday_GA_SC
-    
-    staff_hours_saturday_to_sunday_Total = sum([staff_hours_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_GA_SC])
-    
-    xl_map[15][1] = staff_hours_saturday_to_sunday_Total  
-    
-    # Cost per labour hour  Monday to friday
-    cost_per_labour_hour_monday_to_friday_ILL_val =cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL)
-    xl_map[16][2] = round(cost_per_labour_hour_monday_to_friday_ILL_val,2)
-    
-    
-    cost_per_labour_hour_monday_to_friday_GA_SC_val = cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC)
-    xl_map[16][3] = round(cost_per_labour_hour_monday_to_friday_GA_SC_val,2)
-    
-    
-    cost_per_labour_hour_monday_to_friday_Total_val =cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total)
-    
-    xl_map[16][1] = round(cost_per_labour_hour_monday_to_friday_Total_val,2)
-    
-    #Cost per laobour hour Saturday and Sunday
-    cost_per_labour_hour_saturday_to_sunday_ILL_val = cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL)
-    xl_map[17][2] = round(cost_per_labour_hour_saturday_to_sunday_ILL_val,2)
-    
-    
-    
-    cost_per_labour_hour_saturday_to_sunday_GA_SC_val = cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC)
-    xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC_val,2)
-    
-    cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total if staff_hours_saturday_to_sunday_Total!=0 else ""
-    
-    xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2) if cost_per_labour_hour_saturday_to_sunday_Total else ""
-    
-    # Total cars per man hour
-    
-
-    Total_cars_per_man_hour_ILL_val =Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
-                                         staff_hours_monday_to_friday_ILL,
-                                         staff_hours_saturday_to_sunday_ILL)
-    xl_map[18][2] = round(Total_cars_per_man_hour_ILL_val,2)
-    
-    Total_cars_per_man_hour_GA_SC_val = Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,
-                                                                               staff_hours_saturday_to_sunday_GA_SC)
-    
-    xl_map[18][3] = round(Total_cars_per_man_hour_GA_SC_val,2)
-    
-    
-    Total_cars_per_man_hour_total_val =Total_cars_per_man_hour_total_function(Total_cars_Total,
-                                           staff_hours_monday_to_friday_Total,
-                                           staff_hours_saturday_to_sunday_Total)
-    xl_map[18][1] = round(Total_cars_per_man_hour_total_val,2)
-    
-    #Total club plans sold 
-    Total_club_plans_sold_ILL = do_sum(xl_map,19,range(3,13))
-    
-    xl_map[19][2] = Total_club_plans_sold_ILL
-    
-    Total_club_plans_sold_GA_SC = do_sum(xl_map,19,range(13,22))
-    
-    xl_map[19][3] = Total_club_plans_sold_GA_SC
-    
-    Total_club_plans_sold_Total = sum([Total_club_plans_sold_ILL,Total_club_plans_sold_GA_SC])
-    
-    xl_map[19][1] = Total_club_plans_sold_Total
-    
-    
-    #Conversion Rate 
-    Conversion_rate_ILL_val =Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
-                                                          retail_car_count_monday_to_friday_ILL,
-                                                          retail_car_count_saturday_to_sunday_ILL)
-    xl_map[20][2] = round((Conversion_rate_ILL_val * 100),2)
-    
-    Conversion_rate_GA_SC_val =Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
-                                   retail_car_count_saturday_to_sunday_GA_SC)
-    
-    xl_map[20][3]= round((Conversion_rate_GA_SC_val * 100),2)
-    
-    
-
-    Conversion_rate_Total_val = Conversion_rate_Total_function(Total_club_plans_sold_Total,
-                                                               retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total)
-    xl_map[20][1] = round((Conversion_rate_Total_val * 100),2)
-    
-    
-    #Total club plan members 
-    Total_club_planmembers_ILL = do_sum(xl_map,21,range(3,13))
-    
-    xl_map[21][2] = Total_club_planmembers_ILL
-    
-    Total_club_planmembers_GA_SC = do_sum(xl_map,21,range(13,22))
-    
-    xl_map[21][3] = Total_club_planmembers_GA_SC 
-    
-    Total_club_planmembers_Total = sum([Total_club_planmembers_ILL,Total_club_planmembers_GA_SC])
-    
-    xl_map[21][1] = Total_club_planmembers_Total
-    
-    #Toatl Cars for all locations 
-    total_cars_row = 6 
-    for i in range(3,22):
-        xl_map[total_cars_row][i+1]= do_sum_location(xl_map,[[2,i+1],[3,i+1]])
-    
-    
-    revenue_row = 11
-    
-    #Total Revenue calculatio n for all locations 
-    for i in range(3,22):
-        xl_map[revenue_row][i+1]= do_sum_location(xl_map,[[9,i+1],[10,i+1]])
-    
-    average_retail_visit_row = 12
-    for i in range(3,22):
-        retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
-        retail_car_count_mon_sun = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
-        
-        average_retail_visit_val = retail_revenue_mon_sun/retail_car_count_mon_sun if retail_car_count_mon_sun != 0 else ""
-        xl_map[average_retail_visit_row][i+1]=   round(average_retail_visit_val,2) if average_retail_visit_val else ""
-    
-    
-    average_member_visit_row = 13
-    for i in range(3,22):
-        total_revenue = xl_map[11][i+1]
-        total_revenue = total_revenue if isinstance(total_revenue,int) or isinstance(total_revenue,float) else 0
-        
-        retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
-        
-        total_cars = xl_map[6][i+1]
-        total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
-        
-        retail_car_count_mon_sun  = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
-        
-        average_member_visit_val = (total_revenue-retail_revenue_mon_sun)/(total_cars-retail_car_count_mon_sun) if total_cars-retail_car_count_mon_sun !=0 else ""
-        
-        xl_map[average_member_visit_row][i+1] = round(average_member_visit_val,2) if average_member_visit_val else ""
-    
-    #Total cars per man hour 
-    total_cars_per_man_hour_row = 18 
-    for i in range(3,22):
-        total_cars = xl_map[6][i+1]
-        total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
-        staff_hours_monday_to_saturday = do_sum_location(xl_map,[[14,i+1],[15,i+1]])
-        
-        total_cars_per_man_hour_val = total_cars/staff_hours_monday_to_saturday if staff_hours_monday_to_saturday !=0 else ""
-        
-        xl_map[total_cars_per_man_hour_row][i+1] = round(total_cars_per_man_hour_val,2) if total_cars_per_man_hour_val else ""
- 
-        
-      
-    # Define cell styles (assuming they are the same as before)
-    bg_color = PatternFill(start_color='0b3040', end_color='0b3040', fill_type='solid')
-    font_color = Font(color='FFFFFF')
-
-    bg_color_index = PatternFill(start_color='ADD8E6', end_color='ADD8E6', fill_type='solid')
-    font_color_index = Font(color='000000')
-
-    darkgreen_format = PatternFill(start_color='0ee85e', end_color='0ee85e', fill_type='solid')
-    light_green_format = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
-    darkred_format = PatternFill(start_color='FC0303', end_color='FC0303', fill_type='solid')
-    lightred_format = PatternFill(start_color='D98484', end_color='D98484', fill_type='solid')
-    yellow=  PatternFill(start_color='D0D48A', end_color='D0D48A', fill_type='solid')
-    
-    #writing to  actual sheet
-    #first row comment section
-    # Write comments in the first row
-    # worksheet.append([comment])
-    
-    for row in range(len(xl_map)):
-        for col in range(len(xl_map[row])):
-            val = xl_map[row][col]
-            cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
-            
-            # val = add_commas(val)
-            # val = float(val)
-            # print("type:",type(val),val)
-            if row == 1 and col != 0:
-                cell.fill = bg_color
-                cell.font = font_color
-
-            elif col == 0 and 1 < row < 22:
-                cell.fill = bg_color_index
-                cell.font = font_color_index
-
-            elif val  and row == 12 and col > 0:
-                if val >= 10:
-                    cell.fill = darkgreen_format
-                    
-                elif val>=5 and val <10: # [5,9] (inclusive intervals)
-                    cell.fill = light_green_format
-                    
-                elif val>=-5 and val <5:  # [-5,4]
-                    cell.fill = lightred_format
-        
-                elif  val <=-10 and val<-5:
-                    cell.fill = darkred_format
-
-            elif val  and row in [16, 17, 18, 20] and col > 0:
-                if val >= 20:
-                    cell.fill = darkgreen_format
-                elif val>=10 and val <20:
-                    cell.fill = light_green_format
-                elif val>=-10 and val <10:
-                    cell.fill = lightred_format
-                elif val <=-20 or val<-10:
-                    cell.fill = darkred_format
-
-            # elif row == 5 and col > 2:
-            #     cell.value = ""
-
-            # elif row in [17] and col > 2:
-            #     cell.value = ""
-
-            # elif row == 21:
-            #     cell.value = ""
-
-            # elif row > 21 and col > 0:
-            #     cell.value = ""
-
-    # Add legend or additional information below the table
-    legend_start_row = 24
-
-    legend_styles = {
-        "Very Concerning": PatternFill(start_color="fc0303", end_color="fc0303", fill_type="solid"),
-        "Concerning": PatternFill(start_color="d98484", end_color="d98484", fill_type="solid"),
-        "Neutral": PatternFill(start_color="d0d48a", end_color="d0d48a", fill_type="solid"),
-        "Positive": PatternFill(start_color="8ad493", end_color="8ad493", fill_type="solid"),
-        "Very Positive": PatternFill(start_color="0ee85e", end_color="0ee85e", fill_type="solid"),
-    }
-
-    worksheet.cell(row=legend_start_row, column=1, value='Legend')
-    worksheet.cell(row=legend_start_row + 1, column=1, value='Very Concerning').fill = legend_styles["Very Concerning"]
-    worksheet.cell(row=legend_start_row + 2, column=1, value='Concerning').fill = legend_styles["Concerning"]
-    worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
-    worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
-    worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
-    
-    #setting cloumn width as deafult 
-    column_width = 20  # You can change this value to whatever width you need
-    first_col_width =25
-    for col in range(1, 24):  # Columns A to W are 1 to 23
-        column_letter = get_column_letter(col)
-        if col==1:
-            worksheet.column_dimensions[column_letter].width = first_col_width
-        else:
-            worksheet.column_dimensions[column_letter].width = column_width
-       
-    
-    # Define the border style
-
-
-    thick_border = Border(
-    left=Side(style='thick'),
-    right=Side(style='thick'))
-    
-    thick_border_bottom = Border(
-    left=Side(style='thick'),
-    right=Side(style='thick'),
-    bottom=Side(style='thick'))
-
-
-
-
-    # Apply the border to a range of cells (e.g., A1:C3)
-    # for row in worksheet.iter_rows(min_row=3, max_row=21, min_col=2, max_col=4):
-    #     for cell in row:
-    #         cell.border = thin_border
-
-    for row in range(3,23):
-        cell0 = worksheet.cell(row=row,column=1)
-        cell1 = worksheet.cell(row=row,column=2)
-        cell2 = worksheet.cell(row=row,column=3)
-        cell3 = worksheet.cell(row=row,column=4)
-        
-        if row in [7,12,13,19,21,22]:
-            cell0.border=thick_border_bottom
-            cell1.border=thick_border_bottom
-            cell2.border=thick_border_bottom
-            cell3.border=thick_border_bottom
-        else:
-            cell0.border=thick_border
-            cell1.border=thick_border
-            cell2.border=thick_border
-            cell3.border=thick_border
-            
-    for row in worksheet.iter_rows():
-        for cell in row:
-            row_index = cell.row
-            if isinstance(cell.value, (int, float)) and row_index in [17,18,19]:
-                cell.number_format = '#,##0.0'
-            elif isinstance(cell.value, (int, float)) and row_index in [13,14,21]:
-                cell.number_format = '#,##0.00'
-            elif isinstance(cell.value, (int, float)): #:
-                cell.number_format = '#,##0'
-    #Doller sysmbol     
-    for row in range(8,13):
-        cell1 = worksheet.cell(row=row,column=2)
-        cell2 = worksheet.cell(row=row,column=3)
-        cell3 = worksheet.cell(row=row,column=4)
-        
-        # cell1.border=thick_border
-        # cell2.border=thick_border
-        # cell3.border=thick_border
-        
-        cells=[cell1,cell2,cell3]
-        for cell in cells:
-            if isinstance(cell.value, (int, float)) and cell.value >= 1000:
-                cell.number_format = '"$"#,##0'     
-    
-    #finding past week averages for Total car count
-    all_locations = [Sudz_Beverly,Fuller_Calumet,
-                    Fuller_Cicero,Fuller_Matteson,
-                    Fuller_Elgin,Splash_Peoria,Getaway_Macomb,Getaway_Morton,
-                    Getaway_Ottawa,Getaway_Peru,Sparkle_Belair,
-                    Sparkle_Evans,Sparkle_Furrys_Ferry,Sparkle_Greenwood,
-                    Sparkle_Grovetown_1,Sparkle_Grovetown_2,Sparkle_North_Augusta,
-                    Sparkle_Peach_Orchard,Sparkle_Windsor_Spring]
-    
-    
-    lst_main = ["Totals","ILL",
-                "GA / SC"]
-    ga_sc = all_locations[10:]
-    ill = all_locations[0:10]
-    ill_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ill if loc_data]
-    ill_sum_past = sum(ill_past_4_weeks_car_cnt)/4
-    current_ill_week_cnt = xl_map[6][2]
-    ill_average_percent = ((current_ill_week_cnt - ill_sum_past)/ ill_sum_past)*100
-    
-    ga_sc_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ga_sc if loc_data]
-    ga_sc_sum_past = sum(ga_sc_past_4_weeks_car_cnt)/4
-    current_ga_sc_week_cnt = xl_map[6][3]
-    ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100
-    
-    totals_past = ill_sum_past +ga_sc_sum_past
-    totals_current = xl_map[6][1]
-    total_average_percent = ((totals_current-totals_past)/totals_past)*100
-    
-    ill_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ill if loc_data]
-    ill_total_revenue_avg = sum(ill_total_revenue_past_4_weeks)/4
-    ill_curent_revenue = xl_map[11][2]
-    ill_avg_revenue_change  = ((ill_curent_revenue-ill_total_revenue_avg)/ill_total_revenue_avg)*100
-    
-    ga_sc_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ga_sc if loc_data]
-    ga_sc_avg_revenue = sum(ga_sc_total_revenue_past_4_weeks)/4
-    ga_sc_curent_revenue  = xl_map[11][3]
-    
-    ga_sc_avg_revenue_change = ((ga_sc_curent_revenue - ga_sc_avg_revenue)/ga_sc_avg_revenue)*100
-    
-    total_revenue_past_4_avg_total = ill_total_revenue_avg + ga_sc_avg_revenue
-    total_reveneu_curent = ill_curent_revenue + ga_sc_curent_revenue
-    
-    total_revenue_total_change = ((total_reveneu_curent - total_revenue_past_4_avg_total)/total_revenue_past_4_avg_total)*100
-    
-    
-    ill_past_4_weeks_arm_plan_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ill if loc_data]
-    ill_past_4_weeks_arm_plan_sold_sum = sum(ill_past_4_weeks_arm_plan_sold)
-    
-    ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
-    ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
-    
-    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
-    
-    ill_current_conversation_rate = xl_map[20][2]
-    ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
-    
-    ga_sc_past_4_weeks_arm_plans_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ga_sc if loc_data]
-    ga_sc_past_4_weeks_arm_plans_sold_sum = sum(ga_sc_past_4_weeks_arm_plans_sold)
-    
-    ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
-    ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
-    
-    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
-    
-    ga_sc_current_conversation_rate  = xl_map[20][3]
-    ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
-    
-    past_total_arm_plans_sold = ill_past_4_weeks_arm_plan_sold_sum + ga_sc_past_4_weeks_arm_plans_sold_sum
-    
-    past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
-    
-    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
-    
-    current_total_conversation_rate = xl_map[20][1]
-    
-    total_conversation_change = current_total_conversation_rate - past_total_conversation_change
-    
-    
-    
-    
-    colours = darkgreen_format,light_green_format,darkred_format,lightred_format
-    print(f"ill avg : {ill_average_percent}")
-    print("ill avg revenue:",ill_avg_revenue_change)
-    print("ga sc avg revenue :",ga_sc_avg_revenue_change)
-    print("total revenue total change:",total_revenue_total_change)
-    print(f"ga_sc average :{ga_sc_average_percent}")
-    print(f"total_average : {total_average_percent}")
-    print("ill conversation change :",ill_conversation_rate_change)
-    print("gasc conversation chane :",ga_sc_conversation_change)
-    print("total conversation change :",total_conversation_change)
-    set_colour(ill_average_percent,7,3,worksheet,colours) #for ill
-    set_colour(ga_sc_average_percent,7,4,worksheet,colours) #for gasc total
-    set_colour(total_average_percent,7,2,worksheet,colours) #for total total
-    
-    set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
-    set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
-    set_colour(total_revenue_total_change,12,2,worksheet,colours)
-    set_colour(ill_conversation_rate_change,21,3,worksheet,colours)
-    set_colour(ga_sc_conversation_change,21,4,worksheet,colours)
-    set_colour(total_conversation_change,21,2,worksheet,colours)
-    
-    
-    
-    loc_names = ["Sudz - Beverly",'Fuller-Calumet',
-                "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
-                "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
-                "Getaway-Ottawa","Getaway-Peru","Sparkle-Belair",
-                "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
-                "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
-                "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
-    
-    for index,place_dictionary in enumerate(all_locations):
-        current_week_total_cars = xl_map[6][index+4]
-        past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
-        change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
-        set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
-        
-        print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
-        change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
-        set_colour(change_in_conversationrate,21,index+5,worksheet,colours) #conversation rate colours
-        
-        print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
-        current_revenue_total = place_dictionary.get("total_revenue")
-        past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
-        change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
-        print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
-        set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
-        
-        print("\n"*2)
-        
-    
-    
-
-    #applying bold font
-    # Define a bold font style
-    bold_font = Font(bold=True)
-    
-    for row in worksheet.iter_rows(min_row=7, max_row=7, min_col=1, max_col=4):
-        for cell in row:
-            cell.font = bold_font
-
-    for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=1, max_col=4):
-        for cell in row:
-            cell.font = bold_font
-            
-    for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=1, max_col=4):
-        for cell in row:
-            cell.font = bold_font
-            
-    for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=1, max_col=4):
-        for cell in row:
-            cell.font = bold_font
-    # Save the modified workbook
-    workbook.save(filename)
 
 
 if __name__=="__main__":
@@ -2377,7 +1520,7 @@ if __name__=="__main__":
     report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     print("\n"*6)
     print(report)
-    with open("sitewatch_report.json","w") as f:
+    with open("sitewatch_report_full.json","w") as f:
         json.dump(report,f,indent=4)
     # with open("SPKLUS-002.json",'r') as f:
     #     data = json.load(f)

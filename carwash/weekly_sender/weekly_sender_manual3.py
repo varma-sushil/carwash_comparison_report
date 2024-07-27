@@ -358,45 +358,40 @@ def set_colour(val,row,col,worksheet,colours):
        cell.fill = lightred_format
 
 def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, colours):
-    """This will do colur coding of for the xl sheet
+    """This will do colur coding of for the xl sheet 10 5 0 -5 - 10
 
     Args:
         current_week (_type_): _description_
         past_4_weeks (_type_): _description_
     """
+
     if not all([current_week, past_4_weeks]):
         return
-        
+    
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
-    postivte_10_percent_val = past_4_weeks + past_4_weeks*0.10
-    postive_5_percent_val  = past_4_weeks + past_4_weeks*0.05
+
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
     
-    negative_10_percent_val = past_4_weeks + past_4_weeks*(-0.10)
-    negative_05_percent_val = past_4_weeks + past_4_weeks*(-0.05)
-    
-    print(f"postive 10 percent : {postivte_10_percent_val}")
-    print(f"positive 5 percent val : {postive_5_percent_val}")
-    print(f"negative 10 percent val : {negative_10_percent_val}")
-    print(f"negative 5 percent val : {negative_05_percent_val}")
-    
-    if current_week>=postivte_10_percent_val:
+    if percentage >10:
+        #Dark green
         cell.fill = darkgreen_format
-    
-    elif current_week >= postive_5_percent_val:
+        
+    elif percentage > 5 and percentage <=9:
+        #light green
         cell.fill = light_green_format
         
-    elif current_week <= negative_10_percent_val:
-        cell.fill = darkred_format
-    
-    elif current_week <= negative_05_percent_val :
+    elif percentage <= 5  and percentage <=-5:
+        print("neutral")
+    elif percentage < -5 and percentage>=-9:
         cell.fill = lightred_format
+        #light red
         
-    else:
-        print("no colour")
+    elif percentage < -10:
+        cell.fill = darkred_format
 
 def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
-    """This will do colur coding of for the xl sheet
+    """This will do colur coding of for the xl sheet 10 5 0 -5 - 10
 
     Args:
         current_week (_type_): _description_
@@ -405,35 +400,72 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
 
     if not all([current_week, past_4_weeks]):
         return
-    
+    print(f"location on xl : {row},{col}")
+    print(f"current : {current_week} , past week  { past_4_weeks}")
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
-    postivte_20_percent_val = past_4_weeks + past_4_weeks*0.20
-    postive_10_percent_val  = past_4_weeks + past_4_weeks*0.10
+
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
     
-    negative_20_percent_val = past_4_weeks + past_4_weeks*(-0.20)
-    negative_10_percent_val = past_4_weeks + past_4_weeks*(-0.10)
+    print(f"percentage :",percentage)
+
+    print("percentage :",percentage)
+    # if percentage >=10:
+    #     #Dark green
+    #     print("Dark green ")
+    #     cell.fill = darkgreen_format
+        
+    # elif percentage >= 5:
+    #     print("light green")
+    #     cell.fill = light_green_format
+        
+    # elif percentage >= -5:
+    #     print("neutral")
     
-    print(f"postive 20 percent : {postivte_20_percent_val}")
-    print(f"positive 10 percent val : {postive_10_percent_val}")
-    print(f"negative 20 percent val : {negative_20_percent_val}")
-    print(f"negative 10 percent val : {negative_10_percent_val}")
+    # elif percentage >=-9:
+    #     print("light red ")
+    #     cell.fill = lightred_format
+        
+    # elif percentage <=-10:
+    #     cell.fill = darkred_format
+    # brlow is 20 percent 
+    # if percentage >=20:
+    #     #Dark green
+    #     print("Dark green ")
+    #     cell.fill = darkgreen_format
+        
+    # elif percentage >= 10:
+    #     print("light green")
+    #     cell.fill = light_green_format
+    # elif percentage >= -9:
+    #     print("neutral")
     
-    if current_week>=postivte_20_percent_val:
+    # elif percentage >=-19:
+    #     print("light red ")
+    #     cell.fill = lightred_format
+    # elif percentage <=-20:
+    #     print("Dark red")
+    #     cell.fill = darkred_format
+    
+    if percentage >=10:
+        #Dark green
+        print("Dark green ")
         cell.fill = darkgreen_format
-    
-    elif current_week >= postive_10_percent_val:
+        
+    elif percentage >= 5:
+        print("light green")
         cell.fill = light_green_format
         
-    elif current_week <= negative_20_percent_val:
-        cell.fill = darkred_format
+    elif percentage >= -5:
+        print("neutral")
     
-    elif current_week <= negative_10_percent_val :
+    elif percentage >=-9:
+        print("light red ")
         cell.fill = lightred_format
         
-    else:
-        print("no colour")
- 
+    elif percentage <=-10:
+        print("Dark red")
+        cell.fill = darkred_format
 
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
     chnage = None
@@ -1485,13 +1517,15 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         past_4_week_conversation_rate =  place_dictionary.get("past_4_week_conversion_rate")
         change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
         set_colour_new(current_week_conversatio_rate,past_4_week_conversation_rate,21,index+5,worksheet,colours) #conversation rate colours
-        
+        #Total Revenue
         #print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
         current_revenue_total = place_dictionary.get("total_revenue")
         past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
+        past_4_week_revenue_total_avg = past_4_week_revenue_total/4 if past_4_week_revenue_total else 0
+        
         change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
         print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
-        set_colour_new(current_revenue_total, past_4_week_revenue_total,12, index+5,worksheet,colours)
+        set_colour_new(current_revenue_total, past_4_week_revenue_total_avg,12, index+5,worksheet,colours)
         # set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
 
         past_4_car_count_mon_fri_avg = place_dictionary.get('past_4_week_car_cnt_mon_fri', 0)/4
@@ -1647,90 +1681,10 @@ if __name__=="__main__":
     
     #cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com"]
     
-    # path = get_week_dates_for_storage()
-    # storage_path = create_storage_directory(path)
-    
-    # wahsify_week_days = washify_week_dates()
-    # washify_file_name = 
-    # washify_file_path_full = os.path.join(storage_path,washify_file_name)
-    # washify_week_report(storage_path,wahsify_week_days[0],wahsify_week_days[1])
-    
-    # hamilton_week_days = hamilton_week_dates()
-    # hamilton_file_name = f"hamilton_{hamilton_week_days[0]}-{hamilton_week_days[-1]}.csv".replace('/','_')
-    # hamilton_full_path= os.path.join(storage_path,hamilton_file_name)
-    # hamilton_week_report(hamilton_full_path,hamilton_week_days[0],hamilton_week_days[-1])
-    
-    # sitewatch_week_days = sitewatch_week_dates()
-    # site_watch_file_path = storage_path
-    # sitewatch_week_report(site_watch_file_path,sitewatch_week_days[0],sitewatch_week_days[-1])
-    
-    # Directory containing Excel files
-    # directory_path = storage_path
-    # attachments = get_excel_files(directory_path)
-    
-    #Sending email to email address
-    # send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments)
-    
-    # ------------------- Test Script start ---------------------#
-    
-    # # monday_date_str, sunday_date_str = sitewatch_week_dates()
-    # # print(monday_date_str,sunday_date_str)
-    # monday_date_str="2024-06-24"
-    # friday_date_str = "2024-06-28"
-    # saturday_date_str = "2024-06-29"
-    # sunday_date_str="2024-06-30"  #Y-M-D
-    
-    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
-    
-    # #testing dates 
-    # monday_date_str =  "06/24/2024"
-    # friday_date_str =  "06/28/2024"
-    # saturday_date_str = "06/29/2024"
-    # sunday_date_str  =  "06/30/2024"  #M/D/Y
-    
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
-    # #for hamilton dates
-    # monday_date_str = "2024-06-24"
-    # friday_date_str = "2024-06-28"
-    # saturday_date_str = "2024-06-29"
-    # sunday_date_str  = "2024-06-30"
-    
-    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
-    # data = sitewatch_report
-    
-    # data.update(washify_report)
-    
-    # data.update(hamilton_report)
-    # comment =f"Ending {sunday_date_str}"
-    # sheet_name= sunday_date_str.replace("/","-")
-    
-    # with open("all_data_curent.json","w") as f:
-    #     json.dump(data,f,indent=4)
-    
-    # filename="test1.xlsx"
-    # file_name_with_fullpath = os.path.join(data_path,filename)
-    # prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
-    
-    # # Directory containing Excel files
-    # directory_path = data_path
-    # attachments = get_excel_files(directory_path)
-    
-    #Sending email to email address
-    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
-    
-    
-    
-    # ------------------- Test Script ends ---------------------#
-    
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="test_f1" #"07-2024"#"06-2024"
+    path="test_10_2" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1739,7 +1693,7 @@ if __name__=="__main__":
     saturday_date_str = "2024-07-06"
     sunday_date_str="2024-07-07"  #Y-M-D
     
-    sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
@@ -1750,7 +1704,7 @@ if __name__=="__main__":
     sunday_date_str  =  "07/07/2024"  #M/D/Y
     
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # #for hamilton dates
     monday_date_str = "2024-07-01"
@@ -1758,18 +1712,20 @@ if __name__=="__main__":
     saturday_date_str = "2024-07-06"
     sunday_date_str  = "2024-07-07"
     
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
-    hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    data = sitewatch_report
+    # data = sitewatch_report
     
-    data.update(washify_report)
+    # data.update(washify_report)
     
-    data.update(hamilton_report)
+    # data.update(hamilton_report)
 
-    with open("all_data_t1.json", 'w') as f:
-        json.dump(data, f, indent=4)
+    # with open("all_data_t1.json", 'w') as f:
+    #     json.dump(data, f, indent=4)
 
+    with open("all_data_t1.json", 'r') as f:
+        data = json.load(f)
 
     
     comment =f"Ending {sunday_date_str}"

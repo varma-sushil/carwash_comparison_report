@@ -748,6 +748,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     final_data['past_4_week_total_revenue_sat_sun'] = 0
     
     full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
+    cnt=0
     for single_week in full_weeks_lst:
         mon = single_week[0]
         fri = single_week[1]
@@ -768,6 +769,10 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         final_data["past_4_week_retail_car_count_mon_fri"] += wash_purchases_total_cnt4
         final_data['past_4_week_retail_revenue_mon_fri'] += retail_revenue4
         final_data['past_4_week_total_revenue_mon_fri'] += total_revenue4
+        
+        final_data[f'past_4_week_retail_revenue_mon_fri_week_{cnt+1}'] = wash_purchases_total_cnt4
+        print(f"past_4_week_retail_revenue_mon_fri:{retail_revenue4}")
+        
 
         items2 = client.get_dail_report_v2(sat,sun)
         past_week_car_count_sat_sun = client.get_car_count(items2)
@@ -783,7 +788,10 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         final_data["past_4_week_retail_car_count_sat_sun"] += wash_purchases_total_cnt5
         final_data['past_4_week_retail_revenue_sat_sun'] += retail_revenue5
         final_data['past_4_week_total_revenue_sat_sun'] += total_revenue5
+        print(f"past_4_week_retail_revenue_sat_sun : {retail_revenue5}")
         
+        final_data[f'past_4_week_retail_revenue_sat_sun_week_{cnt+1}'] = retail_revenue5
+        cnt+=1
     
     print(f"past week cnt : {past_4_week_cnt}")
     

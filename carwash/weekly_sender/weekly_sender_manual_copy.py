@@ -357,6 +357,44 @@ def set_colour(val,row,col,worksheet,colours):
     else : #val>=-20
        cell.fill = lightred_format
 
+# def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, colours):
+#     """This will do colur coding of for the xl sheet
+
+#     Args:
+#         current_week (_type_): _description_
+#         past_4_weeks (_type_): _description_
+#     """
+#     if not all([current_week, past_4_weeks]):
+#         return
+        
+#     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
+#     cell=worksheet.cell(row,col)
+#     postivte_10_percent_val = past_4_weeks + past_4_weeks*0.10
+#     postive_5_percent_val  = past_4_weeks + past_4_weeks*0.05
+    
+#     negative_10_percent_val = past_4_weeks + past_4_weeks*(-0.10)
+#     negative_05_percent_val = past_4_weeks + past_4_weeks*(-0.05)
+    
+#     print(f"postive 10 percent : {postivte_10_percent_val}")
+#     print(f"positive 5 percent val : {postive_5_percent_val}")
+#     print(f"negative 10 percent val : {negative_10_percent_val}")
+#     print(f"negative 5 percent val : {negative_05_percent_val}")
+    
+#     if current_week>=postivte_10_percent_val:
+#         cell.fill = darkgreen_format
+    
+#     elif current_week >= postive_5_percent_val:
+#         cell.fill = light_green_format
+        
+#     elif current_week <= negative_10_percent_val:
+#         cell.fill = darkred_format
+    
+#     elif current_week <= negative_05_percent_val :
+#         cell.fill = lightred_format
+        
+#     else:
+#         print("no colour")
+
 def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, colours):
     """This will do colur coding of for the xl sheet
 
@@ -366,34 +404,35 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     """
     if not all([current_week, past_4_weeks]):
         return
-        
+    
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
-    postivte_10_percent_val = past_4_weeks + past_4_weeks*0.10
-    postive_5_percent_val  = past_4_weeks + past_4_weeks*0.05
+    postivte_20_percent_val = past_4_weeks + past_4_weeks*0.20
+    postive_10_percent_val  = past_4_weeks + past_4_weeks*0.10
     
+    negative_20_percent_val = past_4_weeks + past_4_weeks*(-0.20)
     negative_10_percent_val = past_4_weeks + past_4_weeks*(-0.10)
-    negative_05_percent_val = past_4_weeks + past_4_weeks*(-0.05)
     
-    print(f"postive 10 percent : {postivte_10_percent_val}")
-    print(f"positive 5 percent val : {postive_5_percent_val}")
+    print(f"postive 20 percent : {postivte_20_percent_val}")
+    print(f"positive 10 percent val : {postive_10_percent_val}")
+    print(f"negative 20 percent val : {negative_20_percent_val}")
     print(f"negative 10 percent val : {negative_10_percent_val}")
-    print(f"negative 5 percent val : {negative_05_percent_val}")
     
-    if current_week>=postivte_10_percent_val:
+    if current_week>=postivte_20_percent_val:
         cell.fill = darkgreen_format
     
-    elif current_week >= postive_5_percent_val:
+    elif current_week >= postive_10_percent_val:
         cell.fill = light_green_format
         
-    elif current_week <= negative_10_percent_val:
+    elif current_week <= negative_20_percent_val:
         cell.fill = darkred_format
     
-    elif current_week <= negative_05_percent_val :
+    elif current_week <= negative_10_percent_val :
         cell.fill = lightred_format
         
     else:
         print("no colour")
+
 
 def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     """This will do colur coding of for the xl sheet
@@ -433,6 +472,7 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         
     else:
         print("no colour")
+
  
 
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
@@ -1730,7 +1770,7 @@ if __name__=="__main__":
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="test_f1" #"07-2024"#"06-2024"
+    path="test_20" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1767,7 +1807,7 @@ if __name__=="__main__":
     
     data.update(hamilton_report)
 
-    with open("all_data_t1.json", 'w') as f:
+    with open("all_data_20.json", 'w') as f:
         json.dump(data, f, indent=4)
 
 
