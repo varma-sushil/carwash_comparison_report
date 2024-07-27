@@ -60,6 +60,15 @@ def do_sum_location(xl_map,location:list):
             total+=val
     return total
 
+
+
+def do_avg(val):
+    "return  the average of the value"
+    result = 0
+    if val:
+        result = val/4
+    return result
+    
 def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
                                          retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):    
     
@@ -371,23 +380,42 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
+    # percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
+    
+    # if percentage >10:
+    #     #Dark green
+    #     cell.fill = darkgreen_format
+        
+    # elif percentage > 5 and percentage <=9:
+    #     #light green
+    #     cell.fill = light_green_format
+        
+    # elif percentage <= 5  and percentage <=-5:
+    #     print("neutral")
+    # elif percentage < -5 and percentage>=-9:
+    #     cell.fill = lightred_format
+    #     #light red
+        
+    # elif percentage < -10:
+    #     cell.fill = darkred_format
     percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
     
-    if percentage >10:
+    print("percentage :",percentage)
+    if percentage >=10:
         #Dark green
+        print("Dark green ")
         cell.fill = darkgreen_format
-        
-    elif percentage > 5 and percentage <=9:
-        #light green
+    elif percentage >= 5:
+        print("light green")
         cell.fill = light_green_format
-        
-    elif percentage <= 5  and percentage <=-5:
+    elif percentage > -5:
         print("neutral")
-    elif percentage < -5 and percentage>=-9:
-        cell.fill = lightred_format
-        #light red
         
-    elif percentage < -10:
+    elif percentage > -10:
+        print("light red ")
+        cell.fill = lightred_format
+    elif percentage <=-10:
+        print("Dark red")  
         cell.fill = darkred_format
 
 def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
@@ -407,7 +435,6 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
 
     percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
     
-    print(f"percentage :",percentage)
 
     print("percentage :",percentage)
     # if percentage >=10:
@@ -451,20 +478,17 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         #Dark green
         print("Dark green ")
         cell.fill = darkgreen_format
-        
     elif percentage >= 5:
         print("light green")
         cell.fill = light_green_format
-        
-    elif percentage >= -5:
+    elif percentage > -5:
         print("neutral")
-    
-    elif percentage >=-9:
+        
+    elif percentage > -10:
         print("light red ")
         cell.fill = lightred_format
-        
     elif percentage <=-10:
-        print("Dark red")
+        print("Dark red")  
         cell.fill = darkred_format
 
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
@@ -1237,7 +1261,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
     ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
     
-    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
+    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)
     
     ill_current_conversation_rate = xl_map[20][2]
     ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
@@ -1248,7 +1272,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
     ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
     
-    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
+    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)
     
     ga_sc_current_conversation_rate  = xl_map[20][3]
     ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
@@ -1257,7 +1281,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
     
-    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
+    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)
     
     current_total_conversation_rate = xl_map[20][1]
     
@@ -1361,49 +1385,99 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     past_4_total_total_revenue_sat_sun = ill_past_4_week_total_revenue_sat_sun_avg+ga_sc_past_4_week_total_revenue_sat_sun_avg
 
     # Avg retail visit
-    ill_past_4_week_avg_ratail_visit = (ill_past_4_week_retail_revenue_mon_fri_avg+ill_past_4_week_retail_revenue_sat_sun_avg)/(ill_sum_past_mon_fri+ill_sum_past_sat_sun)
+    ill_past_4_weeks_retail_car_count_mon_fri = [loc_data.get("past_4_week_retail_car_count_mon_fri", 0) for loc_data in ill if loc_data]
+    ill_past_4_weeks_retail_car_count_mon_fri_avg = sum(ill_past_4_weeks_retail_car_count_mon_fri)/4
+    
+    ill_past_4_weeks_retail_car_count_sat_sun = [loc_data.get("past_4_week_retail_car_count_sat_sun", 0) for loc_data in ill if loc_data]
+    ill_past_4_weeks_retail_car_count_sat_sun_avg = sum(ill_past_4_weeks_retail_car_count_sat_sun)/4
+    
+    ill_past_4_retail_car_count_avg = ill_past_4_weeks_retail_car_count_mon_fri_avg+ill_past_4_weeks_retail_car_count_sat_sun_avg
+    
+    ill_past_4_retail_revenue_avg = ill_past_4_week_retail_revenue_mon_fri_avg+ill_past_4_week_retail_revenue_sat_sun_avg
+    
+    ill_past_4_week_avg_ratail_visit = (ill_past_4_retail_revenue_avg) /(ill_past_4_retail_car_count_avg)
     ill_current_avg_ratail_visit = xl_map[12][2]
-    ga_sc_past_4_week_avg_ratail_visit = (ga_sc_past_4_week_retail_revenue_mon_fri_avg+ga_sc_past_4_week_retail_revenue_sat_sun_avg)/(ga_sc_sum_past_mon_fri+ga_sc_sum_past_sat_sun)
+    
+    
+    ga_sc_past_4_weeks_retail_car_count_mon_fri = [loc_data.get("past_4_week_retail_car_count_mon_fri", 0) for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_retail_car_count_mon_fri_avg = sum(ga_sc_past_4_weeks_retail_car_count_mon_fri)/4
+    
+    
+    ga_sc_past_4_weeks_retail_car_count_sat_sun = [loc_data.get("past_4_week_retail_car_count_sat_sun", 0) for loc_data in ga_sc if loc_data]
+    ga_sc_past_4_retail_car_count_sat_sun_avg = sum(ga_sc_past_4_weeks_retail_car_count_sat_sun)/4
+    
+    ga_sc_past_4_weeks_retail_car_count_avg = ga_sc_past_4_retail_car_count_mon_fri_avg + ga_sc_past_4_retail_car_count_sat_sun_avg
+    
+    ga_sc_past_4_retail_revenue_avg = ga_sc_past_4_week_retail_revenue_mon_fri_avg+ga_sc_past_4_week_retail_revenue_sat_sun_avg
+    
+    ga_sc_past_4_week_avg_ratail_visit = (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
     ga_sc_curr_avg_ratail_visit = xl_map[12][3]
-    total_past_4_week_avg_ratail_visit = (past_4_total_retail_revenue_mon_fri+past_4_total_retail_revenue_sat_sun)/(past_4_week_total_car_cnt_mon_fri+past_4_week_total_car_cnt_sat_sun)
+    
+    past_4_weeks_retail_revenue_total_avg  = ill_past_4_retail_revenue_avg + ga_sc_past_4_retail_revenue_avg
+    
+    past_4_weeks_retail_car_count_avg      = ill_past_4_retail_car_count_avg  + ga_sc_past_4_weeks_retail_car_count_avg
+    
+    total_past_4_week_avg_ratail_visit = (past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
     total_curr_avg_ratail_visit = xl_map[12][1]
 
     # past_4_week_labour_hours_mon_fri
     ill_past_4_week_labour_hours_mon_fri = [loc_data.get("past_4_week_labour_hours_mon_fri", 0) for loc_data in ill if loc_data]
     ill_past_4_week_labour_hours_mon_fri_sum = sum(ill_past_4_week_labour_hours_mon_fri)
-    ill_past_4_week_labour_hours_mon_fri_avg = sum(ill_past_4_weeks_car_cnt_mon_fri)/ill_past_4_week_labour_hours_mon_fri_sum
-    current_ill_week_labour_hours_mon_fri = xl_map[16][2]
+    ill_past_4_week_labour_hours_mon_fri_avg = ill_past_4_week_labour_hours_mon_fri_sum / 4
+    
+    ill_current_week_cars_per_labour_hour_mon_fri = xl_map[16][2]
+    ' ill_sum_past_mon_fri   is the avg of  car count mon fri past week '
+    ill_past_4_weeks_cars_per_labour_hour_mon_fri = ill_sum_past_mon_fri / ill_past_4_week_labour_hours_mon_fri_avg
 
     ga_sc_past_4_week_labour_hours_mon_fri = [loc_data.get("past_4_week_labour_hours_mon_fri", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_week_labour_hours_mon_fri_sum = sum(ga_sc_past_4_week_labour_hours_mon_fri)
-    ga_sc_past_4_week_labour_hours_mon_fri_avg = sum(ga_sc_past_4_weeks_car_cnt_mon_fri)/ga_sc_past_4_week_labour_hours_mon_fri_sum
-    current_ga_sc_labour_hours_mon_fri = xl_map[16][3]
-
-    curr_total_labour_hours_mon_fri = xl_map[16][1]
-    past_4_week_total_labour_hours_mon_fri = ill_past_4_week_labour_hours_mon_fri_avg+ga_sc_past_4_week_labour_hours_mon_fri_avg
+    ga_sc_past_4_week_labour_hours_mon_fri_avg = ga_sc_past_4_week_labour_hours_mon_fri_sum / 4
+    
+    
+    ga_sc_current_week_cars_per_labour_hour_mon_fri  = xl_map[16][3]
+    ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri  = ga_sc_sum_past_mon_fri / ga_sc_past_4_week_labour_hours_mon_fri_avg
+    
+    
+    total_past_4_week_cars_mon_fri  = ill_sum_past_mon_fri + ga_sc_sum_past_mon_fri
+    total_past_4_weeks_labour_hours_mon_fri = ill_past_4_week_labour_hours_mon_fri_avg + ga_sc_past_4_week_labour_hours_mon_fri_avg
+    total_current_cars_per_labour_hour_mon_fri = xl_map[16][1]
+    total_past_4_week_cars_per_labour_hour_mon_fri  = total_past_4_week_cars_mon_fri / total_past_4_weeks_labour_hours_mon_fri
+    
+    
 
     # past_4_week_labour_hours_sat_sun
     ill_past_4_week_labour_hours_sat_sun = [loc_data.get("past_4_week_labour_hours_sat_sun", 0) for loc_data in ill if loc_data]
     ill_past_4_week_labour_hours_sat_sun_sum = sum(ill_past_4_week_labour_hours_sat_sun)
-    ill_past_4_week_labour_hours_sat_sun_avg = sum(ill_past_4_weeks_car_cnt_sat_sun)/ill_past_4_week_labour_hours_sat_sun_sum
-    current_ill_week_labour_hours_sat_sun = xl_map[17][2]
+    ill_past_4_week_labour_hours_sat_sun_avg = ill_past_4_week_labour_hours_sat_sun_sum / 4 
+
+    ill_current_cars_per_labour_hour_sat_sun  = xl_map[17][2]
+    'here ill_sum_past_sat_sun is the avg of car count of past 4 weeks '
+    ill_past_4_week_cars_per_labour_hour_sat_sun = ill_sum_past_sat_sun / ill_past_4_week_labour_hours_sat_sun_avg
 
     ga_sc_past_4_week_labour_hours_sat_sun = [loc_data.get("past_4_week_labour_hours_sat_sun", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_week_labour_hours_sat_sun_sum = sum(ga_sc_past_4_week_labour_hours_sat_sun)
-    ga_sc_past_4_week_labour_hours_sat_sun_avg = sum(ga_sc_past_4_weeks_car_cnt_sat_sun)/ga_sc_past_4_week_labour_hours_sat_sun_sum
-    current_ga_sc_labour_hours_sat_sun = xl_map[17][3]
-
-    curr_total_labour_hours_sat_sun = xl_map[17][1]
-    past_4_week_total_labour_hours_sat_sun = ill_past_4_week_labour_hours_sat_sun_avg+ga_sc_past_4_week_labour_hours_sat_sun_avg
+    ga_sc_past_4_week_labour_hours_sat_sun_avg = ga_sc_past_4_week_labour_hours_sat_sun_sum / 4 
+    
+    ga_sc_current_cars_per_labour_hour_sat_sun  =  xl_map[17][3]
+    'ga_sc_sum_past_sat_sun is the avg of past 4 week car count'
+    ga_sc_past_4_week_cars_per_labour_hour_sat_sun =  ga_sc_sum_past_sat_sun/ ga_sc_past_4_week_labour_hours_sat_sun_avg
+    
+    
+    
+    total_current_cars_per_labour_hour_sat_sun = xl_map[17][1]
+    total_past_4_week_cars_sat_sun = ill_sum_past_sat_sun + ga_sc_sum_past_sat_sun
+    total_past_4_labour_hours_sat_sun = ill_past_4_week_labour_hours_sat_sun_avg + ga_sc_past_4_week_labour_hours_sat_sun_avg
+    total_cars_per_labour_hour_sat_sun = total_past_4_week_cars_sat_sun / total_past_4_labour_hours_sat_sun
+    
 
     # Total Cars Per Man Hour
-    ill_past_4_week_total_cars_per_man_hour = (ill_sum_past_mon_fri+ill_sum_past_sat_sun)/((ill_past_4_week_labour_hours_mon_fri_sum+ill_past_4_week_labour_hours_sat_sun_sum)/4)
+    ill_past_4_week_total_cars_per_man_hour = (ill_sum_past_mon_fri+ill_sum_past_sat_sun)/((ill_past_4_week_labour_hours_mon_fri_avg+ill_past_4_week_labour_hours_sat_sun_avg))
     ill_curr_total_cars_per_man_hour = xl_map[18][2]
 
-    ga_sc_past_4_week_total_cars_per_man_hour = (ga_sc_sum_past_mon_fri+ga_sc_sum_past_sat_sun)/((ga_sc_past_4_week_labour_hours_mon_fri_sum+ga_sc_past_4_week_labour_hours_sat_sun_sum)/4)
+    ga_sc_past_4_week_total_cars_per_man_hour = (ga_sc_sum_past_mon_fri+ga_sc_sum_past_sat_sun)/((ga_sc_past_4_week_labour_hours_mon_fri_avg+ga_sc_past_4_week_labour_hours_sat_sun_avg))
     ga_sc_curr_total_cars_per_man_hour = xl_map[18][3]
 
-    total_past_4_week_total_cars_per_man_hour = ill_past_4_week_total_cars_per_man_hour+ga_sc_past_4_week_total_cars_per_man_hour
+    total_past_4_week_total_cars_per_man_hour = (past_4_week_total_car_cnt_mon_fri + past_4_week_total_car_cnt_sat_sun) / (total_past_4_weeks_labour_hours_mon_fri +total_past_4_labour_hours_sat_sun) 
     total_curr_total_cars_per_man_hour = xl_map[18][1]
     
     
@@ -1431,6 +1505,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_new(ga_sc_curent_revenue,ga_sc_avg_revenue,12,4,worksheet,colours)  #ga sc revenue 
     # set_colour(total_revenue_total_change,12,2,worksheet,colours)
     set_colour_new(total_reveneu_curent,total_revenue_past_4_avg_total,12,2,worksheet,colours) #totalk revenue 
+    print("Conversion Rate")
     set_colour_new(ill_current_conversation_rate,ill_past_4_conversation_rate,21,3,worksheet,colours)  #conversation rate
     set_colour_new(ga_sc_current_conversation_rate,ga_sc_past_4_conversation_rate,21,4,worksheet,colours)
     set_colour_new(current_total_conversation_rate,past_total_conversation_change,21,2,worksheet,colours)
@@ -1480,16 +1555,17 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_for_avg_retail(ga_sc_curr_avg_ratail_visit, ga_sc_past_4_week_avg_ratail_visit, 13, 4, worksheet, colours)
     set_colour_for_avg_retail(total_curr_avg_ratail_visit, total_past_4_week_avg_ratail_visit, 13, 2, worksheet, colours)
 
-    print('Labour Hour Mon Fri')
-    set_colour_new(current_ill_week_labour_hours_mon_fri, ill_past_4_week_labour_hours_mon_fri_avg, 17, 3, worksheet, colours) 
-    set_colour_new(current_ga_sc_labour_hours_mon_fri, ga_sc_past_4_week_labour_hours_mon_fri_avg, 17, 4, worksheet, colours) 
-    set_colour_new(curr_total_labour_hours_mon_fri, past_4_week_total_labour_hours_mon_fri, 17, 2, worksheet, colours)
+    print('Cars Per Labor Hour Mon - Fri')
+    set_colour_new(ill_current_week_cars_per_labour_hour_mon_fri, ill_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 3, worksheet, colours) 
+    set_colour_new(ga_sc_current_week_cars_per_labour_hour_mon_fri, ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 4, worksheet, colours) 
+    set_colour_new(total_current_cars_per_labour_hour_mon_fri, total_past_4_week_cars_per_labour_hour_mon_fri, 17, 2, worksheet, colours)
 
-    print('Labour Hour Sat sun')
-    set_colour_new(current_ill_week_labour_hours_sat_sun, ill_past_4_week_labour_hours_sat_sun_avg, 18, 3, worksheet, colours) 
-    set_colour_new(current_ga_sc_labour_hours_sat_sun, ga_sc_past_4_week_labour_hours_sat_sun_avg, 18, 4, worksheet, colours) 
-    set_colour_new(curr_total_labour_hours_sat_sun, past_4_week_total_labour_hours_sat_sun, 18, 2, worksheet, colours)
+    print('Cars Per Labor Hour Sat & Sun')
+    set_colour_new(ill_current_cars_per_labour_hour_sat_sun, ill_past_4_week_cars_per_labour_hour_sat_sun, 18, 3, worksheet, colours) 
+    set_colour_new(ga_sc_current_cars_per_labour_hour_sat_sun, ga_sc_past_4_week_cars_per_labour_hour_sat_sun, 18, 4, worksheet, colours) 
+    set_colour_new(total_current_cars_per_labour_hour_sat_sun, total_cars_per_labour_hour_sat_sun, 18, 2, worksheet, colours)
 
+    #Total Cars Per Man Hour
     set_colour_new(ill_curr_total_cars_per_man_hour, ill_past_4_week_total_cars_per_man_hour, 19, 3, worksheet, colours)
     set_colour_new(ga_sc_curr_total_cars_per_man_hour, ga_sc_past_4_week_total_cars_per_man_hour, 19, 4, worksheet, colours)
     set_colour_new(total_curr_total_cars_per_man_hour, total_past_4_week_total_cars_per_man_hour, 19, 2, worksheet, colours)
@@ -1506,28 +1582,31 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
     
     for index,place_dictionary in enumerate(all_locations):
+        #Total Cars
         current_week_total_cars = xl_map[6][index+4]
         past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
         change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
+        past_4_week_total_cars_avg  = do_avg(past_4_week_total_cars)
         #set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
-        set_colour_new(current_week_total_cars,past_4_week_total_cars,7,index+5,worksheet,colours)
+        set_colour_new(current_week_total_cars,past_4_week_total_cars_avg,7,index+5,worksheet,colours)
         
         print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
         current_week_conversatio_rate = place_dictionary.get("conversion_rate")
         past_4_week_conversation_rate =  place_dictionary.get("past_4_week_conversion_rate")
-        change_in_conversationrate = place_dictionary.get("conversion_rate") - place_dictionary.get("past_4_week_conversion_rate")
+        
         set_colour_new(current_week_conversatio_rate,past_4_week_conversation_rate,21,index+5,worksheet,colours) #conversation rate colours
         #Total Revenue
         #print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
         current_revenue_total = place_dictionary.get("total_revenue")
         past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
-        past_4_week_revenue_total_avg = past_4_week_revenue_total/4 if past_4_week_revenue_total else 0
+        past_4_week_revenue_total_avg = do_avg(past_4_week_revenue_total)
         
         change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
         print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
         set_colour_new(current_revenue_total, past_4_week_revenue_total_avg,12, index+5,worksheet,colours)
         # set_colour(change_in_total_revenue,12,index+5,worksheet,colours)
 
+        #Car Count Mon - Fri
         past_4_car_count_mon_fri_avg = place_dictionary.get('past_4_week_car_cnt_mon_fri', 0)/4
         curr_week_car_count_mon_fri = xl_map[2][index+4]
         set_colour_new(curr_week_car_count_mon_fri, past_4_car_count_mon_fri_avg, 3, index+5, worksheet, colours)
@@ -1552,18 +1631,29 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         curr_week_retail_revenue_sat_sun = xl_map[8][index+4]
         set_colour_new(curr_week_retail_revenue_sat_sun, past_4_week_retail_revenue_sat_sun_avg, 9, index+5, worksheet, colours)
 
+        #Total Revenue Mon - Fri
         past_4_week_total_revenue_mon_fri_avg = place_dictionary.get('past_4_week_total_revenue_mon_fri', 0)/4
-        curr_week_total_revenue_sat_sun = xl_map[9][index+4]
-        set_colour_new(curr_week_total_revenue_sat_sun, past_4_week_total_revenue_mon_fri_avg, 10, index+5, worksheet, colours)
+        curr_week_total_revenue_mon_fri = xl_map[9][index+4]
+        set_colour_new(curr_week_total_revenue_mon_fri, past_4_week_total_revenue_mon_fri_avg, 10, index+5, worksheet, colours)
 
-        past_4_week_total_revenue_sat_sun_avg = place_dictionary.get('past_4_week_total_revenue_mon_fri', 0)/4
+        #Total Revenue Sat - Sun
+        print("Total Revenue Sat - Sun")
+        past_4_week_total_revenue_sat_sun_avg = place_dictionary.get('past_4_week_total_revenue_sat_sun', 0)/4
         curr_week_total_revenue_sat_sun = xl_map[10][index+4]
         set_colour_new(curr_week_total_revenue_sat_sun, past_4_week_total_revenue_sat_sun_avg, 11, index+5, worksheet, colours)
 
-        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_4_car_count_mon_fri_avg+past_4_car_count_sat_sun_avg)
+        #Avg. Retail Visit
+        past_retail_car_count_mon_fri_avg = place_dictionary.get('past_4_week_retail_car_count_mon_fri', 0)/4
+        past_retail_car_count_sat_sun_avg = place_dictionary.get('past_4_week_retail_car_count_sat_sun', 0)/4
+        
+        past_retail_car_count_avg  = past_retail_car_count_mon_fri_avg  + past_retail_car_count_sat_sun_avg
+        
+        print("Avg. Retail Visit")
+        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg)
         curr_avg_ratail_visit = xl_map[12][index+4]
         set_colour_new(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
+        #Cars Per Labor Hour Mon - Fri
         past_4_week_labour_hours_mon_fri_avg = handle_zero_divison(place_dictionary.get('past_4_week_car_cnt_mon_fri', 0),place_dictionary.get('past_4_week_labour_hours_mon_fri', 0))
         if xl_map[16][index+4] != '':
             curr_week_labour_hours_mon_fri_avg = xl_map[16][index+4]
