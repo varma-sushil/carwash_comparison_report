@@ -1527,7 +1527,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     print('Retail count sat sun')
     set_colour_new(current_ill_week_retail_cnt_sat_sum, ill_sum_retail_car_cnt_sat_avg, 6, 3, worksheet, colours) # retail count sat-sun ill
-    set_colour_new(current_ga_sc_week_retail_cnt_mon_fri, ga_sc_sum_retail_car_cnt_mon_fri, 6, 4, worksheet, colours) # retail count sat-sun
+    set_colour_new(current_ga_sc_week_retail_cnt_sat_sum, ga_sc_sum_retail_car_cnt_sat_avg, 6, 4, worksheet, colours) # retail count sat-sun
     set_colour_new(curr_total_retail_car_cnt_sat_sun, past_4_week_total_retail_car_cnt_sat_sun, 6, 2, worksheet, colours) # retail count sat-sun
 
     print('Retail Revenue count mon fri')
