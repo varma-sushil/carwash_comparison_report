@@ -1207,7 +1207,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
     ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
     
-    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)
+    ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
     
     ill_current_conversation_rate = xl_map[20][2]
     ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
@@ -1218,7 +1218,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
     ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
     
-    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)
+    ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
     
     ga_sc_current_conversation_rate  = xl_map[20][3]
     ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
@@ -1227,7 +1227,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
     
-    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)
+    past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
     
     current_total_conversation_rate = xl_map[20][1]
     
@@ -1720,33 +1720,39 @@ if __name__=="__main__":
     # # -----------------Actual script  ----------------------------#
     
     path = get_week_dates_for_storage()
-    path="test_20_3" #"07-2024"#"06-2024"
+    current_year=2024
+    current_month = "07"
+    monday_day =22
+    friday_day = 26
+    saturday_day = 27
+    sunday_day = 28
+    path="current_20_percentage" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    monday_date_str="2024-07-01"
-    friday_date_str = "2024-07-05"
-    saturday_date_str = "2024-07-06"
-    sunday_date_str="2024-07-07"  #Y-M-D
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
+    # # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # monday_date_str=f"{current_year}-{current_month}-{monday_day}"
+    # friday_date_str = f"{current_year}-{current_month}-{friday_day}"
+    # saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
+    # sunday_date_str=f"{current_year}-{current_month}-{sunday_day}"  #Y-M-D
     
     # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
-    ##testing dates 
-    monday_date_str =  "07/01/2024"
-    friday_date_str =  "07/05/2024"
-    saturday_date_str = "07/06/2024"
-    sunday_date_str  =  "07/07/2024"  #M/D/Y
+    # ##testing dates 
+    # monday_date_str =  f"{current_month}/{monday_day}/{current_year}"
+    # friday_date_str =  f"{current_month}/{friday_day}/{current_year}"
+    # saturday_date_str = f"{current_month}/{saturday_day}/{current_year}"
+    # sunday_date_str  =  f"{current_month}/{sunday_day}/{current_year}"  #M/D/Y
     
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # #for hamilton dates
-    monday_date_str = "2024-07-01"
-    friday_date_str = "2024-07-05"
-    saturday_date_str = "2024-07-06"
-    sunday_date_str  = "2024-07-07"
+    monday_date_str = f"{current_year}-{current_month}-{monday_day}"
+    friday_date_str = f"{current_year}-{current_month}-{friday_day}"
+    saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
+    sunday_date_str  = f"{current_year}-{current_month}-{sunday_day}"   #Y-M-D
     
     # # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
     # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1757,10 +1763,10 @@ if __name__=="__main__":
     
     # data.update(hamilton_report)
 
-    # with open("all_data_t1.json", 'w') as f:
+    # with open("all_data_today_10_per.json", 'w') as f:
     #     json.dump(data, f, indent=4)
 
-    with open("all_data_t1.json", 'r') as f:
+    with open("all_data_today_10_per.json", 'r') as f:
         data = json.load(f)
 
     
