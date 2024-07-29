@@ -287,7 +287,9 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
                     single_site_report["past_4_week_labour_hours_sat_sun"] = single_site_report.get("past_4_week_labour_hours_sat_sun",0) + past_4_week_labour_hours_sat_sun
 
                     single_site_report["past_4_week_retail_car_count_mon_fri"] += past_4_week_retail_car_count_mon_fri
+                    single_site_report[f"past_4_week_retail_car_count_mon_fri_week_{cnt+1}"] = past_4_week_retail_car_count_mon_fri
                     single_site_report["past_4_week_retail_car_count_sat_sun"] += past_4_week_retail_car_count_sat_sun
+                    single_site_report[f"past_4_week_retail_car_count_sat_sun_week_{cnt+1}"] = past_4_week_retail_car_count_sat_sun
                     
                     single_site_report['past_4_week_retail_revenue_mon_fri'] += past_4_week_retail_revenue_mon_fri
                     single_site_report['past_4_week_retail_revenue_sat_sun'] += past_4_week_retail_revenue_sat_sun
@@ -340,10 +342,10 @@ if __name__=="__main__":
     saturday_date_str = "06/08/2024"
     sunday_date_str  =  "06/09/2024"  #M/D/Y
     
-    monday_date_str =  "07/01/2024"
-    friday_date_str =  "07/05/2024"
-    saturday_date_str = "07/06/2024"
-    sunday_date_str  =  "07/07/2024"  #M/D/Y
+    monday_date_str =  "07/22/2024"
+    friday_date_str =  "07/26/2024"
+    saturday_date_str = "07/27/2024"
+    sunday_date_str  =  "07/28/2024"  #M/D/Y
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     data = generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
