@@ -1775,32 +1775,37 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     current_year=2024
-    current_month = "07"
-    monday_day =22
-    friday_day = 26
-    saturday_day = 27
-    sunday_day = 28
-    path="current_10_percentage" #"07-2024"#"06-2024"
+    current_month = "06"
+    # monday_day =22
+    # friday_day = 26
+    # saturday_day = 27
+    # sunday_day = 28
+    
+    monday_day =24
+    friday_day = 28
+    saturday_day = 29
+    sunday_day = 30
+    path="past_4_weeks" #"07-2024"#"06-2024"
     storage_path = create_storage_directory(path)
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    # # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # monday_date_str=f"{current_year}-{current_month}-{monday_day}"
-    # friday_date_str = f"{current_year}-{current_month}-{friday_day}"
-    # saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
-    # sunday_date_str=f"{current_year}-{current_month}-{sunday_day}"  #Y-M-D
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
+    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    monday_date_str=f"{current_year}-{current_month}-{monday_day}"
+    friday_date_str = f"{current_year}-{current_month}-{friday_day}"
+    saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
+    sunday_date_str=f"{current_year}-{current_month}-{sunday_day}"  #Y-M-D
     
-    # sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
+    sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
-    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     # ##testing dates 
-    # monday_date_str =  f"{current_month}/{monday_day}/{current_year}"
-    # friday_date_str =  f"{current_month}/{friday_day}/{current_year}"
-    # saturday_date_str = f"{current_month}/{saturday_day}/{current_year}"
-    # sunday_date_str  =  f"{current_month}/{sunday_day}/{current_year}"  #M/D/Y
+    monday_date_str =  f"{current_month}/{monday_day}/{current_year}"
+    friday_date_str =  f"{current_month}/{friday_day}/{current_year}"
+    saturday_date_str = f"{current_month}/{saturday_day}/{current_year}"
+    sunday_date_str  =  f"{current_month}/{sunday_day}/{current_year}"  #M/D/Y
     
-    # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # #for hamilton dates
     monday_date_str = f"{current_year}-{current_month}-{monday_day}"
@@ -1808,20 +1813,20 @@ if __name__=="__main__":
     saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
     sunday_date_str  = f"{current_year}-{current_month}-{sunday_day}"   #Y-M-D
     
-    # # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
-    # hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
-    # data = sitewatch_report
+    data = sitewatch_report
     
-    # data.update(washify_report)
+    data.update(washify_report)
     
-    # data.update(hamilton_report)
+    data.update(hamilton_report)
 
     # with open("all_data_today_10_per.json", 'w') as f:
     #     json.dump(data, f, indent=4)
 
-    with open("all_data_today_10_per.json", 'r') as f:
-        data = json.load(f)
+    # with open("all_data_today_10_per.json", 'r') as f:
+    #     data = json.load(f)
 
     
     comment =f"Ending {sunday_date_str}"
