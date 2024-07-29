@@ -1149,22 +1149,22 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             total_revenue_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
 
                             if client_name=="Sudz - Beverly":
-                                past_4_week_retail_revenue_sat_sun = round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
-                                past_4_week_retail_revenue_mon_fri = round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
+                                past_4_week_retail_revenue_mon_fri = round((total_revenue_val_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2) #arm_plans_recharged_amt_mon_fri_amt
+                                past_4_week_retail_revenue_sat_sun = round((total_revenue_val_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2) # arm_plans_recharged_amt_sat_sun_amt
                                 combined_data['past_4_week_retail_revenue_mon_fri'] = combined_data.get("past_4_week_retail_revenue_mon_fri",0)+ past_4_week_retail_revenue_mon_fri
                                 combined_data['past_4_week_retail_revenue_sat_sun'] = combined_data.get("past_4_week_retail_revenue_sat_sun",0) + past_4_week_retail_revenue_sat_sun
                                 # print(f"retail revenue mon fri : {combined_data['past_4_week_retail_revenue_mon_fri']}")
                                 # print(f" retail revenue sat sun : {combined_data['past_4_week_retail_revenue_sat_sun']}")
-                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"] = round((total_revenue_val_mon_fri - arm_plans_reedemed_mon_fri_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"] = round((total_revenue_val_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
                                 combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"] = round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
                             else:
-                                past_4_week_retail_revenue_mon_fri  = round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
-                                past_4_week_retail_revenue_sat_sun  =  round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
+                                past_4_week_retail_revenue_mon_fri  = round((net_sales_amt_mon_fri - arm_plans_reedemed_mon_fri_amt),2) #arm_plans_reedemed_mon_fri_amt
+                                past_4_week_retail_revenue_sat_sun  =  round((net_sales_amt_sat_sun - arm_plans_reedemed_sat_sun_amt),2) # arm_plans_reedemed_sat_sun_amt
                                 combined_data['past_4_week_retail_revenue_mon_fri'] = combined_data.get("past_4_week_retail_revenue_mon_fri",0) + past_4_week_retail_revenue_mon_fri
                                 combined_data['past_4_week_retail_revenue_sat_sun'] = combined_data.get("past_4_week_retail_revenue_sat_sun",0) + past_4_week_retail_revenue_sat_sun
 
-                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"]  = round((net_sales_amt_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
-                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"]  = round((net_sales_amt_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"]  = round((net_sales_amt_mon_fri -arm_plans_reedemed_mon_fri_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"]  = round((net_sales_amt_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
                             retail_car_count_sat_sun = (car_cnt_sat_sun-arm_plans_reedemed_cnt_sat_sun)
 
                             combined_data["past_4_week_car_cnt_mon_fri"] = combined_data.get("past_4_week_car_cnt_mon_fri",0)+car_cnt_mon_fri
@@ -1175,6 +1175,8 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
 
                             combined_data["past_4_week_retail_car_count_mon_fri"] = combined_data.get("past_4_week_retail_car_count_mon_fri", 0)+retail_car_count_mon_fri
                             combined_data["past_4_week_retail_car_count_sat_sun"] = combined_data.get("past_4_week_retail_car_count_sat_sun", 0)+retail_car_count_sat_sun
+                            combined_data[f"past_4_week_retail_car_count_mon_fri_week_{cnt+1}"]  = retail_car_count_mon_fri
+                            combined_data[f"past_4_week_retail_car_count_sat_sun_week_{cnt+1}"]  = retail_car_count_sat_sun
 
                             combined_data['past_4_week_total_revenue_mon_fri'] += total_revenue_mon_fri
                             combined_data['past_4_week_total_revenue_sat_sun'] += total_revenue_sat_sun
@@ -1512,10 +1514,10 @@ if __name__=="__main__":
     saturday_date_str = "2024-06-15"
     sunday_date_str="2024-06-16"  #YMD
     
-    monday_date_str="2024-07-01"
-    friday_date_str = "2024-07-05"
-    saturday_date_str = "2024-07-06"
-    sunday_date_str="2024-07-07"  #Y-M-D
+    monday_date_str="2024-07-22"
+    friday_date_str = "2024-07-26"
+    saturday_date_str = "2024-07-27"
+    sunday_date_str="2024-07-28"  #Y-M-D
     
     report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     print("\n"*6)

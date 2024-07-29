@@ -770,7 +770,8 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         final_data['past_4_week_retail_revenue_mon_fri'] += retail_revenue4
         final_data['past_4_week_total_revenue_mon_fri'] += total_revenue4
         
-        final_data[f'past_4_week_retail_revenue_mon_fri_week_{cnt+1}'] = wash_purchases_total_cnt4
+        final_data[f'past_4_week_retail_revenue_mon_fri_week_{cnt+1}'] = retail_revenue4
+        final_data[f"past_4_week_retail_car_count_mon_fri_week_{cnt+1}"] = wash_purchases_total_cnt4
         print(f"past_4_week_retail_revenue_mon_fri:{retail_revenue4}")
         
 
@@ -791,6 +792,8 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         print(f"past_4_week_retail_revenue_sat_sun : {retail_revenue5}")
         
         final_data[f'past_4_week_retail_revenue_sat_sun_week_{cnt+1}'] = retail_revenue5
+        final_data[f"past_4_week_retail_car_count_sat_sun_week_{cnt+1}"] = wash_purchases_total_cnt5
+        # print(f"final check1 : {final_data[f'past_4_week_retail_revenue_sat_sun_week_{cnt+1}']}")
         cnt+=1
     
     print(f"past week cnt : {past_4_week_cnt}")
@@ -836,10 +839,10 @@ if __name__ == "__main__":
     saturday_date_str = "2024-06-08"
     sunday_date_str  = "2024-06-09"
     
-    monday_date_str = "2024-07-01"
-    friday_date_str = "2024-07-05"
-    saturday_date_str = "2024-07-06"
-    sunday_date_str  = "2024-07-07"
+    monday_date_str = "2024-07-22"
+    friday_date_str = "2024-07-26"
+    saturday_date_str = "2024-07-27"
+    sunday_date_str  = "2024-07-28"
     # dail_report_v2 = client.get_dail_report_v2(monday_date_str,friday_date_str)
     
     # print(f"Daily report v2 : {dail_report_v2}")
