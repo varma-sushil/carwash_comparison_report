@@ -1156,7 +1156,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                                 # print(f"retail revenue mon fri : {combined_data['past_4_week_retail_revenue_mon_fri']}")
                                 # print(f" retail revenue sat sun : {combined_data['past_4_week_retail_revenue_sat_sun']}")
                                 combined_data[f"past_4_week_retail_revenue_mon_fri_week_{cnt+1}"] = round((total_revenue_val_mon_fri - arm_plans_recharged_amt_mon_fri_amt),2)
-                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"] = round((total_revenue_val_sat_sun - arm_plans_reedemed_sat_sun_amt),2)
+                                combined_data[f"past_4_week_retail_revenue_sat_sun_week_{cnt+1}"] = round((total_revenue_val_sat_sun - arm_plans_recharged_amt_sat_sun_amt),2)
                             else:
                                 past_4_week_retail_revenue_mon_fri  = round((net_sales_amt_mon_fri - arm_plans_reedemed_mon_fri_amt),2) #arm_plans_reedemed_mon_fri_amt
                                 past_4_week_retail_revenue_sat_sun  =  round((net_sales_amt_sat_sun - arm_plans_reedemed_sat_sun_amt),2) # arm_plans_reedemed_sat_sun_amt
