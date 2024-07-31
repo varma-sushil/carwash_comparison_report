@@ -990,7 +990,7 @@ def create_storage_directory(path):
 
 if __name__=="__main__":
 
-    load_dotenv()
+    load_dotenv(override=True)
 
     class emailConfig:
         env_vars    = os.environ
@@ -1012,14 +1012,15 @@ if __name__=="__main__":
     smtp_port = emailConfig.SMTP_PORT
     smtp_user = emailConfig.SMTP_USER
     smtp_password = emailConfig.SMTP_PASSWORD
+    to_email="vijaykumarmanthena@reluconsultancy.in"
     
     #cc_emails=["vijaykumarmanthena@reluconsultancy.in"]
-    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com","abhishekmeher@reluconsultancy.in"] # 
-    
+    #cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com","abhishekmeher@reluconsultancy.in"] # 
+    cc_emails=["vijaykumarmanthena@reluconsultancy.in"]
 
     
     # path="07-2024"
-    storage_path = "/home/ubuntu/CAR_WASH_2/carwash_weekly/carwash/weekly_sender/data/07-2024" #create_storage_directory(path)
+    storage_path = "/home/ubuntu/CAR_WASH_2/carwash_weekly/carwash/weekly_sender/data/2024" #create_storage_directory(path)
     sunday_date_str  = "2024-07-07" #YMD
     # Directory containing Excel files
     directory_path = storage_path

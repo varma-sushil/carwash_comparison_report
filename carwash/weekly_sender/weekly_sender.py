@@ -1880,7 +1880,7 @@ if __name__=="__main__":
     
     #Sending email to email address
     body = f'weekly report Ending {sunday_date_str}'
-    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
     
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#

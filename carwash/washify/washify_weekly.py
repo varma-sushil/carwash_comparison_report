@@ -336,6 +336,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
     except Exception as e:
         print(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
         logger.info(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
+    logger.info("sitewatch final data")
     logger.info(f"{final_report}")
     
     return final_report
