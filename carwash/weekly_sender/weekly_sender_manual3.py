@@ -14,6 +14,7 @@ try:
 except ImportError:
     from openpyxl.utils import get_column_letter
 from openpyxl.styles import Border, Side
+import logging
 
 
 
@@ -80,6 +81,7 @@ def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,r
         result = Average_retail_visit__GA_SC
     except Exception as e:
         print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
+        logging.info(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
         
 
     return result 
@@ -100,6 +102,7 @@ def Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
         
     except Exception as e:
         print(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
+        logger.info(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
     
     return result
 
@@ -110,6 +113,7 @@ def cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_fri
         result =cost_per_labour_hour_monday_to_friday_GA_SC
     except Exception as e:
         print(f"Exception in cost_per_labour_hour_monday_to_friday_GA_SC() {e}")
+        logger.info(f"Exception in cost_per_labour_hour_monday_to_friday_GA_SC() {e}")
 
     return result
 
@@ -122,6 +126,7 @@ def cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to
         result = cost_per_labour_hour_saturday_to_sunday_GA_SC
     except Exception as e:
         print(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
+        logger.info(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
         
     return result
 
@@ -134,6 +139,7 @@ def Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_
     
     except Exception as e:
         print(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
+        logger.info(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
     
     return result
  
@@ -147,6 +153,7 @@ def Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_
         result =  Conversion_rate_GA_SC
     except Exception as e:
         print(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
+        logger.info(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
     
     return result
 
@@ -162,6 +169,7 @@ def Conversion_rate_Total_function(Total_club_plans_sold_Total,
         result = Conversion_rate_Total
     except Exception as e:
         print(f"Exception in Conversion_rate_Total_function()  {e}") 
+        logger.info(f"Exception in Conversion_rate_Total_function()  {e}")
     
     return result
 
@@ -174,6 +182,7 @@ def Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
         result = Conversion_rate_ILL
     except Exception as e:
         print(f"Exception in Conversion_rate_ILL_function() {e}")
+        logger.info(f"Exception in Conversion_rate_ILL_function() {e}")
         
     return result
 
@@ -190,6 +199,7 @@ def Total_cars_per_man_hour_total_function(Total_cars_Total,
     
     except Exception as e:
         print(f"Exception in Total_cars_per_man_hour_total_function() {e}")
+        logger.info(f"Exception in Total_cars_per_man_hour_total_function() {e}")
         
     return result
 
@@ -207,6 +217,7 @@ def Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
     
     except Exception as e:
         print(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
+        logger.info(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
     
     return result
 
@@ -221,6 +232,7 @@ def cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_s
     
     except Exception as e:
         print(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
+        logger.info(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
         
     return result
 
@@ -234,6 +246,7 @@ def cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_fri
     
     except Exception as e:
         print(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
+        logger.info(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
     
     return result
 
@@ -246,6 +259,7 @@ def cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_frida
     
     except Exception as e:
         print(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
+        logger.info(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
         
     return result
 
@@ -261,6 +275,7 @@ def Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_mond
     
     except Exception as e:
         print(f"Exception Average_memeber_visit_Total_function() {e}")  
+        logger.info(f"Exception Average_memeber_visit_Total_function() {e}")
     
     return result    
 
@@ -277,6 +292,7 @@ def Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_t
     
     except Exception as e:
         print(f"Exception Average_memeber_visit_ILL_function() {e}")
+        logger.info(f"Exception Average_memeber_visit_ILL_function() {e}")
     
     return result
 
@@ -294,6 +310,7 @@ def Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
     
     except Exception as e:
         print(f"Exception Average_retail_visit_Total_function() {e}")
+        logger.info(f"Exception Average_retail_visit_Total_function() {e}")
         
     return result
             
@@ -312,6 +329,7 @@ def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
     
     except Exception as e:
         print(f"Exception Average_retail_visit_IL_function() {e}")
+        logger.info(f"Exception Average_retail_visit_IL_function() {e}")
     
     return result
 
@@ -399,23 +417,30 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     # elif percentage < -10:
     #     cell.fill = darkred_format
     percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
-    
+    logger.info(f" curent index : {row},{col}")
+    logger.info(f"current val : {current_week} pastweek {past_4_weeks}")
+    logger.info(f"percentage : {percentage}")
     print("percentage :",percentage)
     if percentage >=10:
         #Dark green
         print("Dark green ")
+        logger.info("Dark green ")
         cell.fill = darkgreen_format
     elif percentage >= 5:
         print("light green")
+        logging.info("light green")
         cell.fill = light_green_format
     elif percentage > -5:
         print("neutral")
+        logger.info("neutral")
         
     elif percentage > -10:
         print("light red ")
+        logger.info("light red ")
         cell.fill = lightred_format
     elif percentage <=-10:
         print("Dark red")  
+        logger.info("Dark red")
         cell.fill = darkred_format
 
 def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
@@ -429,7 +454,9 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     if not all([current_week, past_4_weeks]):
         return
     print(f"location on xl : {row},{col}")
+    logger.info(f"location on xl : {row},{col}")
     print(f"current : {current_week} , past week  { past_4_weeks}")
+    logger.info(f"current : {current_week} , past week  { past_4_weeks}")
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
@@ -477,18 +504,23 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     if percentage >=10:
         #Dark green
         print("Dark green ")
+        logger.info("Dark green ")
         cell.fill = darkgreen_format
     elif percentage >= 5:
         print("light green")
+        logger.info("light green")
         cell.fill = light_green_format
     elif percentage > -5:
         print("neutral")
+        logger.info("neutral")
         
     elif percentage > -10:
         print("light red ")
+        logger.info("light red")
         cell.fill = lightred_format
     elif percentage <=-10:
-        print("Dark red")  
+        print("Dark red") 
+        logger.info("Dark red") 
         cell.fill = darkred_format
 
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
@@ -518,6 +550,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         worksheet = workbook.create_sheet(sheet_name)
     except Exception as _:
         print(f"creating neww xl file !! {filename}")
+        logger.info(f"creating neww xl file !! {filename}")
         workbook = openpyxl.Workbook()
         worksheet = workbook.active
         worksheet.title = sheet_name
@@ -1506,61 +1539,73 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     # set_colour(total_revenue_total_change,12,2,worksheet,colours)
     set_colour_new(total_reveneu_curent,total_revenue_past_4_avg_total,12,2,worksheet,colours) #totalk revenue 
     print("Conversion Rate")
+    logger.info("Conversion Rate")
     set_colour_new(ill_current_conversation_rate,ill_past_4_conversation_rate,21,3,worksheet,colours)  #conversation rate
     set_colour_new(ga_sc_current_conversation_rate,ga_sc_past_4_conversation_rate,21,4,worksheet,colours)
     set_colour_new(current_total_conversation_rate,past_total_conversation_change,21,2,worksheet,colours)
 
     print('Car count mon fri')
+    logger.info('Car count mon fri')
     set_colour_new(current_ill_week_cnt_mon_fri, ill_sum_past_mon_fri, 3, 3, worksheet, colours) #car count mon-fri ill
     set_colour_new(current_ga_sc_week_cnt_mon_fri, ga_sc_sum_past_mon_fri, 3, 4, worksheet, colours) #car count mon-fri ga-sc
     set_colour_new(curr_total_car_cnt_mon_fri, past_4_week_total_car_cnt_mon_fri, 3, 2, worksheet, colours) # total car count mon-fri
 
     print('Car count sat sun')
+    logger.info('Car count sat sun')
     set_colour_new(current_ill_week_cnt_sat_sun, ill_sum_past_sat_sun, 4, 3, worksheet, colours) #car count sat-sun ill
     set_colour_new(current_ga_sc_week_cnt_sat_sun, ga_sc_sum_past_sat_sun, 4, 4, worksheet, colours) #car count sat-sun ga-sc
     set_colour_new(curr_total_car_cnt_sat_sun, past_4_week_total_car_cnt_sat_sun, 4, 2, worksheet, colours) # total car count sat-sun
 
     print('Retail count mon fri')
+    logger.info('Retail count mon fri')
     set_colour_new(current_ill_week_retail_cnt_mon_fri, ill_sum_retail_car_cnt_mon_fri, 5, 3, worksheet, colours) # retail count mon-fri ill
     set_colour_new(current_ga_sc_week_retail_cnt_mon_fri, ga_sc_sum_retail_car_cnt_mon_fri, 5, 4, worksheet, colours) # retail count mon-fri
     set_colour_new(curr_total_retail_car_cnt_mon_fri, past_4_week_total_retail_car_cnt_mon_fri, 5, 2, worksheet, colours) # retail count mon-fri
     
     print('Retail count sat sun')
+    logger.info('Retail count sat sun')
     set_colour_new(current_ill_week_retail_cnt_sat_sum, ill_sum_retail_car_cnt_sat_avg, 6, 3, worksheet, colours) # retail count sat-sun ill
     set_colour_new(current_ga_sc_week_retail_cnt_sat_sum, ga_sc_sum_retail_car_cnt_sat_avg, 6, 4, worksheet, colours) # retail count sat-sun
     set_colour_new(curr_total_retail_car_cnt_sat_sun, past_4_week_total_retail_car_cnt_sat_sun, 6, 2, worksheet, colours) # retail count sat-sun
 
     print('Retail Revenue count mon fri')
+    logger.info('Retail Revenue count mon fri')
     set_colour_new(current_ill_retail_revenue_mon_fri, ill_past_4_week_retail_revenue_mon_fri_avg, 8, 3, worksheet, colours)
     set_colour_new(current_ga_sc_retail_revenue_mon_fri, ga_sc_past_4_week_retail_revenue_mon_fri_avg, 8, 4, worksheet, colours)
     set_colour_new(curr_total_retail_revenue_mon_fri, past_4_total_retail_revenue_mon_fri, 8, 2, worksheet, colours)
     
     print('Retail Revenue count sat sun')
+    logger.info('Retail Revenue count sat sun')
     set_colour_new(current_ill_retail_revenue_sat_sun, ill_past_4_week_retail_revenue_sat_sun_avg, 9, 3, worksheet, colours) 
     set_colour_new(current_ga_sc_retail_revenue_sat_sun, ga_sc_past_4_week_retail_revenue_sat_sun_avg, 9, 4, worksheet, colours) 
     set_colour_new(curr_total_retail_revenue_sat_sun, past_4_total_retail_revenue_sat_sun, 9, 2, worksheet, colours)
 
     print('Total Revenue count Mon Fri')
+    logger.info('Total Revenue count Mon Fri')
     set_colour_new(current_ill_total_revenue_mon_fri, ill_past_4_week_total_revenue_mon_fri_avg, 10, 3, worksheet, colours)
     set_colour_new(current_ga_sc_total_revenue_mon_fri, ga_sc_past_4_week_total_revenue_mon_fri_avg, 10, 4, worksheet, colours) 
     set_colour_new(curr_total_total_revenue_mon_fri, past_4_total_total_revenue_mon_fri, 10, 2, worksheet, colours)
     
     print('Total Revenue count Sat Sun')
+    logger.info('Total Revenue count Sat Sun')
     set_colour_new(current_ill_total_revenue_sat_sun, ill_past_4_week_total_revenue_sat_sun_avg, 11, 3, worksheet, colours) 
     set_colour_new(current_ga_sc_total_revenue_sat_sun, ga_sc_past_4_week_total_revenue_sat_sun_avg, 11, 4, worksheet, colours) 
     set_colour_new(curr_total_total_revenue_sat_sun, past_4_total_total_revenue_sat_sun, 11, 2, worksheet, colours) 
 
     print('Avg retail visit')
+    logger.info('Avg retail visit')
     set_colour_for_avg_retail(ill_current_avg_ratail_visit, ill_past_4_week_avg_ratail_visit, 13, 3, worksheet, colours)
     set_colour_for_avg_retail(ga_sc_curr_avg_ratail_visit, ga_sc_past_4_week_avg_ratail_visit, 13, 4, worksheet, colours)
     set_colour_for_avg_retail(total_curr_avg_ratail_visit, total_past_4_week_avg_ratail_visit, 13, 2, worksheet, colours)
 
     print('Cars Per Labor Hour Mon - Fri')
+    logger.info('Cars Per Labor Hour Mon - Fri')
     set_colour_new(ill_current_week_cars_per_labour_hour_mon_fri, ill_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 3, worksheet, colours) 
     set_colour_new(ga_sc_current_week_cars_per_labour_hour_mon_fri, ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 4, worksheet, colours) 
     set_colour_new(total_current_cars_per_labour_hour_mon_fri, total_past_4_week_cars_per_labour_hour_mon_fri, 17, 2, worksheet, colours)
 
     print('Cars Per Labor Hour Sat & Sun')
+    logger.info('Cars Per Labor Hour Sat & Sun')
     set_colour_new(ill_current_cars_per_labour_hour_sat_sun, ill_past_4_week_cars_per_labour_hour_sat_sun, 18, 3, worksheet, colours) 
     set_colour_new(ga_sc_current_cars_per_labour_hour_sat_sun, ga_sc_past_4_week_cars_per_labour_hour_sat_sun, 18, 4, worksheet, colours) 
     set_colour_new(total_current_cars_per_labour_hour_sat_sun, total_cars_per_labour_hour_sat_sun, 18, 2, worksheet, colours)
@@ -1638,6 +1683,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 
         #Total Revenue Sat - Sun
         print("Total Revenue Sat - Sun")
+        logger.info("Total Revenue Sat - Sun")
         past_4_week_total_revenue_sat_sun_avg = place_dictionary.get('past_4_week_total_revenue_sat_sun', 0)/4
         curr_week_total_revenue_sat_sun = xl_map[10][index+4]
         set_colour_new(curr_week_total_revenue_sat_sun, past_4_week_total_revenue_sat_sun_avg, 11, index+5, worksheet, colours)
@@ -1649,6 +1695,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         past_retail_car_count_avg  = past_retail_car_count_mon_fri_avg  + past_retail_car_count_sat_sun_avg
         
         print("Avg. Retail Visit")
+        logger.info("Avg. Retail Visit")
         past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg)
         curr_avg_ratail_visit = xl_map[12][index+4]
         set_colour_for_avg_retail(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
@@ -1736,12 +1783,18 @@ def create_storage_directory(path):
         created_path =path
     except OSError as error:
         print(f"Directory '{path}' cannot be created: {error}")
+        logger.info(f"Directory '{path}' cannot be created: {error}")
     
     return created_path
 
 
 
 if __name__=="__main__":
+    import logging
+    from logging_config import setup_logging
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    logger.info("started main script")
     import time 
     start = time.time()
 
@@ -1775,18 +1828,18 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     current_year=2024
-    current_month = "06"
-    monday_day ="24"
-    friday_day = "28"
-    saturday_day = "29"
-    sunday_day = "30"
+    # current_month = "06"
+    # monday_day ="24"
+    # friday_day = "28"
+    # saturday_day = "29"
+    # sunday_day = "30"
     
-    # current_month = "07"  #current week days
-    # monday_day =22
-    # friday_day = 26
-    # saturday_day = 27
-    # sunday_day = 28
-    path="past_4_weeks2" #"07-2024"#"06-2024"  # current_10_percentage
+    current_month = "07"  #current week days
+    monday_day =22
+    friday_day = 26
+    saturday_day = 27
+    sunday_day = 28
+    path="past_4_weeks4" #"07-2024"#"06-2024"  # current_10_percentage
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1795,8 +1848,8 @@ if __name__=="__main__":
     saturday_date_str = f"{current_year}-{current_month}-{saturday_day}"
     sunday_date_str=f"{current_year}-{current_month}-{sunday_day}"  #Y-M-D
     
+    logger.info(f"sitewatch weeks days: {monday_date_str},{friday_date_str},{saturday_date_str},{sunday_date_str}")
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     # ##testing dates 
@@ -1806,6 +1859,7 @@ if __name__=="__main__":
     sunday_date_str  =  f"{current_month}/{sunday_day}/{current_year}"  #M/D/Y
     
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    logger.info(f"washify week days days: {monday_date_str},{friday_date_str},{saturday_date_str},{sunday_date_str}")
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     # #for hamilton dates
@@ -1815,6 +1869,7 @@ if __name__=="__main__":
     sunday_date_str  = f"{current_year}-{current_month}-{sunday_day}"   #Y-M-D
     
     # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    logger.info(f"hamilton week days days: {monday_date_str},{friday_date_str},{saturday_date_str},{sunday_date_str}")
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     data = sitewatch_report
@@ -1828,7 +1883,7 @@ if __name__=="__main__":
 
     # with open("all_data_today_10_per.json", 'r') as f:
     #     data = json.load(f)
-
+    logger.info(f"{data}")
     
     comment =f"Ending {sunday_date_str}"
     sheet_name= sunday_date_str.replace("/","-")
