@@ -13,9 +13,9 @@ from washify import generate_past_4_week_days_full
 import logging
 
 # Add the path to the parent directory of "washify" to sys.path
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'washify')))
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'sitewash')))
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'hamilton')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'washify')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'sitewash')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'hamilton')))
 
 
 
@@ -336,6 +336,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
     except Exception as e:
         print(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
         logger.info(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
+    logger.info(f"{final_report}")
     
     return final_report
 

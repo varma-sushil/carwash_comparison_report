@@ -1224,7 +1224,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data["past_4_weeks_retail_car_count"] = past_4_weeks_retail_car_count
 
                     print(f"combined data:{combined_data}")
-                    logger.info("combined data:{combined_data}")
+                    logger.info(f"combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:
                         is_location_code_success=True
