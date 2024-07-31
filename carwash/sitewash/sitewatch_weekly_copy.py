@@ -1106,7 +1106,12 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data['past_4_week_total_revenue_sat_sun'] = 0
 
                         cnt=0
+                        retail_car_count_mon_fri = 0
+                        retail_car_count_sat_sun  = 0
+                        past_4_week_retail_revenue_mon_fri = 0
+                        past_4_week_retail_revenue_sat_sun = 0
                         for single_week in full_weeks_lst:
+
                             mon = single_week[0]
                             fri = single_week[1]
                             sat =single_week[2]
@@ -1131,20 +1136,23 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             print(f"car cnt 1 ; {car_cnt_mon_fri}")
                             arm_plans_reedemed_cnt_mon_fri = extracted_data4.get("arm_plans_reedemed_cnt", 0)
                             net_sales_amt_mon_fri = extracted_data4.get("net_sales",0.0)
+                        
                             total_revenue_val_mon_fri = round(extracted_data4.get("total_revenue",0.0),2)
                             retail_car_count_mon_fri = (car_cnt_mon_fri-arm_plans_reedemed_cnt_mon_fri)
                             arm_plans_reedemed_mon_fri_amt = abs(extracted_data4.get("arm_plans_reedemed_amt",0))
                             arm_plans_recharged_amt_mon_fri_amt = extracted_data4.get("arm_plans_recharged_amt",0)
                             total_revenue_mon_fri = round(extracted_data4.get("total_revenue",0.0),2)
-
+                            
                             # Sat-Sun
                             car_cnt_sat_sun    = extracted_data5.get("car_count",0)
                             print(f"car count2 : {car_cnt_sat_sun}")
                             arm_plans_reedemed_cnt_sat_sun = extracted_data5.get("arm_plans_reedemed_cnt", 0)
                             net_sales_amt_sat_sun = extracted_data5.get("net_sales",0.0)
+                            print(f"net sales :{net_sales_amt_sat_sun}")
                             total_revenue_val_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
                             retail_car_count_sat_sun = (car_cnt_sat_sun-arm_plans_reedemed_cnt_sat_sun)
                             arm_plans_reedemed_sat_sun_amt = abs(extracted_data5.get("arm_plans_reedemed_amt",0))
+                            print(f"arm plans reedemed: {arm_plans_reedemed_sat_sun_amt}")
                             arm_plans_recharged_amt_sat_sun_amt = extracted_data5.get("arm_plans_recharged_amt",0)
                             total_revenue_sat_sun = round(extracted_data5.get("total_revenue",0.0),2)
 
@@ -1514,15 +1522,15 @@ if __name__=="__main__":
     saturday_date_str = "2024-06-15"
     sunday_date_str="2024-06-16"  #YMD
     
-    monday_date_str="2024-07-24"
-    friday_date_str = "2024-07-28"
-    saturday_date_str = "2024-07-29"
-    sunday_date_str="2024-07-30"  #Y-M-D
+    monday_date_str="2024-07-22"
+    friday_date_str = "2024-07-26"
+    saturday_date_str = "2024-07-27"
+    sunday_date_str="2024-07-28"  #Y-M-D
     
     report = generate_weekly_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     print("\n"*6)
     print(report)
-    with open("sitewatch_report_full.json","w") as f:
+    with open("sitewatch_report_full2.json","w") as f:
         json.dump(report,f,indent=4)
     # with open("SPKLUS-002.json",'r') as f:
     #     data = json.load(f)

@@ -1776,16 +1776,17 @@ if __name__=="__main__":
     path = get_week_dates_for_storage()
     current_year=2024
     current_month = "06"
+    monday_day ="24"
+    friday_day = "28"
+    saturday_day = "29"
+    sunday_day = "30"
+    
+    # current_month = "07"  #current week days
     # monday_day =22
     # friday_day = 26
     # saturday_day = 27
     # sunday_day = 28
-    
-    monday_day =24
-    friday_day = 28
-    saturday_day = 29
-    sunday_day = 30
-    path="past_4_weeks" #"07-2024"#"06-2024"
+    path="past_4_weeks2" #"07-2024"#"06-2024"  # current_10_percentage
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
     # print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
@@ -1822,8 +1823,8 @@ if __name__=="__main__":
     
     data.update(hamilton_report)
 
-    # with open("all_data_today_10_per.json", 'w') as f:
-    #     json.dump(data, f, indent=4)
+    with open("all_data_today_10_per5.json", 'w') as f:
+        json.dump(data, f, indent=4)
 
     # with open("all_data_today_10_per.json", 'r') as f:
     #     data = json.load(f)
