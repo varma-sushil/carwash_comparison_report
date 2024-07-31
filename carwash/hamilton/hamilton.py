@@ -9,6 +9,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from hamilton_weekly import generate_past_4_weeks_days,generate_past_4_week_days_full
 from dotenv import load_dotenv
+import logging
+
 
 
 import csv
@@ -84,6 +86,7 @@ class hamiltonClient:
 
         except Exception as e:
             print(f"Exception as {e}")
+            logging.info(f"Exception in hamilton login {e} ")
         return False
 
     def get_ccokies(self):
@@ -541,6 +544,7 @@ class hamiltonClient:
             
         except Exception as e:
             print(f"Exception in get_total_plan_members()  in {e}")
+            logging.info(f"Exception in get_total_plan_members()  in {e}")
             
         return total_plan_members
     
@@ -594,6 +598,8 @@ def find_retail_revenue_and_total_revenue(items):
     }
 
 def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
+    logger = logging.getLogger(__name__)
+    logger.info("started main script")
     final_data = {}
     proxy_url = None
 
@@ -773,6 +779,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         final_data[f'past_4_week_retail_revenue_mon_fri_week_{cnt+1}'] = retail_revenue4
         final_data[f"past_4_week_retail_car_count_mon_fri_week_{cnt+1}"] = wash_purchases_total_cnt4
         print(f"past_4_week_retail_revenue_mon_fri:{retail_revenue4}")
+        logger.info(f"past_4_week_retail_revenue_mon_fri:{retail_revenue4}")
         
 
         items2 = client.get_dail_report_v2(sat,sun)
@@ -790,6 +797,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         final_data['past_4_week_retail_revenue_sat_sun'] += retail_revenue5
         final_data['past_4_week_total_revenue_sat_sun'] += total_revenue5
         print(f"past_4_week_retail_revenue_sat_sun : {retail_revenue5}")
+        logger.info(f"past_4_week_retail_revenue_sat_sun : {retail_revenue5}")
         
         final_data[f'past_4_week_retail_revenue_sat_sun_week_{cnt+1}'] = retail_revenue5
         final_data[f"past_4_week_retail_car_count_sat_sun_week_{cnt+1}"] = wash_purchases_total_cnt5
@@ -797,6 +805,7 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
         cnt+=1
     
     print(f"past week cnt : {past_4_week_cnt}")
+    logger.info(f"past week cnt : {past_4_week_cnt}")
     
     final_data["total_revenue"] = sum([total_revenue,total_revenue2])
     final_data["arm_plans_sold_cnt"] = arm_plans_sold_cnt
@@ -807,6 +816,8 @@ def generate_report(monday_date_str, friday_date_str, saturday_date_str, sunday_
     place_format["Splash-Peoria"] = final_data
     
     print(place_format)
+    logger.info("final data")
+    logger.info(f"{ place_format}")
     
     return  place_format
   

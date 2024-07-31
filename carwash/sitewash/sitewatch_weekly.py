@@ -15,6 +15,7 @@ from sitewatch4 import generate_past_4_weeks_days
 from sitewatch4 import generate_past_4_week_days_full
 import traceback 
 import random
+import logging
 
 import sys
 # Add the carwash directory to the sys.path
@@ -107,6 +108,21 @@ client_names = ['Belair', 'Evans', 'North Augusta',
 # report_balance_lst = []
 
 # picture_mismatch_lst = []
+
+def get_report_data(client,reportOn,id,idname,mon, fri):
+    report_data4 = None
+    while True:
+        request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
+        report_data4 = client.get_report(reportOn,request_id4)
+        
+        if report_data4:
+            break
+            
+        print("retrying for report data")   
+        time.sleep(5)
+        
+    return report_data4 
+        
 
 def wash_sales(section):
     wash_sales_lst = []
@@ -918,6 +934,8 @@ def get_week_dates():
 
 
 def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_str, sunday_date_str):
+    logger = logging.getLogger(__name__)
+    logger.info("started main script")
     site_watch_report={}
     
     is_location_code_success=False
@@ -941,6 +959,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 cookiesfile_name = f"{(site_dict.get('Organization')).strip().replace('-','_')}.pkl"
                 # print(cookiesfile_name)
                 print(site_dict)
+                logging.info(f"{site_dict}")
                 
 
                 cookies_file = os.path.join(cookies_path,cookiesfile_name)
@@ -962,6 +981,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         locationCode=locationCode_old
                         
                 print(f"\n location code used :{locationCode}")
+                logger.info("location code used :{locationCode}")
                 client_name = site_dict.get("client_name2")
                 remember = 1
                 # file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"
@@ -1112,8 +1132,11 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             sat =single_week[2]
                             sun = single_week[3]
 
-                            request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
-                            report_data4 = client.get_report(reportOn,request_id4)
+                            # request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
+                            # report_data4 = client.get_report(reportOn,request_id4)
+                            report_data4 = get_report_data(client,reportOn,id,idname,mon, fri)
+                            
+                            
                             extracted_data4 = report_data_extractor(report_data4)
                             
                             request_id4_2 =client.get_activity_by_date_proft_request_id(reportOn,mon, fri) #for labour hours
@@ -1122,8 +1145,9 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                             request_id5_2 =client.get_activity_by_date_proft_request_id(reportOn,sat, sun) #for labour hours
                             labour_hours_sat_sun=client.get_labour_hours(reportOn,request_id5_2)
                             
-                            request_id5 = client.get_general_sales_report_request_id(reportOn,id,idname,sat, sun)
-                            report_data5 = client.get_report(reportOn,request_id5)
+                            # request_id5 = client.get_general_sales_report_request_id(reportOn,id,idname,sat, sun)
+                            # report_data5 = client.get_report(reportOn,request_id5)
+                            report_data5 = get_report_data(client,reportOn,id,idname,sat, sun)
                             extracted_data5 = report_data_extractor(report_data5)
                             
                             # Mon-Friday
@@ -1200,6 +1224,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         combined_data["past_4_weeks_retail_car_count"] = past_4_weeks_retail_car_count
 
                     print(f"combined data:{combined_data}")
+                    logger.info("combined data:{combined_data}")
                     site_watch_report[client_name]=combined_data
                     if combined_data:
                         is_location_code_success=True
@@ -1212,22 +1237,27 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                     location_a_range =range(1,10)
                     location_b_range =range(10,14)
                     print("\n switching lcoation code")
+                    logger.info("switching lcoation code")
                     if slno in location_a_range: 
                         locationCode=random.choice(location_codes_a)
                         print(f"\n retrying with new location code {locationCode} for {slno}")
+                        logger.info(f"retrying with new location code {locationCode} for {slno}")
                         success_location_code = locationCode,slno
                     
                     elif  slno in location_b_range:
                         locationCode=random.choice(location_codes_b)
                         success_location_code = locationCode,slno
                         print(f"\n retrying with new location code {locationCode} for {slno}")
+                        logger.info(f"retrying with new location code {locationCode} for {slno}")
                         
                     print("sleep for 5 secound before next retry")
+                    logger.info("sleep for 5 secound before next retry")
                     time.sleep(15)
                     
                     
             except Exception as e:
-                print(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")                 
+                print(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")   
+                logger.info(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")              
     
     return site_watch_report
 

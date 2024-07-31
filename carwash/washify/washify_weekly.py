@@ -10,7 +10,7 @@ import traceback
 
 from washify import generate_past_4_weeks_days
 from washify import generate_past_4_week_days_full
-
+import logging
 
 # Add the path to the parent directory of "washify" to sys.path
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'washify')))
@@ -151,6 +151,8 @@ def conversion_rate_washify(arm_plans_sold,retail_car_count_monday_to_friday,ret
     return rate
 
 def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday_date_str, sunday_date_str):
+    logger = logging.getLogger(__name__)
+    logger.info("started main washify")
     "This will generate weekly report"
     final_report = {}
     
@@ -161,10 +163,12 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
         if not is_logged_in:
             login = client.login(username=username,password=password,companyName=companyName,userType=userType)
             print(f"doing relogin : {login}")
+            logger.info(f"doing relogin : {login}")
         client_locations = client.get_user_locations()
         
         # client_locations_number_codes =list(client_locations.values())
         print(f"client lcoations {client_locations.items()}")
+        logger.info(f"client lcoations {client_locations.items()}")
         
         
         
@@ -331,6 +335,7 @@ def generate_weekly_report(file_path, monday_date_str, friday_date_str, saturday
         
     except Exception as e:
         print(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
+        logger.info(f"Exception generate_weeklyrepoer washify {e},{traceback.format_exc()}")
     
     return final_report
 

@@ -5,6 +5,7 @@ import pickle
 import os
 from datetime import datetime, timedelta,timezone
 import json
+import logging
 from dotenv import load_dotenv
 
 dotenv_path="/home/ubuntu/CAR_WASH_2/carwash_weekly/.env"
@@ -52,6 +53,7 @@ if IS_PROXY:
     proxies={"http":proxy_url,"https":proxy_url}
 
 print(f"proxies in sitewatch:{proxies}")
+logging.info(f"proxies in sitewatch:{proxies}")
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
 
@@ -91,7 +93,9 @@ def generate_past_4_weeks_days(date_str):
     four_weeks_before_fmt = four_weeks_before.strftime("%Y-%m-%d")
 
     print("One day before the current date:", formatted_date)
+    logging.info(f"One day before the current date: {formatted_date} ")
     print("4 weeks before day :", four_weeks_before_fmt)
+    logging.info(f"4 weeks before day : {four_weeks_before_fmt}")
 
     return four_weeks_before_fmt, formatted_date
 
@@ -185,6 +189,7 @@ class sitewatchClient():
         try:
             response = session.post('https://sitewatch.cloud/api/auth/authenticate', headers=headers, data=data,timeout=timeout,proxies=self.proxies)
             print("Login response:",response)
+            logging.info(f"Login response:{response}")
             if response.status_code==200:
                 token = response.json().get("token")
                 self.token=token
@@ -196,6 +201,7 @@ class sitewatchClient():
                 print(response.status_code,response.json())
         except Exception as e:
             print(f"Exception in login : {e}")
+            logging.info(f"Exception in login  site watch: {e}")
         return token
 
     def check_session_auth(self,timeout=60)->bool:
@@ -245,13 +251,16 @@ class sitewatchClient():
         try:
             response = session.get('https://sitewatch.cloud/api/auth/session',params=params,timeout=timeout,proxies=self.proxies)
             print("session check:",response.json())
+            logging.info(f"session check:{response.json()}")
             if response.status_code==200:
                 authenticated = response.json().get("authenticated")
                 print("sesssion check :",response.json())
                 authenticated=True
                 print("authentication success")
+                logging.info("authentication success")
         except Exception as e:
             print(f"Exception in check_session_auth : {e} ")
+            logging.info(f"Exception in check_session_authsitewatch : {e} ")
             
         return authenticated
 
@@ -348,6 +357,7 @@ class sitewatchClient():
             # print(f"sales id response :{response} , {response.json()}")
         except Exception as e:
             print(f"Exception in get_general_sales_report: {e} ")
+            logging.info(f"Exception in get_general_sales_report: {e} ")
         
         return data
 
@@ -398,6 +408,7 @@ class sitewatchClient():
             if response.status_code==200:
                 data = response.json()
             print("response:",response)
+            logging.info(f"respone : {response}")
             # print("headers:",session.headers)
             # print(response.json())
             # with open(f"{requestID}.json","w") as f:
@@ -405,6 +416,7 @@ class sitewatchClient():
             # print(f"get report {response} , {response.json()}")
         except Exception as e:
             print(f"Exception in get_report: {e} ")
+            logging.info(f"Exception in get_report: {e} ")
         
         return data
 
@@ -457,6 +469,7 @@ class sitewatchClient():
             # print(f"response: in activity report {response}, {response.json()}")
         except Exception as e:
             print(f"Exception in get_activity_by_date_proft_request_id() {e}")
+            logging.info(f"Exception in get_activity_by_date_proft_request_id() {e}")
 
         return requestID
     
@@ -503,6 +516,7 @@ class sitewatchClient():
                 laborHours= round(profitCenterData.get("laborHours",0.0),2)
         except Exception as e :
             print(f"exception in get_labour_hours() {e}")
+            logging.info(f"exception in get_labour_hours() {e}")
 
     
         return laborHours
@@ -541,11 +555,13 @@ class sitewatchClient():
             url = f'https://sitewatch.cloud/api/pass-report/analysis?cb={self.cb_value}&allowCallback=1&date={date_time}&heartbeatID={self.heartbeatID}&level=summary&paperSize=letter&period=month&reportOn={reportOn}'
             response = session.get(url,timeout=timeout,proxies=self.proxies)
             print(f"response : {response}",response.json())
+            logging.info(f"response : {response} : {response.json()}",)
             if response.status_code==200:
                 request_id = response.json().get("requestID")
         
         except Exception as e:
             print(f"exception in get_analysis_request_id() {e}")
+            logging.info(f"exception in get_analysis_request_id() {e}")
             
         return request_id
         
@@ -588,6 +604,7 @@ class sitewatchClient():
             
             response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
             print("resp  in total memebers :",response.status_code)
+            logging.info(f"resp  in total memebers : {response.status_code}")
             if response.status_code==200:
                
                 statistics = response.json().get("statistics")
@@ -596,6 +613,7 @@ class sitewatchClient():
                 
         except Exception as e :
             print(f"Exception in get_total_plan_members() {e}")
+            logging.info(f"Exception in get_total_plan_members() {e}")
         
         return total_members
         

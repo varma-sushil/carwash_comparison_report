@@ -9,6 +9,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+import logging
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -98,7 +99,9 @@ def generate_past_4_weeks_days(date_str):
     four_weeks_before_fmt = four_weeks_before.strftime("%m/%d/%Y")
 
     print("One day before the current date:", formatted_date)
+    logging.info(f"One day before the current date: { formatted_date}")
     print("4 weeks before day :", four_weeks_before_fmt)
+    logging.info(f"4 weeks before day : {four_weeks_before_fmt}")
 
     return four_weeks_before_fmt, formatted_date
 
@@ -261,8 +264,10 @@ class washifyClient():
                     return True
                 except Exception as e:
                     print("Failed to save data to JSON file. Error:", e)
+                    logging.info(f"Failed to save data to JSON file. Error: {e}")
         except Exception as e:
             print(f"Exception in login() {e}")
+            logging.info(f"Exception in login() {e}")
         return False
 
     def get_common_data(self):
@@ -287,9 +292,11 @@ class washifyClient():
                 common_data['commonTimeoffset'] =timeOffset
         except (FileExistsError,FileNotFoundError):
             print("Cookeis file not found !")
+            logging.info("Cookeis file not found !")
         
         except Exception as e:
             print(f"Exception : {e}")
+            logging.info(f"Exception : {e}")
         
         return common_data
 
@@ -339,6 +346,7 @@ class washifyClient():
                 login_passed =True if msg=="Success" else False
         except Exception as e:
             print(f"Exception in check_login() : {e}")
+            logging.info(f"Exception in check_login() : {e}")
         
         return login_passed
 
@@ -375,6 +383,7 @@ class washifyClient():
                 data = { location.get("locationName").split("-")[-1].strip() :location.get("locationID") for location in data if location.get("locationID")!=0}
         except Exception as e:
             print(f"Error in get_user_locations() : {e}")
+            logging.info(f"Error in get_user_locations() : {e}")
         
         return data
 
@@ -422,6 +431,7 @@ class washifyClient():
                 
         except Exception as e :
             print(f"Excpetion in get_car_count_report() {e}")
+            logging.info(f"Excpetion in get_car_count_report() {e}")
             
         return result
     
@@ -471,6 +481,7 @@ class washifyClient():
         
         except Exception as e:
             print(f"Error in get_financal_revenue_summary() {e}")
+            logging.info(f"Error in get_financal_revenue_summary() {e}")
 
         return data
  
@@ -517,6 +528,7 @@ class washifyClient():
                 data = response.json()
         except Exception as e:
             print(f" Exception in GetRevenuReportFinancialWashPackage()  {e}")
+            logging.info(f" Exception in GetRevenuReportFinancialWashPackage()  {e}")
             
         return data
 
@@ -577,6 +589,7 @@ class washifyClient():
                 
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
         return wash_packages_all
 
 
@@ -626,6 +639,7 @@ class washifyClient():
                 data = response.json()
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashDiscounts()  {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts()  {e}")
 
         return data
     
@@ -672,6 +686,7 @@ class washifyClient():
             
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashDiscounts_formatter() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts_formatter() {e}")
           
         return discount_all
 
@@ -718,6 +733,7 @@ class washifyClient():
             discount_discount_all.append(discount_discount_total)
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashDiscounts_fromatter2 {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts_fromatter2 {e}")
             
         return discount_discount_all
 
@@ -816,6 +832,7 @@ class washifyClient():
                 data = response.json()
         except Exception as e:
             print(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
+            logging.info(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
             
         return data
 
@@ -861,6 +878,7 @@ class washifyClient():
                 
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPackagesDiscount_formatter()  {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialPackagesDiscount_formatter()  {e}")
 
         return wash_extras_all
 
@@ -921,6 +939,7 @@ class washifyClient():
                         sale_count_total += sale_cnt
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
 
         return sale_count_total
 
@@ -963,6 +982,7 @@ class washifyClient():
             
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialUnlimitedSales_formatter() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialUnlimitedSales_formatter() {e}")
             
         return unlimited_sales_all
 
@@ -1014,7 +1034,8 @@ class washifyClient():
             if response.status_code==200:
                 data = response.json()
         except Exception as e:
-            print("Exception in GetRevenuReportFinancialGiftcardsale() {e}")
+            print(f"Exception in GetRevenuReportFinancialGiftcardsale() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialGiftcardsale() {e}")
             
         return data
 
@@ -1053,6 +1074,7 @@ class washifyClient():
             gift_card_sale_all.append(giftcard_sale_total)
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialGiftcardsale_formatter() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialGiftcardsale_formatter() {e}")
             
         return gift_card_sale_all
 
@@ -1164,6 +1186,7 @@ class washifyClient():
                 result["total"]    =financialReportOther.get("total")
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
 
         return result 
     
@@ -1202,6 +1225,7 @@ class washifyClient():
             reedemed_giftcard_all.append(reedem_total_structure)
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialRevenueSummary_formatter()  {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialRevenueSummary_formatter()  {e}")
             
         return reedemed_giftcard_all
 
@@ -1251,6 +1275,7 @@ class washifyClient():
                 data = response.json()
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPaymentNew() {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialPaymentNew() {e}")
             
         return data
 
@@ -1316,6 +1341,7 @@ class washifyClient():
                   
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPaymentNew_formatter()  {e}")
+            logging.info(f"Exception in GetRevenuReportFinancialPaymentNew_formatter()  {e}")
 
 
         return payment_data_all
@@ -1359,6 +1385,7 @@ class washifyClient():
                 total_plan_members = dailyStatisticList.get("vehicles")
         except Exception as e:
             print(f"Exception in get_club_plan_mberbers() {e}")
+            logging.info(f"Exception in get_club_plan_mberbers() {e}")
 
         return total_plan_members
     
