@@ -4,12 +4,10 @@ import sys
 import datetime
 import requests
 import locale
-import openpyxl
-from openpyxl import Workbook
-from openpyxl.styles import Font
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
+import time
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -339,14 +337,20 @@ class washifyClient():
             'ID': 0,
             'CommonCompanySettings': self.get_common_data(),
         }
-        try:
-            response = requests.post('https://washifyapi.com:8298/api/UserRoles/GetRoleId', headers=headers, json=json_data,proxies=self.proxies)
-            if response.status_code==200:
-                msg = response.json().get("message")
-                login_passed =True if msg=="Success" else False
-        except Exception as e:
-            print(f"Exception in check_login() : {e}")
-            logging.info(f"Exception in check_login() : {e}")
+        while True:
+            try:
+                response = requests.post('https://washifyapi.com:8298/api/UserRoles/GetRoleId', headers=headers, json=json_data,proxies=self.proxies)
+                if response.status_code==200:
+                    msg = response.json().get("message")
+                    login_passed =True if msg=="Success" else False
+            except Exception as e:
+                print(f"Exception in check_login() : {e}")
+                logging.info(f"Exception in check_login() : {e}")
+            if login_passed:
+                break
+            else :
+                logging.info("retrying after 5 secounds")
+                time.sleep(5)
         
         return login_passed
 
@@ -376,14 +380,20 @@ class washifyClient():
             'ID': 0,
             'CommonCompanySettings': self.get_common_data(),
         }
-        try:
-            response = requests.post('https://washifyapi.com:8298/api/CommonMethod/getUserLocations', headers=headers, json=json_data,proxies=self.proxies)
-            if response.status_code==200:
-                data = response.json().get("data")
-                data = { location.get("locationName").split("-")[-1].strip() :location.get("locationID") for location in data if location.get("locationID")!=0}
-        except Exception as e:
-            print(f"Error in get_user_locations() : {e}")
-            logging.info(f"Error in get_user_locations() : {e}")
+        while True:
+            try:
+                response = requests.post('https://washifyapi.com:8298/api/CommonMethod/getUserLocations', headers=headers, json=json_data,proxies=self.proxies)
+                if response.status_code==200:
+                    data = response.json().get("data")
+                    data = { location.get("locationName").split("-")[-1].strip() :location.get("locationID") for location in data if location.get("locationID")!=0}
+            except Exception as e:
+                print(f"Error in get_user_locations() : {e}")
+                logging.info(f"Error in get_user_locations() : {e}")
+            if data:
+                break
+            else:
+                logging.info("retrying after 5 secounds")
+                time.sleep(5)
         
         return data
 
@@ -414,24 +424,28 @@ class washifyClient():
             'GroupAll': True,
             'CommonCompanySettings': self.get_common_data(),
         }
-        try:
-            response = requests.post('https://washifyapi.com:8298/api/Reports/GetCarCountReport', headers=headers, json=json_data)
-            if response.status_code==200:
-                data = response.json().get("data")
-                #print(f"car count : {response} {response.json()}")
-                for single_data in data:
-                    car_count=single_data.get("carwashed",0)
-                    unlimited_cars_washed = single_data.get("unilitedCarwashed",0)
-                    staff_hours = single_data.get("totalhrs",0.0)
-                    result["car_count"] = result.get("car_count",0)+car_count
+        while True:
+            try:
+                response = requests.post('https://washifyapi.com:8298/api/Reports/GetCarCountReport', headers=headers, json=json_data)
+                if response.status_code==200:
+                    data = response.json().get("data")
+                    #print(f"car count : {response} {response.json()}")
+                    for single_data in data:
+                        car_count=single_data.get("carwashed",0)
+                        unlimited_cars_washed = single_data.get("unilitedCarwashed",0)
+                        staff_hours = single_data.get("totalhrs",0.0)
+                        result["car_count"] = result.get("car_count",0)+car_count
+                        
+                        result["retail_car_count"]=result.get("retail_car_count",0)+(car_count-unlimited_cars_washed)
+                        result['totalhrs'] = result.get("totalhrs",0.0)+staff_hours
+                    break
                     
-                    result["retail_car_count"]=result.get("retail_car_count",0)+(car_count-unlimited_cars_washed)
-                    result['totalhrs'] = result.get("totalhrs",0.0)+staff_hours
-                
-                
-        except Exception as e :
-            print(f"Excpetion in get_car_count_report() {e}")
-            logging.info(f"Excpetion in get_car_count_report() {e}")
+                    
+            except Exception as e :
+                print(f"Excpetion in get_car_count_report() {e}")
+                logging.info(f"Excpetion in get_car_count_report() {e}")
+            logging.info("retrying after 5 secounds")
+            time.sleep(5)
             
         return result
     
@@ -920,26 +934,31 @@ class washifyClient():
             'CommonCompanySettings':self.get_common_data(),
         }
 
-        try:
-            response = requests.post(
-                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialUnlimitedSales',
-                headers=headers,
-                json=json_data,
-                proxies=self.proxies
-            )
-            if response.status_code==200:
-                data = response.json().get("data")
-                unlimited_sales = data.get("financialUnlimitedSales")
-                sale_count_total = 0
-                for unlimited_sale in unlimited_sales:
-                    unlimite_sale_type = unlimited_sale.get("unlimited_Sales")
+        while True:
+            try:
+                response = requests.post(
+                    'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialUnlimitedSales',
+                    headers=headers,
+                    json=json_data,
+                    proxies=self.proxies
+                )
+                if response.status_code==200:
+                    data = response.json().get("data")
+                    unlimited_sales = data.get("financialUnlimitedSales")
+                    sale_count_total = 0
+                    for unlimited_sale in unlimited_sales:
+                        unlimite_sale_type = unlimited_sale.get("unlimited_Sales")
+                        
+                        if unlimite_sale_type in ["New Sales","Re Signups"]:
+                            sale_cnt = unlimited_sale.get("number",0)
+                            sale_count_total += sale_cnt
                     
-                    if unlimite_sale_type in ["New Sales","Re Signups"]:
-                        sale_cnt = unlimited_sale.get("number",0)
-                        sale_count_total += sale_cnt
-        except Exception as e:
-            print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
-            logging.info(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
+                    break
+            except Exception as e:
+                print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
+                logging.info(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
+            logging.info("retrying after 5 secounds")
+            time.sleep(5)
 
         return sale_count_total
 
@@ -1170,23 +1189,28 @@ class washifyClient():
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
         }
-        try:
-            response = requests.post(
-                'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
-                headers=headers,
-                json=json_data,
-                proxies=self.proxies
-            )
-            
-            if response.status_code==200:
-                data = response.json().get("data")
-                finanacial_sumamry= data.get("financialRevenueSummary")[0]
-                financialReportOther = data.get("financialReportOther")[0]
-                result['netPrice'] = finanacial_sumamry.get("netPrice")
-                result["total"]    =financialReportOther.get("total")
-        except Exception as e:
-            print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
-            logging.info(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
+        
+        while True:
+            try:
+                response = requests.post(
+                    'https://washifyapi.com:8298/api/Reports/GetRevenuReportFinancialRevenueSummary',
+                    headers=headers,
+                    json=json_data,
+                    proxies=self.proxies
+                )
+                
+                if response.status_code==200:
+                    data = response.json().get("data")
+                    finanacial_sumamry= data.get("financialRevenueSummary")[0]
+                    financialReportOther = data.get("financialReportOther")[0]
+                    result['netPrice'] = finanacial_sumamry.get("netPrice")
+                    result["total"]    =financialReportOther.get("total")
+                    break
+            except Exception as e:
+                print(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
+                logging.info(f"Exception in GetRevenuReportFinancialRevenueSummary() {e}")
+            logging.info("retrying after 5 secounds")
+            time.sleep(5)
 
         return result 
     
@@ -1351,41 +1375,49 @@ class washifyClient():
         "This function will give toital club plan memebers based on user lcoation"
         total_plan_members = 0
        
-        try:
+        while True:
+            total_plan_members = 0
+            try:
 
-            headers = {
-                'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
-                'DNT': '1',
-                'sec-ch-ua-mobile': '?0',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json, text/plain, */*',
-                'Referer': 'https://washifyapi.com:1000/',
-                'sec-ch-ua-platform': '"Windows"',
-            }
+                headers = {
+                    'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+                    'DNT': '1',
+                    'sec-ch-ua-mobile': '?0',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Referer': 'https://washifyapi.com:1000/',
+                    'sec-ch-ua-platform': '"Windows"',
+                }
 
-            json_data = {
-                'CompanyID': 0,
-                'UserLocations': locationcode,
-                'ServerID': 0,
-                'UserRoleID': 0,
-                'ID': 0,
-                'CommonCompanySettings': self.get_common_data(),
-            }
+                json_data = {
+                    'CompanyID': 0,
+                    'UserLocations': locationcode,
+                    'ServerID': 0,
+                    'UserRoleID': 0,
+                    'ID': 0,
+                    'CommonCompanySettings': self.get_common_data(),
+                }
 
-            response = requests.post(
-                'https://washifyapi.com:8298/api/Dashboard/DashBoardDailyStatisticList',
-                headers=headers,
-                json=json_data,
-                proxies=self.proxies
-            )
-            if response.status_code==200:
-                data = response.json().get("data")
-                dailyStatisticList = data.get("dailyStatisticList")[0]
-                total_plan_members = dailyStatisticList.get("vehicles")
-        except Exception as e:
-            print(f"Exception in get_club_plan_mberbers() {e}")
-            logging.info(f"Exception in get_club_plan_mberbers() {e}")
+                response = requests.post(
+                    'https://washifyapi.com:8298/api/Dashboard/DashBoardDailyStatisticList',
+                    headers=headers,
+                    json=json_data,
+                    proxies=self.proxies
+                )
+                if response.status_code==200:
+                    data = response.json().get("data")
+                    dailyStatisticList = data.get("dailyStatisticList")[0]
+                    total_plan_members = dailyStatisticList.get("vehicles")
+                    break
+            except Exception as e:
+                print(f"Exception in get_club_plan_mberbers() {e}")
+                logging.info(f"Exception in get_club_plan_mberbers() {e}")
+            
+            logging.info("retrying after 5 secounds")
+            time.sleep(5)
+            
+            
 
         return total_plan_members
     

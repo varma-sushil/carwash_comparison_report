@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from hamilton_weekly import generate_past_4_weeks_days,generate_past_4_week_days_full
 from dotenv import load_dotenv
 import logging
+import time 
 
 
 
@@ -72,21 +73,25 @@ class hamiltonClient:
         self.proxies = proxies
 
     def login(self, login_data: dict, proxy) -> bool:
-        session = requests.Session()
-        try:
-            response = session.post(
-                "https://hamiltonservices.com/web/",
-                data=login_data,
-                proxies=self.proxies,
-            )
-            if response.status_code == 200:
-                with open(cookie_file_path, "wb") as f:
-                    pickle.dump(session.cookies, f)
-                return True
+        while True:
+            session = requests.Session()
+            try:
+                response = session.post(
+                    "https://hamiltonservices.com/web/",
+                    data=login_data,
+                    proxies=self.proxies,
+                )
+                if response.status_code == 200:
+                    with open(cookie_file_path, "wb") as f:
+                        pickle.dump(session.cookies, f)
+                    return True
 
-        except Exception as e:
-            print(f"Exception as {e}")
-            logging.info(f"Exception in hamilton login {e} ")
+            except Exception as e:
+                print(f"Exception as {e}")
+                logging.info(f"Exception in hamilton login {e} ")
+                logging.info("sleeping 5 secounds before next retry")
+                time.sleep(5)
+    
         return False
 
     def get_ccokies(self):
@@ -457,22 +462,25 @@ class hamiltonClient:
         }
         cookies = self.get_ccokies()
 
-        try:
-            response = requests.post(
-            'https://hamiltonservices.com/web/Reporting/GetDailyReport',
-            cookies=cookies,
-            headers=headers,
-            json=json_data,
-            proxies=self.proxies
-        )
-            if response.status_code==200:
-                data= response.json().get("Data")
-                data2 = data.get("Data")
-                items = data2.get("Items")
-                
-                return items
-        except Exception as e:
-            print(f"Exception in get_dail_report_v2() {e}")
+        while True:
+            try:
+                response = requests.post(
+                'https://hamiltonservices.com/web/Reporting/GetDailyReport',
+                cookies=cookies,
+                headers=headers,
+                json=json_data,
+                proxies=self.proxies
+            )
+                if response.status_code==200:
+                    data= response.json().get("Data")
+                    data2 = data.get("Data")
+                    items = data2.get("Items")
+                    
+                    return items
+            except Exception as e:
+                print(f"Exception in get_dail_report_v2() {e}")
+                logging.info("retrying after 5 secounds ")
+                time.sleep(5)
         
     def get_days_for_Total_membership(self,monday):
 
@@ -523,28 +531,34 @@ class hamiltonClient:
             'endDate': endDate,
         }
 
-        try:
-            response = requests.post(
-                'https://hamiltonservices.com/web/Reporting/GetDailyReport',
-                cookies=cookies,
-                headers=headers,
-                json=json_data,
-                proxies=self.proxies
-            )
-            if response.status_code==200:
-                
-                data = response.json().get("Data").get("Data")
-                items = data.get("Items")
-                for item in items:
-    
-                    itemtyp = item.get("ItemType")
+        while True:
+            total_plan_members=0
+            try:
+                response = requests.post(
+                    'https://hamiltonservices.com/web/Reporting/GetDailyReport',
+                    cookies=cookies,
+                    headers=headers,
+                    json=json_data,
+                    proxies=self.proxies
+                )
+                if response.status_code==200:
                     
-                    if itemtyp in ["AppWashClubBilling","PrepaidPassBilling"]:
-                        total_plan_members+=1
-            
-        except Exception as e:
-            print(f"Exception in get_total_plan_members()  in {e}")
-            logging.info(f"Exception in get_total_plan_members()  in {e}")
+                    data = response.json().get("Data").get("Data")
+                    items = data.get("Items")
+                    for item in items:
+        
+                        itemtyp = item.get("ItemType")
+                        
+                        if itemtyp in ["AppWashClubBilling","PrepaidPassBilling"]:
+                            total_plan_members+=1
+                    
+                    break
+                
+            except Exception as e:
+                print(f"Exception in get_total_plan_members()  in {e}")
+                logging.info(f"Exception in get_total_plan_members()  in {e}")
+            logging.info(f"sleeping 5 secounds before retry ")
+            time.sleep(5)
             
         return total_plan_members
     
