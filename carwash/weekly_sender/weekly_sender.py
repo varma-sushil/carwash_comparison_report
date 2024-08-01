@@ -396,50 +396,36 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
-    # percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
-    
-    # if percentage >10:
-    #     #Dark green
-    #     cell.fill = darkgreen_format
-        
-    # elif percentage > 5 and percentage <=9:
-    #     #light green
-    #     cell.fill = light_green_format
-        
-    # elif percentage <= 5  and percentage <=-5:
-    #     print("neutral")
-    # elif percentage < -5 and percentage>=-9:
-    #     cell.fill = lightred_format
-    #     #light red
-        
-    # elif percentage < -10:
-    #     cell.fill = darkred_format
     percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
     logger.info(f" curent index : {row},{col}")
     logger.info(f"current val : {current_week} pastweek {past_4_weeks}")
     logger.info(f"percentage : {percentage}")
     print("percentage :",percentage)
-    if percentage >=10:
+    if percentage >=5:
         #Dark green
         print("Dark green ")
-        logger.info("Dark green ")
         cell.fill = darkgreen_format
-    elif percentage >= 5:
+        logger.info("Dark green ")
+        
+    elif percentage >= 1:
         print("light green")
-        logging.info("light green")
         cell.fill = light_green_format
-    elif percentage > -5:
+        logger.info("light green")
+        
+    elif percentage == 0 or  percentage > -1:
         print("neutral")
         logger.info("neutral")
         
-    elif percentage > -10:
+    
+    elif percentage >-5:
         print("light red ")
+        cell.fill =lightred_format
         logger.info("light red ")
-        cell.fill = lightred_format
-    elif percentage <=-10:
-        print("Dark red")  
-        logger.info("Dark red")
+        
+    elif percentage <=-5:
+        print("Dark red")
         cell.fill = darkred_format
+        logger.info("Dark red")
 
 def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     """This will do colur coding of for the xl sheet 10 5 0 -5 - 10
@@ -462,64 +448,31 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     
 
     print("percentage :",percentage)
-    # if percentage >=10:
-    #     #Dark green
-    #     print("Dark green ")
-    #     cell.fill = darkgreen_format
-        
-    # elif percentage >= 5:
-    #     print("light green")
-    #     cell.fill = light_green_format
-        
-    # elif percentage >= -5:
-    #     print("neutral")
     
-    # elif percentage >=-9:
-    #     print("light red ")
-    #     cell.fill = lightred_format
-        
-    # elif percentage <=-10:
-    #     cell.fill = darkred_format
-    # brlow is 20 percent 
-    # if percentage >=20:
-    #     #Dark green
-    #     print("Dark green ")
-    #     cell.fill = darkgreen_format
-        
-    # elif percentage >= 10:
-    #     print("light green")
-    #     cell.fill = light_green_format
-    # elif percentage >= -9:
-    #     print("neutral")
-    
-    # elif percentage >=-19:
-    #     print("light red ")
-    #     cell.fill = lightred_format
-    # elif percentage <=-20:
-    #     print("Dark red")
-    #     cell.fill = darkred_format
-    
-    if percentage >=10:
+    if percentage >=5:
         #Dark green
         print("Dark green ")
-        logger.info("Dark green ")
         cell.fill = darkgreen_format
-    elif percentage >= 5:
-        print("light green")
-        logger.info("light green")
-        cell.fill = light_green_format
-    elif percentage > -5:
-        print("neutral")
-        logger.info("neutral")
+        logger.info("Dark green ")
         
-    elif percentage > -10:
+    elif percentage >= 1:
+        print("light green")
+        cell.fill = light_green_format
+        logger.info("light green")
+        
+    elif percentage == 0 or  percentage > -1:
+        print("neutral")
+        
+    
+    elif percentage >-5:
         print("light red ")
-        logger.info("light red")
-        cell.fill = lightred_format
-    elif percentage <=-10:
-        print("Dark red") 
-        logger.info("Dark red") 
+        cell.fill =lightred_format
+        logger.info("light red ")
+        
+    elif percentage <=-5:
+        print("Dark red")
         cell.fill = darkred_format
+        logger.info("Dark red")
 
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
     chnage = None
