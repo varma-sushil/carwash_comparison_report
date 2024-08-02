@@ -1779,32 +1779,35 @@ if __name__=="__main__":
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
+    print("sitewatch")
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # monday_date_str="2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str="2024-06-09"  #Y-M-D
+    # monday_date_str="2024-07-22"
+    # friday_date_str = "2024-07-26"
+    # saturday_date_str = "2024-07-27"
+    # sunday_date_str="2024-07-28"  #Y-M-D
     
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
     
     #testing dates 
-    # monday_date_str =  "06/03/2024"
-    # friday_date_str =  "06/07/2024"
-    # saturday_date_str = "06/08/2024"
-    # sunday_date_str  =  "06/09/2024"  #M/D/Y
-    
+    # monday_date_str =  "07/22/2024"
+    # friday_date_str =  "07/26/2024"
+    # saturday_date_str = "07/27/2024"
+    # sunday_date_str  =  "07/28/2024"  #M/D/Y
+    print("washify")
     print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     #for hamilton dates
-    # monday_date_str = "2024-06-03"
-    # friday_date_str = "2024-06-07"
-    # saturday_date_str = "2024-06-08"
-    # sunday_date_str  = "2024-06-09"
-    
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
+    #test dates for hamilton
+    # monday_date_str="2024-07-22"
+    # friday_date_str = "2024-07-26"
+    # saturday_date_str = "2024-07-27"
+    # sunday_date_str="2024-07-28"  #Y-M-D
+    
+    print("hamilton")
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     data = sitewatch_report
@@ -1837,6 +1840,12 @@ if __name__=="__main__":
     
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
+    
+    # -----------------cron jaob info ------------ ------------#
+    # #Below script will run on every sunday 12 after noon
+    # 0 22 * * 0 /home/ubuntu/CAR_WASH_2/carwash_weekly/weekly_run.sh 
+    #sudo timedatectl set-timezone America/Chicago
+
     
 
 
