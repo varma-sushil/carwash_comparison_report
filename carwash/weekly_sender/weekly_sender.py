@@ -1779,7 +1779,7 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
-    weeks_days_current = get_week_dates_for_current("2024-07-29")
+    weeks_days_current = get_week_dates_for_current() # "2024-07-29"
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_sitewatch(weeks_days_current)
     print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
