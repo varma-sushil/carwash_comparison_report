@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 def get_week_dates_for_current(monday_str=None):
     """
     Get the dates for the Monday, Friday, Saturday, and Sunday of the week 
-    containing the specified date. If no date is specified, use today's date.
+    containing the specified date. If no date is specified, use today's date. Y-m-d
     
     Parameters:
     - monday_str (str): Date string in "Y-m-d" format. Optional.

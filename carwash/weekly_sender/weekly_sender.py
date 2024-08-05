@@ -1741,6 +1741,7 @@ def create_storage_directory(path):
 
 
 if __name__=="__main__":
+    from days_generator import *
     import logging
     from logging_config import setup_logging
     setup_logging()
@@ -1778,36 +1779,27 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = sitewatch_week_dates()
-    print("sitewatch")
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    # monday_date_str="2024-07-22"
-    # friday_date_str = "2024-07-26"
-    # saturday_date_str = "2024-07-27"
-    # sunday_date_str="2024-07-28"  #Y-M-D
+    weeks_days_current = get_week_dates_for_current("2024-07-29")
+    
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_sitewatch(weeks_days_current)
+    print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
+    logger.info(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
+    
     
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
     
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  washify_week_dates()
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  format_date_washify(weeks_days_current)
     
-    #testing dates 
-    # monday_date_str =  "07/22/2024"
-    # friday_date_str =  "07/26/2024"
-    # saturday_date_str = "07/27/2024"
-    # sunday_date_str  =  "07/28/2024"  #M/D/Y
-    print("washify")
-    print(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
+    print(f"washify week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
+    logger.info(f"washify week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     #for hamilton dates
-    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = hamilton_week_dates()
-    #test dates for hamilton
-    # monday_date_str="2024-07-22"
-    # friday_date_str = "2024-07-26"
-    # saturday_date_str = "2024-07-27"
-    # sunday_date_str="2024-07-28"  #Y-M-D
+    monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_hamilton(weeks_days_current)
+
     
-    print("hamilton")
+    print(f"hamilton week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
+    logger.info(f"hamilton week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
     
     data = sitewatch_report
@@ -1836,7 +1828,7 @@ if __name__=="__main__":
     
     #Sending email to email address
     body = f'weekly report Ending {sunday_date_str}'
-    send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
     
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
@@ -1845,6 +1837,8 @@ if __name__=="__main__":
     # #Below script will run on every sunday 12 after noon
     # 0 22 * * 0 /home/ubuntu/CAR_WASH_2/carwash_weekly/weekly_run.sh 
     #sudo timedatectl set-timezone America/Chicago
+    
+    logger.info("!!! completed main script !!!!")
 
     
 

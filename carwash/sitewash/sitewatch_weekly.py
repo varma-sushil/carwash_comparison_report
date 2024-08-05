@@ -981,7 +981,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         locationCode=locationCode_old
                         
                 print(f"\n location code used :{locationCode}")
-                logger.info("location code used :{locationCode}")
+                logger.info(f"location code used :{locationCode}")
                 client_name = site_dict.get("client_name2")
                 remember = 1
                 # file_path=f"sitewatch_{client_name.strip().replace(' ','_')}_{monday_date_str}_{sunday_date_str}.xlsx"

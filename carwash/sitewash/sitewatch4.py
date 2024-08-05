@@ -586,34 +586,43 @@ class sitewatchClient():
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }  
-        session  = requests.Session()
-            
-        with open(self.cookies_file,'rb') as f:
-            cookies = pickle.load(f)
-
-        session.cookies = cookies
-        session.headers = headers  
         
-        try:
-            params = {
-            'cb': self.cb_value,
-            'heartbeatID': self.heartbeatID,
-            'reportOn': reportOn,
-            'requestID': requestID,
-            }
-            
-            response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
-            print("resp  in total memebers :",response.status_code)
-            logging.info(f"resp  in total memebers : {response.status_code}")
-            if response.status_code==200:
-               
-                statistics = response.json().get("statistics")
-                month  = statistics.get("month")
-                total_members = month.get("endingMembers")
+        while True:
+            session  = requests.Session()
                 
-        except Exception as e :
-            print(f"Exception in get_total_plan_members() {e}")
-            logging.info(f"Exception in get_total_plan_members() {e}")
+            with open(self.cookies_file,'rb') as f:
+                cookies = pickle.load(f)
+
+            session.cookies = cookies
+            session.headers = headers  
+            
+            try:
+                params = {
+                'cb': self.cb_value,
+                'heartbeatID': self.heartbeatID,
+                'reportOn': reportOn,
+                'requestID': requestID,
+                }
+                
+                response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
+                print("resp  in total memebers :",response.status_code)
+                logging.info(f"resp  in total memebers : {response.status_code}")
+                if response.status_code==200:
+                
+                    statistics = response.json().get("statistics")
+                    month  = statistics.get("month")
+                    total_members = month.get("endingMembers")
+                    
+            except Exception as e :
+                print(f"Exception in get_total_plan_members() {e}")
+                logging.info(f"Exception in get_total_plan_members() {e}")
+            
+            if total_members:
+                break
+            
+            else:
+                logging.info("total plan members retrying after 5 secounds ")
+                time.sleep(5)
         
         return total_members
         
