@@ -8,7 +8,25 @@ import os
 def get_excel_files(directory):
     return [os.path.join(directory, file) for file in os.listdir(directory) if file.endswith('.xlsx') or file.endswith(".csv")]
 
-# Function to send email
+# Function to send email on error
+def send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, 
+               smtp_user, smtp_password,cc_emails=None):
+    # Create the email message
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = formataddr((from_name, from_email))
+    msg['To'] = to_email
+    if cc_emails:
+        msg['Cc'] = ', '.join(cc_emails)  # Add CC recipients
+    msg.set_content(body)
+
+    # Connect to the SMTP server and send the email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Secure the connection
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+        print(f'Email sent to {to_email}')
+        
 def send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, 
                smtp_user, smtp_password, attachments,cc_emails=None):
     # Create the email message

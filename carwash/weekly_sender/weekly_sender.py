@@ -33,7 +33,7 @@ from sitewatch_weekly import generate_weekly_report as sitewatch_week_report
 from hamilton_weekly  import get_week_dates as hamilton_week_dates
 from hamilton  import generate_report as hamilton_week_report
 
-from custom_mailer import send_email,get_excel_files
+from custom_mailer import send_email,get_excel_files,send_email_on_error
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
 # print(current_file_path)
@@ -1742,6 +1742,7 @@ def create_storage_directory(path):
 
 if __name__=="__main__":
     from days_generator import *
+    from zero_value_check import check_zero_values
     import logging
     from logging_config import setup_logging
     setup_logging()
@@ -1828,8 +1829,19 @@ if __name__=="__main__":
     
     #Sending email to email address
     body = f'weekly report Ending {sunday_date_str}'
-    #send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
     
+    zero_val_check = check_zero_values(file_name_with_fullpath,sheet_name)
+    if zero_val_check:
+        body = f'Error in report  Ending {sunday_date_str}'
+        relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
+        cc_emails = cc_emails.extend(relu_emails)
+        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+        logger.info("error in weekly report ")
+        
+    else:
+        body = f'weekly report Ending {sunday_date_str}'
+        send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
     
