@@ -1835,7 +1835,7 @@ if __name__=="__main__":
         body = f'Error in report  Ending {sunday_date_str}'
         relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
         cc_emails = cc_emails.extend(relu_emails)
-        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
         logger.info("error in weekly report ")
         
     else:
