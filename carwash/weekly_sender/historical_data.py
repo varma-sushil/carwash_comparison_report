@@ -1670,7 +1670,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         if xl_map[18][index+4] != '':
             past_4_week_total_car_count = place_dictionary.get('past_4_week_car_cnt_mon_fri', 0)+place_dictionary.get('past_4_week_car_cnt_sat_sun', 0)
             past_4_week_total_man_hour = place_dictionary.get('past_4_week_labour_hours_mon_fri', 0)+place_dictionary.get('past_4_week_labour_hours_sat_sun', 0)
-            past_4_week_total_cars_per_man_hour = past_4_week_total_car_count/past_4_week_total_man_hour
+            past_4_week_total_cars_per_man_hour = past_4_week_total_car_count/past_4_week_total_man_hour if past_4_week_total_man_hour!=0 else 0
             curr_total_cars_per_man_hour = xl_map[18][index+4]
             set_colour_new(curr_total_cars_per_man_hour, past_4_week_total_cars_per_man_hour, 19, index+5, worksheet, colours)
 
@@ -1814,7 +1814,7 @@ if __name__=="__main__":
     year=2022
     start_month =5
     start_day = 29
-    end_year=2024
+    end_year=2023
     end_month = 7
 
     class emailConfig:
