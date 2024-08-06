@@ -407,7 +407,7 @@ class sitewatchClient():
             response = session.get('https://sitewatch.cloud/api/request/results', params=params,timeout=timeout,proxies=self.proxies)
             if response.status_code==200:
                 data = response.json()
-            print("response:",response)
+            print("response: in get_report()",response)
             logging.info(f"respone : {response}")
             # print("headers:",session.headers)
             # print(response.json())
@@ -554,8 +554,7 @@ class sitewatchClient():
             date_time = f"{date}T22:00:00.000Z"  #2024-07-07T07:53:04.769Z
             url = f'https://sitewatch.cloud/api/pass-report/analysis?cb={self.cb_value}&allowCallback=1&date={date_time}&heartbeatID={self.heartbeatID}&level=summary&paperSize=letter&period=month&reportOn={reportOn}'
             response = session.get(url,timeout=timeout,proxies=self.proxies)
-            print(f"response : {response}",response.json())
-            logging.info(f"response : {response} : {response.json()}",)
+            logging.info(f"response in get_plan_analysis_request_id(): {response} ",)
             if response.status_code==200:
                 request_id = response.json().get("requestID")
         
@@ -587,42 +586,35 @@ class sitewatchClient():
             'sec-ch-ua-platform': '"Windows"',
         }  
         
-        while True:
-            session  = requests.Session()
+        session  = requests.Session()
                 
-            with open(self.cookies_file,'rb') as f:
-                cookies = pickle.load(f)
+        with open(self.cookies_file,'rb') as f:
+            cookies = pickle.load(f)
 
-            session.cookies = cookies
-            session.headers = headers  
+        session.cookies = cookies
+        session.headers = headers  
+        
+        try:
+            params = {
+            'cb': self.cb_value,
+            'heartbeatID': self.heartbeatID,
+            'reportOn': reportOn,
+            'requestID': requestID,
+            }
             
-            try:
-                params = {
-                'cb': self.cb_value,
-                'heartbeatID': self.heartbeatID,
-                'reportOn': reportOn,
-                'requestID': requestID,
-                }
+            response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
+            print("resp  in total memebers :",response.status_code)
+            logging.info(f"resp  in total memebers : {response.status_code}")
+            if response.status_code==200:
+            
+                statistics = response.json().get("statistics")
+                month  = statistics.get("month")
+                total_members = month.get("endingMembers")
                 
-                response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
-                print("resp  in total memebers :",response.status_code)
-                logging.info(f"resp  in total memebers : {response.status_code}")
-                if response.status_code==200:
-                
-                    statistics = response.json().get("statistics")
-                    month  = statistics.get("month")
-                    total_members = month.get("endingMembers")
-                    
-            except Exception as e :
-                print(f"Exception in get_total_plan_members() {e}")
-                logging.info(f"Exception in get_total_plan_members() {e}")
+        except Exception as e :
+            print(f"Exception in get_total_plan_members() {e}")
+            logging.info(f"Exception in get_total_plan_members() {e}")
             
-            if total_members:
-                break
-            
-            else:
-                logging.info("total plan members retrying after 5 secounds ")
-                time.sleep(5)
         
         return total_members
         

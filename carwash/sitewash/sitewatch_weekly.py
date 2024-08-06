@@ -2,9 +2,9 @@ from datetime import datetime, timedelta
 import os
 import json
 import time
+import traceback
 
 import pandas as pd 
-from datetime import datetime, timedelta
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font
@@ -51,63 +51,6 @@ client_names = ['Belair', 'Evans', 'North Augusta',
                 'Grovetown 2', 'Cicero', 'Matteson', 'Sparkle Express ', 
                 "Fuller's Calumet City "]
 
-# wash_sales_lst= []
-# wash_packages_lst =[]
-# wash_extra_service_lst =[]
-# gross_wash_sales_lst = []
-# less_wash_sales_rdmd_lst =[]
-# less_wash_discounts_lst=[]
-# less_loyality_disc_lst = []
-
-# net_site_sales_lst = []
-
-# arm_plans_sold_lst  = []
-
-# arm_plans_recharged_lst = []
-
-# arm_plans_reedemed_lst = []
-
-# arm_plans_terminated_lst = []
-
-# prepaid_sold_lst = []
-
-# less_prepaid_reedemed_lst = []
-
-# online_sold_lst = []
-
-# less_online_reedemed_lst = []
-
-# free_washes_issued_lst = []
-
-# less_paidouts_lst = []
-
-# total_to_account_for_lst =[]
-
-# deposits_lst = []
-
-# total_xpt_cash_lst = []
-
-# house_accounts_lst =[]
-
-# over_short_lst = []
-
-# cash_lst = []
-
-# xpt_acceptors_lst = []
-
-# xpt_dispensers_lst = []
-
-# total_lst = []
-
-# credit_card_list = []
-
-# other_tenders_lst = []
-
-# xpt_balancing_lst = []
-
-# report_balance_lst = []
-
-# picture_mismatch_lst = []
 
 def get_report_data(client,reportOn,id,idname,mon, fri):
     report_data4 = None
@@ -122,34 +65,28 @@ def get_report_data(client,reportOn,id,idname,mon, fri):
         time.sleep(5)
         
     return report_data4 
+
+def get_total_arm_plan_members(client,reportOn,sunday_date_str):
+    total_arm_planmembers_cnt = None
+    while True:
+        total_members_req_id = client.get_plan_analysis_request_id(sunday_date_str,reportOn)
+        total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
         
+        if total_arm_planmembers_cnt or total_arm_planmembers_cnt==0:
+            break
+            
+        print("retrying for report data")   
+        time.sleep(5)
+        
+    return total_arm_planmembers_cnt
+       
 
 def wash_sales(section):
-    wash_sales_lst = []
-    
-    # reports = section.get("reports")
-    # for report in reports:
-    #     wash_sales_structure ={
-    #         "Wash_sales_Description":report.get("description"),
-    #         "Wash_sales_price":report.get("price"),
-    #         "Wash_sales_quantity":report.get("quantity"),
-    #         "Wash_sales_amount":report.get("amount")
-    #     }
-    #     wash_sales_lst.append(wash_sales_structure)
     
     subtotals = section.get("subtotals")[0]
     
-    # for subtotal in subtotals:
-    #     wash_sales_structure ={
-    #         "Wash_sales_Description":subtotal.get("description"),
-    #         "Wash_sales_price":subtotal.get("price"),
-    #         "Wash_sales_quantity":subtotal.get("quantity"),
-    #         "Wash_sales_amount":subtotal.get("amount")
-    #     }
-    #     wash_sales_lst.append(wash_sales_structure)
     return subtotals.get("quantity")
-        
-    return wash_sales_lst
+
 
 def wash_packages(section):
     wash_packages_lst = []
@@ -1088,9 +1025,11 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         conversion_rate  = round((arm_plans_sold_total_cnt/total_retail_car_cnt)*100,2) if total_retail_car_cnt !=0 else ""
                         #combines values update 
                         #combined_data["total_cars"] = sum([car_count_monday_to_friday,car_count_saturday_sunday])
-                        total_members_req_id = client.get_plan_analysis_request_id(sunday_date_str,reportOn)
+                        # total_members_req_id = client.get_plan_analysis_request_id(sunday_date_str,reportOn)
                         
-                        total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
+                        # total_arm_planmembers_cnt = client.get_total_plan_members(total_members_req_id,reportOn)
+                        
+                        total_arm_planmembers_cnt = get_total_arm_plan_members(client,reportOn,sunday_date_str)
                         
                         #Past 4 weeks logic 
                         past_week_day1, past_week_day2= generate_past_4_weeks_days(monday_date_str)
@@ -1105,7 +1044,7 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         past_4_weeks_total_revenue = extracted_data3.get("total_revenue")
                         
                         print(f"past week cnt : {past_4_week_cnt}")
-                        past_4_weeks_conversion_rate = (past_4_week_arm_plans_sold/past_4_weeks_retail_car_count)*100
+                        past_4_weeks_conversion_rate = (past_4_week_arm_plans_sold/past_4_weeks_retail_car_count)*100 if past_4_weeks_retail_car_count!=0 else 0
                         
                         #Past 4 weeks splieed days mon-day st -sun
                         full_weeks_lst = generate_past_4_week_days_full(monday_date_str)
@@ -1260,278 +1199,6 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                 logger.info(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")              
     
     return site_watch_report
-
-#xl maps fucntions 
-
-def do_sum(xl_map,start_index,range):
-    "This will do row based some "
-    total=0
-    for i in range:
-        val = xl_map[start_index][i+1]
-        if isinstance(val,float) or isinstance(val,int):
-            total+=val
-    
-    return total
-
-def do_sum_location(xl_map,location:list):
-    "This will take array of row ,col"
-    total =0
-    for row,col in location:
-        val = xl_map[row][col]
-        if isinstance(val,float) or isinstance(val,int):
-            total+=val
-    return total
-
-#Xl maps fucntions ends
-
-def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
-                                         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):    
-    
-    result = 0
-    try:
-        Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
-        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
-    )
-        result = Average_retail_visit__GA_SC
-    except Exception as e:
-        print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
-        
-
-    return result 
-
-def Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
-        retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC,
-        total_cars_GA_SC
-        ):
-    result = 0
-    
-    try:
-        
-        Average_memeber_visit_GA_SC = (Total_revenue_GA_SC - sum([retail_revenue_monday_to_friday_GA_SC , retail_revenue_saturday_to_sunday_GA_SC]))/(total_cars_GA_SC - sum([
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC]))
-        
-        result = Average_memeber_visit_GA_SC
-        
-    except Exception as e:
-        print(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
-    
-    return result
-
-def cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC):
-    result = 0
-    try:
-        cost_per_labour_hour_monday_to_friday_GA_SC = car_count_monday_to_friday_GA_SC/staff_hours_monday_to_friday_GA_SC
-        result =cost_per_labour_hour_monday_to_friday_GA_SC
-    except Exception as e:
-        print(f"Exception in cost_per_labour_hour_monday_to_friday_GA_SC() {e}")
-
-    return result
-
-
-def cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
-    result = 0
-    
-    try:
-        cost_per_labour_hour_saturday_to_sunday_GA_SC = car_count_saturday_to_sunday_GA_SC/staff_hours_saturday_to_sunday_GA_SC
-        result = cost_per_labour_hour_saturday_to_sunday_GA_SC
-    except Exception as e:
-        print(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
-        
-    return result
-
-def Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
-    result =0 
-    try:
-            Total_cars_per_man_hour_GA_SC = total_cars_GA_SC/sum([
-            staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC])
-            result = Total_cars_per_man_hour_GA_SC
-    
-    except Exception as e:
-        print(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
-    
-    return result
- 
-def Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
-                                   retail_car_count_saturday_to_sunday_GA_SC):
-    result = 0 
-    try:
-        Conversion_rate_GA_SC = Total_club_plans_sold_GA_SC/sum([
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC])     
-        
-        result =  Conversion_rate_GA_SC
-    except Exception as e:
-        print(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
-    
-    return result
-
-def Conversion_rate_Total_function(Total_club_plans_sold_Total,
-                                   retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total):
-    result = 0
-    
-    try:
-        
-        Conversion_rate_Total = Total_club_plans_sold_Total/sum(
-        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])  
-        
-        result = Conversion_rate_Total
-    except Exception as e:
-        print(f"Exception in Conversion_rate_Total_function()  {e}") 
-    
-    return result
-
-def Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
-                                 retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
-    result = 0
-    
-    try:
-        Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])         
-        result = Conversion_rate_ILL
-    except Exception as e:
-        print(f"Exception in Conversion_rate_ILL_function() {e}")
-        
-    return result
-
-def Total_cars_per_man_hour_total_function(Total_cars_Total,
-                                           staff_hours_monday_to_friday_Total,
-                                           staff_hours_saturday_to_sunday_Total):
-    result = 0
-    
-    try:
-        Total_cars_per_man_hour_total = Total_cars_Total/sum(
-        [staff_hours_monday_to_friday_Total,staff_hours_saturday_to_sunday_Total])
-        
-        result = Total_cars_per_man_hour_total
-    
-    except Exception as e:
-        print(f"Exception in Total_cars_per_man_hour_total_function() {e}")
-        
-    return result
-
-
-def Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
-                                         staff_hours_monday_to_friday_ILL,
-                                         staff_hours_saturday_to_sunday_ILL):
-    result = 0
-    
-    try:
-        Total_cars_per_man_hour_ILL = total_cars_in_ILL/(sum([
-        staff_hours_monday_to_friday_ILL+staff_hours_saturday_to_sunday_ILL]))
-
-        result = Total_cars_per_man_hour_ILL
-    
-    except Exception as e:
-        print(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
-    
-    return result
-
-
-def cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL):
-    result = 0
-    
-    try:
-        cost_per_labour_hour_saturday_to_sunday_ILL = car_count_saturday_to_sunday_ILL/staff_hours_saturday_to_sunday_ILL
-        
-        result = cost_per_labour_hour_saturday_to_sunday_ILL
-    
-    except Exception as e:
-        print(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
-        
-    return result
-
-
-def cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total):
-    result = 0
-    
-    try:
-        cost_per_labour_hour_monday_to_friday_Total = car_count_monday_to_friday_Total/staff_hours_monday_to_friday_Total
-        result = cost_per_labour_hour_monday_to_friday_Total
-    
-    except Exception as e:
-        print(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
-    
-    return result
-
-def cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL):
-    result = 0
-    
-    try:
-        cost_per_labour_hour_monday_to_friday_ILL = car_count_monday_to_friday_ILL/staff_hours_monday_to_friday_ILL
-        result =  cost_per_labour_hour_monday_to_friday_ILL
-    
-    except Exception as e:
-        print(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
-        
-    return result
-
-def Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
-                        ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
-                        retail_car_count_saturday_to_sunday_Total):
-    result = 0
-    
-    try:
-        Average_memeber_visit_Total = (Total_revenue_Total -sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total]))/(Total_cars_Total - sum([
-        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total]))
-        result =  Average_memeber_visit_Total
-    
-    except Exception as e:
-        print(f"Exception Average_memeber_visit_Total_function() {e}")  
-    
-    return result    
-
-def Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
-                                       retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
-                                       retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
-    result = 0
-    
-    try:
-        Average_memeber_visit_ILL = (Total_revenue_ILL - sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL]))/(total_cars_in_ILL - sum([
-        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL]))
-        
-        result = Average_memeber_visit_ILL
-    
-    except Exception as e:
-        print(f"Exception Average_memeber_visit_ILL_function() {e}")
-    
-    return result
-
-def Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
-                                        retail_revenue_saturday_to_sunday_Total,
-                                        retail_car_count_monday_to_friday_Total,
-                                        retail_car_count_saturday_to_sunday_Total):
-    result = 0
-    
-    try:
-        Average_retail_visit_Total = sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total])/sum([
-        retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])
-        
-        result = Average_retail_visit_Total
-    
-    except Exception as e:
-        print(f"Exception Average_retail_visit_Total_function() {e}")
-        
-    return result
-            
-
-def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
-                                     retail_revenue_saturday_to_sunday_ILL,
-                                     retail_car_count_monday_to_friday_ILL,
-                                     retail_car_count_saturday_to_sunday_ILL):
-    result = 0
-    
-    try:
-        Average_retail_visit_IL = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL])/sum(
-        [retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
-
-        result = Average_retail_visit_IL
-    
-    except Exception as e:
-        print(f"Exception Average_retail_visit_IL_function() {e} {traceback.print_exc() }")
-    
-    return result
-
-
-
 
 
 
