@@ -78,7 +78,6 @@ def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,r
         total_retail_revenue_ga_sc = retail_revenue_monday_to_friday_GA_SC + retail_revenue_saturday_to_sunday_GA_SC
         total_retail_car_count_ga_sc = retail_car_count_monday_to_friday_GA_SC + retail_car_count_saturday_to_sunday_GA_SC
         Average_retail_visit__GA_SC = (total_retail_revenue_ga_sc )/total_retail_car_count_ga_sc
-        ( )
         result = Average_retail_visit__GA_SC
     except Exception as e:
         print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
@@ -1756,7 +1755,7 @@ def create_storage_directory_for_historical_data():
     return created_path
 
 def generate_single_historical_report(file_name_with_fullpath,weeks_days_current):
-    print(f"test:{type(weeks_days_current)}")
+   
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = history_format_date_sitewatch(weeks_days_current)
     print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
@@ -1797,8 +1796,8 @@ def generate_single_historical_report(file_name_with_fullpath,weeks_days_current
     file_name_with_fullpath = os.path.join(storage_path,filename)
     prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
     
-    print("final data:")
-    print(data)
+    logger.info("final data:")
+    logger.info(data)
 
 if __name__=="__main__":
     from days_generator import *

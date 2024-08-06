@@ -40,6 +40,8 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 
 data_path = os.path.join(current_file_path,"data")
 
+historical_data_path = os.path.join(current_file_path,"historical_data")
+
 def do_sum(xl_map,start_index,range):
     "This will do row based some "
     total=0
@@ -73,9 +75,10 @@ def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,r
     
     result = 0
     try:
-        Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
-        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
-    )
+        total_retail_revenue_ga_sc = retail_revenue_monday_to_friday_GA_SC + retail_revenue_saturday_to_sunday_GA_SC
+        total_retail_car_count_ga_sc = retail_car_count_monday_to_friday_GA_SC + retail_car_count_saturday_to_sunday_GA_SC
+        Average_retail_visit__GA_SC = (total_retail_revenue_ga_sc )/total_retail_car_count_ga_sc
+        
         result = Average_retail_visit__GA_SC
     except Exception as e:
         print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
@@ -396,7 +399,7 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
-    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100 if past_4_weeks!=0 else 0
     logger.info(f" curent index : {row},{col}")
     logger.info(f"current val : {current_week} pastweek {past_4_weeks}")
     logger.info(f"percentage : {percentage}")
@@ -444,8 +447,7 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
-    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
-    
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100 if past_4_weeks!=0 else 0
 
     print("percentage :",percentage)
     
@@ -477,15 +479,15 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
 def chnage_total_car_count_fun(curent_car_cnt,past_4_car_cnt):
     chnage = None
     past_4_car_cnt_avg = past_4_car_cnt/4
-    chnage = ((curent_car_cnt- past_4_car_cnt_avg)/past_4_car_cnt_avg)*100
+    chnage = ((curent_car_cnt- past_4_car_cnt_avg)/past_4_car_cnt_avg)*100 if past_4_car_cnt_avg!=0 else 0
 
     return chnage
 
 def chnage_total_revenue_fun(curent_revenue,past_4_revenue):
     chnage = None
     past_4_revenue_avg = past_4_revenue/4
-    chnage = ((curent_revenue - past_4_revenue_avg)/past_4_revenue_avg)*100
-    print(f"change:{chnage} = ({curent_revenue}-{past_4_revenue_avg})/{past_4_revenue_avg}")
+    chnage = ((curent_revenue - past_4_revenue_avg)/past_4_revenue_avg)*100 if past_4_revenue_avg!=0 else 0
+    # print(f"change:{chnage} = ({curent_revenue}-{past_4_revenue_avg})/{past_4_revenue_avg}")
     return chnage
 
 def handle_zero_divison(a, b):
@@ -1394,14 +1396,16 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     ga_sc_past_4_retail_revenue_avg = ga_sc_past_4_week_retail_revenue_mon_fri_avg+ga_sc_past_4_week_retail_revenue_sat_sun_avg
     
-    ga_sc_past_4_week_avg_ratail_visit = (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
+    ga_sc_past_4_week_avg_ratail_visit = handle_zero_divison(ga_sc_past_4_retail_revenue_avg,ga_sc_past_4_weeks_retail_car_count_avg)
+    # (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
     ga_sc_curr_avg_ratail_visit = xl_map[12][3]
     
     past_4_weeks_retail_revenue_total_avg  = ill_past_4_retail_revenue_avg + ga_sc_past_4_retail_revenue_avg
     
     past_4_weeks_retail_car_count_avg      = ill_past_4_retail_car_count_avg  + ga_sc_past_4_weeks_retail_car_count_avg
     
-    total_past_4_week_avg_ratail_visit = (past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
+    total_past_4_week_avg_ratail_visit = handle_zero_divison(past_4_weeks_retail_revenue_total_avg,past_4_weeks_retail_car_count_avg)
+    #(past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
     total_curr_avg_ratail_visit = xl_map[12][1]
 
     # past_4_week_labour_hours_mon_fri
@@ -1647,7 +1651,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         
         print("Avg. Retail Visit")
         logger.info("Avg. Retail Visit")
-        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg)
+        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg) if past_retail_car_count_avg != 0 else 0
         curr_avg_ratail_visit = xl_map[12][index+4]
         set_colour_for_avg_retail(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
@@ -1666,7 +1670,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         if xl_map[18][index+4] != '':
             past_4_week_total_car_count = place_dictionary.get('past_4_week_car_cnt_mon_fri', 0)+place_dictionary.get('past_4_week_car_cnt_sat_sun', 0)
             past_4_week_total_man_hour = place_dictionary.get('past_4_week_labour_hours_mon_fri', 0)+place_dictionary.get('past_4_week_labour_hours_sat_sun', 0)
-            past_4_week_total_cars_per_man_hour = past_4_week_total_car_count/past_4_week_total_man_hour
+            past_4_week_total_cars_per_man_hour = past_4_week_total_car_count/past_4_week_total_man_hour if past_4_week_total_man_hour!=0 else 0
             curr_total_cars_per_man_hour = xl_map[18][index+4]
             set_colour_new(curr_total_cars_per_man_hour, past_4_week_total_cars_per_man_hour, 19, index+5, worksheet, colours)
 
@@ -1780,7 +1784,7 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
-    weeks_days_current = get_week_dates_for_current() # "2024-07-29"
+    weeks_days_current = get_week_dates_for_current("2024-07-29") # "2024-07-29"
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_sitewatch(weeks_days_current)
     print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
@@ -1831,16 +1835,16 @@ if __name__=="__main__":
     body = f'weekly report Ending {sunday_date_str}'
     
     zero_val_check = check_zero_values(file_name_with_fullpath,sheet_name)
-    if zero_val_check:
-        body = f'Error in report  Ending {sunday_date_str}'
-        relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
-        cc_emails = cc_emails.extend(relu_emails)
-        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
-        logger.info("error in weekly report ")
+    # if zero_val_check:
+    #     body = f'Error in report  Ending {sunday_date_str}'
+    #     relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
+    #     cc_emails = cc_emails.extend(relu_emails)
+    #     send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
+    #     logger.info("error in weekly report ")
         
-    else:
-        body = f'weekly report Ending {sunday_date_str}'
-        send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    # else:
+    #     body = f'weekly report Ending {sunday_date_str}'
+    #     send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
 
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
