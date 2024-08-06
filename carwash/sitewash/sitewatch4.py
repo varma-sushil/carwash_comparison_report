@@ -250,11 +250,13 @@ class sitewatchClient():
         authenticated=False
         try:
             response = session.get('https://sitewatch.cloud/api/auth/session',params=params,timeout=timeout,proxies=self.proxies)
-            print("session check:",response.json())
+            # print("session check:",response.json())
             logging.info(f"session check:{response.json()}")
             if response.status_code==200:
+                logging.info(f"session check:{response.json()}")
                 authenticated = response.json().get("authenticated")
                 print("sesssion check :",response.json())
+                logging.info(f"sesssion check :{response.json()}")
                 authenticated=True
                 print("authentication success")
                 logging.info("authentication success")
@@ -266,6 +268,7 @@ class sitewatchClient():
 
 
     def get_general_sales_report_request_id(self,reportOn,id,name,monday_date_str, sunday_date_str,timeout=60):
+        logging.info(f"general sale report dates : {monday_date_str} {sunday_date_str}")
         data = None
 
         """This function will get general sales report
@@ -408,7 +411,7 @@ class sitewatchClient():
             if response.status_code==200:
                 data = response.json()
             print("response: in get_report()",response)
-            logging.info(f"respone : {response}")
+            logging.info(f"respone in get_report()  in : {response}")
             # print("headers:",session.headers)
             # print(response.json())
             # with open(f"{requestID}.json","w") as f:

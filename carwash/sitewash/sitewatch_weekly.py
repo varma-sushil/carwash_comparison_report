@@ -56,6 +56,7 @@ def get_report_data(client,reportOn,id,idname,mon, fri):
     report_data4 = None
     while True:
         request_id4 = client.get_general_sales_report_request_id(reportOn,id,idname,mon, fri)
+        logging.info(f"get report dates : {mon} {fri}")
         report_data4 = client.get_report(reportOn,request_id4)
         
         if report_data4:
@@ -682,46 +683,6 @@ def picture_mismatch(section):
     return data
 
 
-def append_dict_to_excel(file_path, data, num_lines,add_headers=True):
-    try:
-        # Try to load an existing workbook
-        workbook = openpyxl.load_workbook(file_path)
-    except FileNotFoundError:
-        # If the file does not exist, create a new workbook
-        workbook = Workbook()
-        sheet = workbook.active
-        sheet.title = 'Sheet1'
-    else:
-        # If the file exists, get the active sheet
-        sheet = workbook.active
-
-    # Append blank lines
-    for _ in range(num_lines):
-        sheet.append([])
-
-    if add_headers:
-        # Append the header row with bold keys
-        bold_font = Font(bold=True)
-        header_row = list(data.keys())
-        sheet.append(header_row)
-        for cell in sheet[sheet.max_row]:
-            cell.font = bold_font
-
-    # Append the data row
-    data_row = list(data.values())
-    sheet.append(data_row)
-
-    # Save the workbook
-    workbook.save(file_path)
-
-def write_dictionary_to_xlshet(dictionary_data,file_name,is_first_dictionary=True):
-    return ""
-    for index,data in enumerate(dictionary_data):
-                if index == 0:
-                    column_gap = 0 if is_first_dictionary else 2
-                    append_dict_to_excel(file_name,data,column_gap)
-                else:
-                    append_dict_to_excel(file_name,data,0,False)
 
 
 def report_data_extractor(report_data):
