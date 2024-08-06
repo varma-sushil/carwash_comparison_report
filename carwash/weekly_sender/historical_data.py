@@ -75,9 +75,10 @@ def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,r
     
     result = 0
     try:
-        Average_retail_visit__GA_SC = sum([retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC])/sum(
-        [retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC ]
-    )
+        total_retail_revenue_ga_sc = retail_revenue_monday_to_friday_GA_SC + retail_revenue_saturday_to_sunday_GA_SC
+        total_retail_car_count_ga_sc = retail_car_count_monday_to_friday_GA_SC + retail_car_count_saturday_to_sunday_GA_SC
+        Average_retail_visit__GA_SC = (total_retail_revenue_ga_sc )/total_retail_car_count_ga_sc
+        ( )
         result = Average_retail_visit__GA_SC
     except Exception as e:
         print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
@@ -398,7 +399,7 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
-    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100 if past_4_weeks!=0 else 0
     logger.info(f" curent index : {row},{col}")
     logger.info(f"current val : {current_week} pastweek {past_4_weeks}")
     logger.info(f"percentage : {percentage}")
@@ -446,8 +447,7 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
-    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100
-    
+    percentage = ((current_week - past_4_weeks) / past_4_weeks)*100 if past_4_weeks!=0 else 0
 
     print("percentage :",percentage)
     
@@ -1396,14 +1396,16 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     ga_sc_past_4_retail_revenue_avg = ga_sc_past_4_week_retail_revenue_mon_fri_avg+ga_sc_past_4_week_retail_revenue_sat_sun_avg
     
-    ga_sc_past_4_week_avg_ratail_visit = (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
+    ga_sc_past_4_week_avg_ratail_visit = handle_zero_divison(ga_sc_past_4_retail_revenue_avg,ga_sc_past_4_weeks_retail_car_count_avg)
+    # (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
     ga_sc_curr_avg_ratail_visit = xl_map[12][3]
     
     past_4_weeks_retail_revenue_total_avg  = ill_past_4_retail_revenue_avg + ga_sc_past_4_retail_revenue_avg
     
     past_4_weeks_retail_car_count_avg      = ill_past_4_retail_car_count_avg  + ga_sc_past_4_weeks_retail_car_count_avg
     
-    total_past_4_week_avg_ratail_visit = (past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
+    total_past_4_week_avg_ratail_visit = handle_zero_divison(past_4_weeks_retail_revenue_total_avg,past_4_weeks_retail_car_count_avg)
+    #(past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
     total_curr_avg_ratail_visit = xl_map[12][1]
 
     # past_4_week_labour_hours_mon_fri
@@ -1649,7 +1651,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         
         print("Avg. Retail Visit")
         logger.info("Avg. Retail Visit")
-        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg)
+        past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg) if past_retail_car_count_avg != 0 else 0
         curr_avg_ratail_visit = xl_map[12][index+4]
         set_colour_for_avg_retail(curr_avg_ratail_visit, past_4_week_avg_ratail_visit, 13, index+5, worksheet, colours)
 
