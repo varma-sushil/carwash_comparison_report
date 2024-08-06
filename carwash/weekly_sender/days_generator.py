@@ -12,9 +12,9 @@ def get_week_dates_for_current(monday_str=None):
     - tuple: Dates for the current week's Monday, Friday, Saturday, and Sunday in yyyy-mm-dd format.
     """
     if monday_str:
-        today = datetime.strptime(monday_str, "%Y-%m-%d")
-    else:
-        today = datetime.today()
+        today = datetime.strptime(monday_str, "%Y-%m-%d") - timedelta(days=1)
+    else: 
+        today = datetime.today() - timedelta(days=1)
     
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
