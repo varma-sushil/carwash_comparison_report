@@ -1847,7 +1847,7 @@ if __name__=="__main__":
     
     # -----------------cron jaob info ------------ ------------#
     # #Below script will run on every sunday 12 after noon
-    # 0 22 * * 0 /home/ubuntu/CAR_WASH_2/carwash_weekly/weekly_run.sh 
+    #0 10 * * 1 /home/ubuntu/CAR_WASH_2/carwash_weekly/weekly_run.sh
     #sudo timedatectl set-timezone America/Chicago
     
     logger.info("!!! completed main script !!!!")
