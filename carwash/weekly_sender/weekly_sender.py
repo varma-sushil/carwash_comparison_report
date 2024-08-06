@@ -1784,7 +1784,7 @@ if __name__=="__main__":
     
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
-    weeks_days_current = get_week_dates_for_current("2024-07-29") # "2024-07-29"
+    weeks_days_current = get_week_dates_for_current() # "2024-07-29"
     
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_sitewatch(weeks_days_current)
     print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
@@ -1835,16 +1835,16 @@ if __name__=="__main__":
     body = f'weekly report Ending {sunday_date_str}'
     
     zero_val_check = check_zero_values(file_name_with_fullpath,sheet_name)
-    # if zero_val_check:
-    #     body = f'Error in report  Ending {sunday_date_str}'
-    #     relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
-    #     cc_emails = cc_emails.extend(relu_emails)
-    #     send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
-    #     logger.info("error in weekly report ")
+    if zero_val_check:
+        body = f'Error in report  Ending {sunday_date_str}'
+        relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
+        cc_emails = cc_emails.extend(relu_emails)
+        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
+        logger.info("error in weekly report ")
         
-    # else:
-    #     body = f'weekly report Ending {sunday_date_str}'
-    #     send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
+    else:
+        body = f'weekly report Ending {sunday_date_str}'
+        send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
 
     # prepare_xlmap(data,comment,sheet_name=sheet_name)
     # # -----------------Actual script  ----------------------------#
