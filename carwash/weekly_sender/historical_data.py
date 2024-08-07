@@ -1810,11 +1810,12 @@ if __name__=="__main__":
     logger.info("started main script")
 
     load_dotenv()
-    year=2022
-    start_month =5
-    start_day = 29
-    end_year=2023
+    start_year = 2022
+    start_month = 7
+    start_day = 3
+    end_year = 2024
     end_month = 7
+    end_day = 28
 
     class emailConfig:
         env_vars    = os.environ
@@ -1848,7 +1849,7 @@ if __name__=="__main__":
     filename=f"{path}.xlsx"
     file_name_with_fullpath = os.path.join(storage_path,filename)
 
-    result = generate_weekdays_historical(year, start_month,start_day,end_year,end_month)
+    result = generate_weekdays_historical(start_year, start_month, start_day, end_year, end_month, end_day)
     total_cnt = len(result)
     for index,one_week_days in enumerate(result):
         generate_single_historical_report(file_name_with_fullpath,one_week_days)
