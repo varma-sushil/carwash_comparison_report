@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-def generate_weekdays_historical(year, start_month,start_day,end_year,end_month):
+def generate_weekdays_historical(start_year, start_month, start_day, end_year, end_month, end_day):
     weekdays = {
         0: "Monday",
         4: "Friday",
@@ -9,19 +9,19 @@ def generate_weekdays_historical(year, start_month,start_day,end_year,end_month)
         6: "Sunday"
     }
     days = []
-    current_date = datetime(year, start_month, start_day)
+    current_date = datetime(start_year, start_month, start_day)
     week = []
 
-    while (current_date.year in [2022,2023,2024]) and  ( not (current_date.year==end_year and current_date.month==end_month)) :
+    while current_date <= datetime(end_year, end_month, end_day):
         if current_date.weekday() in weekdays:
-            week.append(current_date) #.strftime("%Y-%m-%d %A")
+            week.append(current_date)
         if current_date.weekday() == 6:  # End of the week
-            if week and len(week)==4:  # Add the non-empty week to the list if week list ahs 4 days taht we need mon,fri,sat,sun
+            if week and len(week) == 4:  # Add the non-empty week to the list if week list has 4 days that we need (Mon, Fri, Sat, Sun)
                 days.append(week)
             week = []  # Reset for the next week
         current_date += timedelta(days=1)
         
-    if week:  # Add the last week if it's not empty
+    if week and len(week) == 4:  # Add the last week if it's not empty and has 4 days
         days.append(week)
     
     return days
@@ -78,12 +78,13 @@ def history_format_date_washify(dates):
 
 
 if __name__=="__main__":
-    year=2022
-    start_month =5
-    start_day = 29
-    end_year=2024
+    start_year = 2022
+    start_month = 7
+    start_day = 3
+    end_year = 2024
     end_month = 7
-    result = generate_weekdays_historical(year, start_month,start_day,end_year,end_month)
+    end_day = 28
+    result = generate_weekdays_historical(start_year, start_month, start_day, end_year, end_month, end_day)
     # for week in result:
     #     print(week)
 
@@ -91,6 +92,6 @@ if __name__=="__main__":
     # print(type(result[0][0]))
     # print(result)
     
-    for one_week in result[:2]:
+    for one_week in result:
         print(history_format_date_sitewatch(one_week))
 
