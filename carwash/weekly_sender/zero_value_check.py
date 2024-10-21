@@ -1,6 +1,8 @@
 import openpyxl
 import logging
 logger =logging.getLogger(__file__)
+import os
+from dotenv import load_dotenv
 
 def check_zero_values(filename, sheet_name):
     # Load the existing workbook using openpyxl
@@ -34,7 +36,42 @@ def check_zero_values(filename, sheet_name):
     return ret
 
 if __name__ == "__main__":
+    from custom_mailer import send_email,get_excel_files,send_email_on_error
+    
+    load_dotenv()
+
+    class emailConfig:
+        env_vars    = os.environ
+        FROM_EMAIL   = env_vars.get("FROM_EMAIL")
+        FROM_NAME      = env_vars.get("FROM_NAME")
+        SMTP_SERVER   = env_vars.get("SMTP_SERVER")
+        SMTP_PORT = env_vars.get("SMTP_PORT")
+        SMTP_USER=env_vars.get("SMTP_USER")
+        SMTP_PASSWORD=env_vars.get("SMTP_PASSWORD")
+        TO_EMAIL=env_vars.get("TO_EMAIL")
+    
+    # Configuration
+    subject = 'Weekly reports'
+    body = 'This is the body of the email.'
+    to_email = emailConfig.TO_EMAIL
+    from_email = emailConfig.FROM_EMAIL
+    from_name = emailConfig.FROM_NAME
+    smtp_server = emailConfig.SMTP_SERVER
+    smtp_port = emailConfig.SMTP_PORT
+    smtp_user = emailConfig.SMTP_USER
+    smtp_password = emailConfig.SMTP_PASSWORD
     # Set logging level to INFO
     logging.basicConfig(level=logging.INFO)
     
-    print(check_zero_values(filename="2024.xlsx", sheet_name="2024-08-0"))
+    print()
+    zero_val_check = check_zero_values(filename="/home/ubuntu/CAR_WASH_2/carwash_weekly/carwash/weekly_sender/data/2024/2024.xlsx", sheet_name="2024-10-13")
+    sunday_date_str ='2024-10-13'
+    subject="weekly report"
+    #cc_email=[]
+    if zero_val_check:
+        body = f'Error in report  Ending {sunday_date_str}'
+        relu_emails= ["vijaykumarmanthena@reluconsultancy.in"]
+        to_email=relu_emails[0]
+        cc_emails = relu_emails
+        send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
+        logger.info("error in weekly report ")

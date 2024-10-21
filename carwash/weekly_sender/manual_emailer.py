@@ -1017,12 +1017,12 @@ if __name__=="__main__":
     #cc_emails=["vijaykumarmanthena@reluconsultancy.in"]
     #cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com","abhishekmeher@reluconsultancy.in"] # 
     #cc_emails=["vijaykumarmanthena@reluconsultancy.in"]
-    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com"]
+    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com","tech@reluconsultancy.in"]
 
     
     # path="07-2024"
     storage_path = "/home/ubuntu/CAR_WASH_2/carwash_weekly/carwash/weekly_sender/data/2024" #create_storage_directory(path)
-    sunday_date_str  = "2024-08-04" #YMD
+    sunday_date_str  = "2024-09-22" #YMD
     # Directory containing Excel files
     directory_path = storage_path
     attachments = get_excel_files(directory_path)

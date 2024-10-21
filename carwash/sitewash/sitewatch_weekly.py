@@ -22,6 +22,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
+MAX_RETRIES = 100
 
 tg_message=[]
 
@@ -845,9 +846,12 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
         site_dict = site.to_dict()
         slno=site_dict.get("slno")
         locationCode = site_dict.get("Organization")
-        
-        
+        location_retry =0
         while True:
+            
+            if location_retry >=MAX_RETRIES:
+                logger.info(f"Max retries reached givingup on retry for location : {site_dict}")
+                break
                       
             try:
             
@@ -1150,14 +1154,16 @@ def generate_weekly_report(path,monday_date_str,friday_date_str,saturday_date_st
                         print(f"\n retrying with new location code {locationCode} for {slno}")
                         logger.info(f"retrying with new location code {locationCode} for {slno}")
                         
-                    print("sleep for 5 secound before next retry")
-                    logger.info("sleep for 5 secound before next retry")
-                    time.sleep(15)
+                    print("sleep for 30 secound before next retry")
+                    logger.info("sleep for 30 secound before next retry")
+                    time.sleep(30)
                     
                     
             except Exception as e:
                 print(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")   
-                logger.info(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")              
+                logger.info(f"Excetion for this loctaion {client_name} {e} {traceback.print_exc() }")   
+            
+            location_retry+=1           
     
     return site_watch_report
 

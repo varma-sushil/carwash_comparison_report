@@ -1215,7 +1215,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ga_sc_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ga_sc if loc_data]
     ga_sc_sum_past = sum(ga_sc_past_4_weeks_car_cnt)/4
     current_ga_sc_week_cnt = xl_map[6][3]
-    ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100
+    ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100 if ga_sc_sum_past else ''
     
     totals_past = ill_sum_past +ga_sc_sum_past
     totals_current = xl_map[6][1]
@@ -1580,6 +1580,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     
     for index,place_dictionary in enumerate(all_locations):
         #Total Cars
+        if not place_dictionary:
+            continue
         current_week_total_cars = xl_map[6][index+4]
         past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
         change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
@@ -1774,7 +1776,7 @@ if __name__=="__main__":
     smtp_password = emailConfig.SMTP_PASSWORD
     
     
-    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com"]
+    cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com","tech@reluconsultancy.in"]
     # cc_emails=[]
     
     # # -----------------Actual script  ----------------------------#
@@ -1834,6 +1836,7 @@ if __name__=="__main__":
     zero_val_check = check_zero_values(file_name_with_fullpath,sheet_name)
     if zero_val_check:
         body = f'Error in report  Ending {sunday_date_str}'
+        cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com","tech@reluconsultancy.in"]
         relu_emails= ["abhishekmeher@reluconsultancy.in","namangupta@reluconsultancy.in","vijaykumarmanthena@reluconsultancy.in"]
         cc_emails = cc_emails.extend(relu_emails)
         send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
