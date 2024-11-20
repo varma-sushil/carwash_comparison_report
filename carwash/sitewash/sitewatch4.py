@@ -66,24 +66,24 @@ cookies_file = os.path.join(cookies_path,"sitewatch_cookies.pkl")
 def get_week_dates():
     # Get the current date
     today = datetime.today()
-    
+
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
-    
+
     # Find the current week's Sunday date
     current_week_sunday = current_week_monday + timedelta(days=6)
-    
+
     # Format the dates in dd/mm/yyyy format
     monday_date_str = current_week_monday.strftime("%Y-%m-%d")
     sunday_date_str = current_week_sunday.strftime("%Y-%m-%d")
-    
+
     return monday_date_str, sunday_date_str
 
 def generate_past_4_weeks_days(date_str):
     # Convert the string date to a datetime object
     date_format = "%Y-%m-%d"
     monday = datetime.strptime(date_str, date_format)
-    
+
     # Subtract one day
     one_day_before = monday - timedelta(days=1)
     four_weeks_before = monday - timedelta(days=(7*4))
@@ -104,7 +104,7 @@ def generate_past_4_week_days_full(mondaystr):
     # Convert the string date to a datetime object
     date_format = "%Y-%m-%d"
     input_date = datetime.strptime(mondaystr, date_format)
-    
+
     # Calculate one day before the input date and four weeks (28 days) before the input date
     one_day_before = input_date - timedelta(days=1)
     four_weeks_before = input_date - timedelta(days=7*4)
@@ -123,12 +123,12 @@ def generate_past_4_week_days_full(mondaystr):
     # Print the result
 
     full_days = [required_days[i:i + 4] for i in range(0, len(required_days), 4)]
-    
+
     #     print(day)
 
     return full_days
 
-    
+
 
 def generate_heartbeatID():
     return round(random.random() * 1e7)
@@ -137,11 +137,8 @@ def generate_cb_value():
     return int(time.time() * 1000)
 
 
-
-
-
 class sitewatchClient():
-    def __init__(self,cookies_file) -> None:
+    def __init__(self, cookies_file) -> None:
         self.token = None
         self.heartbeatID =generate_heartbeatID()
         self.cb_value  = generate_cb_value()
@@ -152,9 +149,9 @@ class sitewatchClient():
         """used for loginto the site and return jwt token for further processing
 
         Args:
-            employeeCode (str): employee code 
+            employeeCode (str): employee code
             password (str): password
-            locationCode (str):code for the place 
+            locationCode (str):code for the place
             remember (int, optional): remember login. Defaults to 0. not used
         """
         session = requests.Session()
@@ -209,7 +206,7 @@ class sitewatchClient():
 
         Returns:
             bool: authenticated (True or False)
-        """ 
+        """
         # cookies = {
         #     '_ga': 'GA1.2.2058823687.1718534132',
         #     '_gid': 'GA1.2.1004888831.1718534132',
@@ -236,13 +233,13 @@ class sitewatchClient():
             'sec-ch-ua-platform': '"Windows"',
         }
         session  = requests.Session()
-        
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
 
         session.cookies = cookies
         session.headers = headers
-        
+
         params = {
             'cb': str(self.cb_value),
             'heartbeatID': str(self.heartbeatID),
@@ -263,7 +260,7 @@ class sitewatchClient():
         except Exception as e:
             print(f"Exception in check_session_auth : {e} ")
             logging.info(f"Exception in check_session_authsitewatch : {e} ")
-            
+
         return authenticated
 
 
@@ -307,7 +304,7 @@ class sitewatchClient():
         }
 
         session  = requests.Session()
-        
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
 
@@ -319,14 +316,14 @@ class sitewatchClient():
             'reportOn': reportOn,
         }
 
-       
+
 
         # Format both times
         one_hour_before_formatted = f"{monday_date_str}T00:00:00"
         current_time_formatted = f"{sunday_date_str}T23:59:59"
         #one_hour_before_formatted = "2024-06-14T00:00:00"
         #current_time_formatted ="2024-06-14T23:59:59"
-        
+
         json_data = {
             'startDate':  one_hour_before_formatted,
             'endDate': current_time_formatted,
@@ -361,7 +358,7 @@ class sitewatchClient():
         except Exception as e:
             print(f"Exception in get_general_sales_report: {e} ")
             logging.info(f"Exception in get_general_sales_report: {e} ")
-        
+
         return data
 
 
@@ -401,7 +398,7 @@ class sitewatchClient():
             'requestID': requestID,
         }
         session  = requests.Session()
-        
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
         session.cookies =cookies
@@ -420,7 +417,7 @@ class sitewatchClient():
         except Exception as e:
             print(f"Exception in get_report: {e} ")
             logging.info(f"Exception in get_report: {e} ")
-        
+
         return data
 
 
@@ -444,12 +441,12 @@ class sitewatchClient():
             'sec-ch-ua-platform': '"Windows"',
         }
         session  = requests.Session()
-        
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
 
         session.cookies = cookies
-        session.headers = headers    
+        session.headers = headers
         params = {
             'cb': generate_cb_value(),
             'activeView': 'custom',
@@ -475,9 +472,9 @@ class sitewatchClient():
             logging.info(f"Exception in get_activity_by_date_proft_request_id() {e}")
 
         return requestID
-    
+
     def get_labour_hours(self,reportOn,requestID,):
-        
+
         laborHours=None
 
         headers = {
@@ -498,12 +495,12 @@ class sitewatchClient():
         }
 
         session  = requests.Session()
-                
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
 
             session.cookies = cookies
-            session.headers = headers 
+            session.headers = headers
         params = {
             'cb': self.cb_value,
             'heartbeatID': self.heartbeatID,
@@ -521,7 +518,7 @@ class sitewatchClient():
             print(f"exception in get_labour_hours() {e}")
             logging.info(f"exception in get_labour_hours() {e}")
 
-    
+
         return laborHours
 
     def get_plan_analysis_request_id(self,date,reportOn,timeout=60):
@@ -546,12 +543,12 @@ class sitewatchClient():
             'sec-ch-ua-platform': '"Windows"',
             }
             session  = requests.Session()
-            
+
             with open(self.cookies_file,'rb') as f:
                 cookies = pickle.load(f)
 
             session.cookies = cookies
-            session.headers = headers  
+            session.headers = headers
             now = datetime.now(timezone.utc)
             formatted_time = now.strftime("T%H:%M:%S.%f")[:-3] + 'Z'
             date_time = f"{date}T22:00:00.000Z"  #2024-07-07T07:53:04.769Z
@@ -560,16 +557,16 @@ class sitewatchClient():
             logging.info(f"response in get_plan_analysis_request_id(): {response} ",)
             if response.status_code==200:
                 request_id = response.json().get("requestID")
-        
+
         except Exception as e:
             print(f"exception in get_analysis_request_id() {e}")
             logging.info(f"exception in get_analysis_request_id() {e}")
-            
+
         return request_id
-        
+
     def get_total_plan_members(self,requestID,reportOn,timeout=60):
         total_members = None
-        
+
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
@@ -587,16 +584,16 @@ class sitewatchClient():
             'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-        }  
-        
+        }
+
         session  = requests.Session()
-                
+
         with open(self.cookies_file,'rb') as f:
             cookies = pickle.load(f)
 
         session.cookies = cookies
-        session.headers = headers  
-        
+        session.headers = headers
+
         try:
             params = {
             'cb': self.cb_value,
@@ -604,23 +601,23 @@ class sitewatchClient():
             'reportOn': reportOn,
             'requestID': requestID,
             }
-            
+
             response = session.get('https://sitewatch.cloud/api/request/results', params=params,proxies=self.proxies)
             print("resp  in total memebers :",response.status_code)
             logging.info(f"resp  in total memebers : {response.status_code}")
             if response.status_code==200:
-            
+
                 statistics = response.json().get("statistics")
                 month  = statistics.get("month")
                 total_members = month.get("endingMembers")
-                
+
         except Exception as e :
             print(f"Exception in get_total_plan_members() {e}")
             logging.info(f"Exception in get_total_plan_members() {e}")
-            
-        
+
+
         return total_members
-        
+
 
 if __name__=="__main__":
     # print("HeartBeatID :",generate_heartbeatID())
@@ -648,22 +645,22 @@ if __name__=="__main__":
     # print(client.get_requestid(reportOn=reportOn))
     # req_id = client.get_general_sales_report_request_id(reportOn,2121400001,'Site Financial Detail & Chem Report-2021','2024-06-03','2024-06-09')
 
-    
+
     # report_data = client.get_report(reportOn,req_id)
-    
+
     # print(report_data)
     # print('Testing data ')
     # req_id2 = client.get_activity_by_date_proft_request_id(reportOn,'2024-06-03','2024-06-09')
     # print(req_id2)
     # print(client.get_labour_hours(reportOn,req_id2))
-    
+
     date= "2024-07-07"
     req_id = client.get_plan_analysis_request_id(date,reportOn)
     print("reqid:",req_id)
     print(client.get_total_plan_members(req_id,reportOn))
-    
 
-        
+
+
 
 #Application working flow
 
@@ -671,10 +668,10 @@ if __name__=="__main__":
 
 # nest check session is authenticated or not suing another api
 
-#for doing request for reports 
+#for doing request for reports
 # for getting request id use https://sitewatch.cloud/api/self-info?cb=1718539644149&allowCallback=1&heartbeatID=6641209
 
-# change log 
+# change log
 # - added headers in each fucntion
 
 

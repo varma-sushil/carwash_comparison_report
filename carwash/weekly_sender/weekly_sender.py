@@ -7,7 +7,7 @@ import openpyxl
 from openpyxl.styles import PatternFill, Font
 import json
 
-try: 
+try:
     from openpyxl.cell import get_column_letter
 except ImportError:
     from openpyxl.utils import get_column_letter
@@ -49,7 +49,7 @@ def do_sum(xl_map,start_index,range):
         val = xl_map[start_index][i+1]
         if isinstance(val,float) or isinstance(val,int):
             total+=val
-    
+
     return total
 
 def do_sum_location(xl_map,location:list):
@@ -69,23 +69,23 @@ def do_avg(val):
     if val:
         result = val/4
     return result
-    
+
 def Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
-                                         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):    
-    
+                                         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC):
+
     result = 0
     try:
         total_retail_revenue_ga_sc = retail_revenue_monday_to_friday_GA_SC + retail_revenue_saturday_to_sunday_GA_SC
         total_retail_car_count_ga_sc = retail_car_count_monday_to_friday_GA_SC + retail_car_count_saturday_to_sunday_GA_SC
         Average_retail_visit__GA_SC = (total_retail_revenue_ga_sc )/total_retail_car_count_ga_sc
-        
+
         result = Average_retail_visit__GA_SC
     except Exception as e:
         print(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
         logging.info(f"Exception in Average_retail_visit__GA_SC_fucntion() {e}")
-        
 
-    return result 
+
+    return result
 
 def Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
         retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
@@ -93,18 +93,18 @@ def Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
         total_cars_GA_SC
         ):
     result = 0
-    
+
     try:
-        
+
         Average_memeber_visit_GA_SC = (Total_revenue_GA_SC - sum([retail_revenue_monday_to_friday_GA_SC , retail_revenue_saturday_to_sunday_GA_SC]))/(total_cars_GA_SC - sum([
         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC]))
-        
+
         result = Average_memeber_visit_GA_SC
-        
+
     except Exception as e:
         print(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
         logger.info(f"Exception in Average_memeber_visit_GA_SC_function() {e}")
-    
+
     return result
 
 def cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC):
@@ -121,87 +121,87 @@ def cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_fri
 
 def cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
     result = 0
-    
+
     try:
         cost_per_labour_hour_saturday_to_sunday_GA_SC = car_count_saturday_to_sunday_GA_SC/staff_hours_saturday_to_sunday_GA_SC
         result = cost_per_labour_hour_saturday_to_sunday_GA_SC
     except Exception as e:
         print(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
         logger.info(f"Exception in staff_hours_saturday_to_sunday_GA_SC_fucntion() {e}")
-        
+
     return result
 
 def Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC):
-    result =0 
+    result =0
     try:
             Total_cars_per_man_hour_GA_SC = total_cars_GA_SC/sum([
             staff_hours_monday_to_friday_GA_SC,staff_hours_saturday_to_sunday_GA_SC])
             result = Total_cars_per_man_hour_GA_SC
-    
+
     except Exception as e:
         print(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
         logger.info(f"Exception in  Total_cars_per_man_hour_GA_SC_function() {e}")
-    
+
     return result
- 
+
 def Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
                                    retail_car_count_saturday_to_sunday_GA_SC):
-    result = 0 
+    result = 0
     try:
         Conversion_rate_GA_SC = Total_club_plans_sold_GA_SC/sum([
-        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC])     
-        
+        retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC])
+
         result =  Conversion_rate_GA_SC
     except Exception as e:
         print(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
         logger.info(f"Exceptionin Conversion_rate_GA_SC_function() {e}")
-    
+
     return result
 
 def Conversion_rate_Total_function(Total_club_plans_sold_Total,
                                    retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total):
     result = 0
-    
+
     try:
-        
+
         Conversion_rate_Total = Total_club_plans_sold_Total/sum(
-        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])  
-        
+        [retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])
+
         result = Conversion_rate_Total
     except Exception as e:
-        print(f"Exception in Conversion_rate_Total_function()  {e}") 
+        print(f"Exception in Conversion_rate_Total_function()  {e}")
         logger.info(f"Exception in Conversion_rate_Total_function()  {e}")
-    
+
     return result
 
 def Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
                                  retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
     result = 0
-    
+
     try:
-        Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])         
+        Conversion_rate_ILL = Total_club_plans_sold_ILL/sum([retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
         result = Conversion_rate_ILL
     except Exception as e:
         print(f"Exception in Conversion_rate_ILL_function() {e}")
         logger.info(f"Exception in Conversion_rate_ILL_function() {e}")
-        
+
     return result
 
 def Total_cars_per_man_hour_total_function(Total_cars_Total,
                                            staff_hours_monday_to_friday_Total,
                                            staff_hours_saturday_to_sunday_Total):
     result = 0
-    
+
     try:
         Total_cars_per_man_hour_total = Total_cars_Total/sum(
         [staff_hours_monday_to_friday_Total,staff_hours_saturday_to_sunday_Total])
-        
+
         result = Total_cars_per_man_hour_total
-    
+
     except Exception as e:
         print(f"Exception in Total_cars_per_man_hour_total_function() {e}")
         logger.info(f"Exception in Total_cars_per_man_hour_total_function() {e}")
-        
+
     return result
 
 
@@ -209,92 +209,92 @@ def Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
                                          staff_hours_monday_to_friday_ILL,
                                          staff_hours_saturday_to_sunday_ILL):
     result = 0
-    
+
     try:
         Total_cars_per_man_hour_ILL = total_cars_in_ILL/(sum([
         staff_hours_monday_to_friday_ILL+staff_hours_saturday_to_sunday_ILL]))
 
         result = Total_cars_per_man_hour_ILL
-    
+
     except Exception as e:
         print(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
         logger.info(f"Exception Total_cars_per_man_hour_ILL_function() {e}")
-    
+
     return result
 
 
 def cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL):
     result = 0
-    
+
     try:
         cost_per_labour_hour_saturday_to_sunday_ILL = car_count_saturday_to_sunday_ILL/staff_hours_saturday_to_sunday_ILL
-        
+
         result = cost_per_labour_hour_saturday_to_sunday_ILL
-    
+
     except Exception as e:
         print(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
         logger.info(f"Exception cost_per_labour_hour_saturday_to_sunday_ILL_function() {e}")
-        
+
     return result
 
 
 def cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total):
     result = 0
-    
+
     try:
         cost_per_labour_hour_monday_to_friday_Total = car_count_monday_to_friday_Total/staff_hours_monday_to_friday_Total
         result = cost_per_labour_hour_monday_to_friday_Total
-    
+
     except Exception as e:
         print(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
         logger.info(f"Exception cost_per_labour_hour_monday_to_friday_Total_function() {e}")
-    
+
     return result
 
 def cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL):
     result = 0
-    
+
     try:
         cost_per_labour_hour_monday_to_friday_ILL = car_count_monday_to_friday_ILL/staff_hours_monday_to_friday_ILL
         result =  cost_per_labour_hour_monday_to_friday_ILL
-    
+
     except Exception as e:
         print(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
         logger.info(f"Exception cost_per_labour_hour_monday_to_friday_ILL_function() {e}")
-        
+
     return result
 
 def Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
                         ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
                         retail_car_count_saturday_to_sunday_Total):
     result = 0
-    
+
     try:
         Average_memeber_visit_Total = (Total_revenue_Total -sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total]))/(Total_cars_Total - sum([
         retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total]))
         result =  Average_memeber_visit_Total
-    
+
     except Exception as e:
-        print(f"Exception Average_memeber_visit_Total_function() {e}")  
+        print(f"Exception Average_memeber_visit_Total_function() {e}")
         logger.info(f"Exception Average_memeber_visit_Total_function() {e}")
-    
-    return result    
+
+    return result
 
 def Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
                                        retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
                                        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL):
     result = 0
-    
+
     try:
         Average_memeber_visit_ILL = (Total_revenue_ILL - sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL]))/(total_cars_in_ILL - sum([
         retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL]))
-        
+
         result = Average_memeber_visit_ILL
-    
+
     except Exception as e:
         print(f"Exception Average_memeber_visit_ILL_function() {e}")
         logger.info(f"Exception Average_memeber_visit_ILL_function() {e}")
-    
+
     return result
 
 def Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
@@ -302,36 +302,36 @@ def Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
                                         retail_car_count_monday_to_friday_Total,
                                         retail_car_count_saturday_to_sunday_Total):
     result = 0
-    
+
     try:
         Average_retail_visit_Total = sum([retail_revenue_monday_to_friday_Total,retail_revenue_saturday_to_sunday_Total])/sum([
         retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total])
-        
+
         result = Average_retail_visit_Total
-    
+
     except Exception as e:
         print(f"Exception Average_retail_visit_Total_function() {e}")
         logger.info(f"Exception Average_retail_visit_Total_function() {e}")
-        
+
     return result
-            
+
 
 def Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
                                      retail_revenue_saturday_to_sunday_ILL,
                                      retail_car_count_monday_to_friday_ILL,
                                      retail_car_count_saturday_to_sunday_ILL):
     result = 0
-    
+
     try:
         Average_retail_visit_IL = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_saturday_to_sunday_ILL])/sum(
         [retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL])
 
         result = Average_retail_visit_IL
-    
+
     except Exception as e:
         print(f"Exception Average_retail_visit_IL_function() {e}")
         logger.info(f"Exception Average_retail_visit_IL_function() {e}")
-    
+
     return result
 
 def add_commas(value):
@@ -342,32 +342,32 @@ def add_commas(value):
             return "{:,}".format(num)
     except ValueError:
         pass
-    
-    # Return the original value if it's not an integer or less than 1000
-    return value                
 
-#new xl maps functions 
+    # Return the original value if it's not an integer or less than 1000
+    return value
+
+#new xl maps functions
 def update_place_to_xlmap(xl_map,place_index,place_dictionary)->list:
     "Will return updates place dictionary"
     xl_map[2][place_index] = place_dictionary.get("car_count_monday_to_friday")
     xl_map[3][place_index]=place_dictionary.get("car_count_saturday_sunday")
     xl_map[4][place_index]=place_dictionary.get("retail_car_count_monday_to_friday")
     xl_map[5][place_index]=place_dictionary.get("retail_car_count_saturday_sunday")
-    
+
     xl_map[7][place_index]=place_dictionary.get("retail_revenue_monday_to_friday")
     xl_map[8][place_index]=place_dictionary.get("retail_revenue_saturday_sunday")
     xl_map[9][place_index]=place_dictionary.get("total_revenue_monday_to_friday")
     xl_map[10][place_index]=place_dictionary.get("total_revenue_saturday_sunday")
-    
+
     xl_map[14][place_index]=place_dictionary.get("labour_hours_monday_to_friday")
     xl_map[15][place_index]=place_dictionary.get("labour_hours_saturday_sunday")
     xl_map[16][place_index]=place_dictionary.get("cars_per_labour_hour_monday_to_friday")
     xl_map[17][place_index]=place_dictionary.get("cars_per_labour_hour_saturday_sunday")
-    
+
     xl_map[19][place_index] = place_dictionary.get("arm_plans_sold_cnt")
     xl_map[20][place_index]= place_dictionary.get("conversion_rate")
     xl_map[21][place_index] = place_dictionary.get("total_arm_planmembers_cnt")
-        
+
     return xl_map
 
 def set_colour(val,row,col,worksheet,colours):
@@ -375,11 +375,11 @@ def set_colour(val,row,col,worksheet,colours):
     cell=worksheet.cell(row,col)
     if val>=20:
        cell.fill = darkgreen_format
-    
+
     elif val >=10:
         cell.fill = light_green_format
-        
-        
+
+
     elif val>=-10:
         cell.fill = darkred_format
     else : #val>=-20
@@ -395,7 +395,7 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
 
     if not all([current_week, past_4_weeks]):
         return
-    
+
     darkgreen_format,light_green_format,darkred_format,lightred_format =colours
     cell=worksheet.cell(row,col)
 
@@ -413,18 +413,18 @@ def set_colour_for_avg_retail(current_week,past_4_weeks, row, col, worksheet, co
         print("light green")
         cell.fill = light_green_format
         logger.info("light green")
-        
+
     elif percentage > -5:
         print("neutral")
         logger.info("neutral")
-        
+
     elif percentage > -10:
         print("light red ")
         cell.fill = lightred_format
         logger.info("light red ")
-        
+
     elif percentage <=-10:
-        print("Dark red")  
+        print("Dark red")
         cell.fill = darkred_format
         logger.info("Dark red")
 
@@ -458,18 +458,18 @@ def set_colour_new(current_week,past_4_weeks,row,col,worksheet,colours):
         print("light green")
         cell.fill = light_green_format
         logger.info("light green")
-        
+
     elif percentage > -5:
         print("neutral")
         logger.info("neutral")
-        
+
     elif percentage > -10:
         print("light red ")
         cell.fill = lightred_format
         logger.info("light red ")
-        
+
     elif percentage <=-10:
-        print("Dark red")  
+        print("Dark red")
         cell.fill = darkred_format
         logger.info("Dark red")
 
@@ -504,8 +504,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         workbook = openpyxl.Workbook()
         worksheet = workbook.active
         worksheet.title = sheet_name
-    
-    
+
+
     xl_map = [
     [""],
     ["","","","","","","","","","","","","","","","","","","","","","","",],
@@ -537,7 +537,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ["","","","","","","","","","","","","","","","","","","","","","","",],
     ["","","","","","","","","","","","","","","","","","","","","","","",],
     ]
-    
+
     cols = ["    ","Totals","ILL",
                 "GA / SC","Sudz - Beverly",'Fuller-Calumet',
                 "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
@@ -556,482 +556,482 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 "Conversion Rate","Total Club Plan Members"]
 
     xl_map[0][0] = comment #to maps
-    
-    
-    
+
+
+
     for col in range(len(cols)): #column names to maps
         xl_map[1][col]=cols[col]
-        
+
     for index  in range(len(index_names)):  #index names to map
         xl_map[index+2][0]=index_names[index]
-    
-    Fuller_Cicero = data.get("Fuller-Cicero")  
+
+    Fuller_Cicero = data.get("Fuller-Cicero")
 
     if Fuller_Cicero:
         Fuller_Cicero_index=6
         update_place_to_xlmap(xl_map,Fuller_Cicero_index,Fuller_Cicero)
     Fuller_Matteson = data.get("Fuller-Matteson")
-    
+
     if Fuller_Matteson:
         Fuller_Matteson_index=7
         update_place_to_xlmap(xl_map,Fuller_Matteson_index,Fuller_Matteson)
-    
+
     Fuller_Elgin = data.get("Fuller-Elgin")
-    
+
     if Fuller_Elgin:
         Fuller_Elgin_index = 8
         update_place_to_xlmap(xl_map,Fuller_Elgin_index,Fuller_Elgin)
-        
-      
+
+
     Sparkle_Belair = data.get("Sparkle-Belair")
-    
+
     if Sparkle_Belair:
         Sparkle_Belair_index=14
 
         update_place_to_xlmap(xl_map,Sparkle_Belair_index,Sparkle_Belair)
-        
+
     Sparkle_Evans = data.get("Sparkle-Evans")
-    
+
     if Sparkle_Evans:
         Sparkle_Evans_index=15
 
         update_place_to_xlmap(xl_map,Sparkle_Evans_index,Sparkle_Evans)
 
     Sparkle_North_Augusta = data.get("Sparkle-North Augusta")
-    
+
     if Sparkle_North_Augusta:
         Sparkle_North_Augusta_index=20
 
         update_place_to_xlmap(xl_map,Sparkle_North_Augusta_index,Sparkle_North_Augusta)
-    
+
     Sparkle_Greenwood = data.get("Sparkle-Greenwood")
-    
+
     if Sparkle_Greenwood:
         Sparkle_Greenwood_index=17
 
         update_place_to_xlmap(xl_map,Sparkle_Greenwood_index,Sparkle_Greenwood)
-    
-    
+
+
     Sparkle_Grovetown_1 = data.get("Sparkle-Grovetown 1")
-    
+
     if Sparkle_Grovetown_1:
         Sparkle_Grovetown_1_index=18
 
         update_place_to_xlmap(xl_map,Sparkle_Grovetown_1_index,Sparkle_Grovetown_1)
-        
-    Sparkle_Windsor_Spring = data.get("Sparkle-Windsor Spring")    
-    
+
+    Sparkle_Windsor_Spring = data.get("Sparkle-Windsor Spring")
+
     if Sparkle_Windsor_Spring:
-        Sparkle_Windsor_Spring_index=22 
-        
+        Sparkle_Windsor_Spring_index=22
+
         update_place_to_xlmap(xl_map,Sparkle_Windsor_Spring_index,Sparkle_Windsor_Spring)
-        
+
     Sparkle_Furrys_Ferry = data.get("Sparkle-Furrys Ferry")
-    
+
     if Sparkle_Furrys_Ferry:
         Sparkle_Furrys_Ferry_index= 16
-        
-        update_place_to_xlmap(xl_map,Sparkle_Furrys_Ferry_index,Sparkle_Furrys_Ferry)      
+
+        update_place_to_xlmap(xl_map,Sparkle_Furrys_Ferry_index,Sparkle_Furrys_Ferry)
 
     Sparkle_Peach_Orchard = data.get("Sparkle-Peach Orchard")
-    
+
     if Sparkle_Peach_Orchard:
         Sparkle_Peach_Orchard_index=21
-        
+
         update_place_to_xlmap(xl_map,Sparkle_Peach_Orchard_index,Sparkle_Peach_Orchard)
-        
-    Sparkle_Grovetown_2 =  data.get("Sparkle-Grovetown 2")   
-      
+
+    Sparkle_Grovetown_2 =  data.get("Sparkle-Grovetown 2")
+
     if Sparkle_Grovetown_2:
         Sparkle_Grovetown_2_index =19
-        
+
         update_place_to_xlmap(xl_map,Sparkle_Grovetown_2_index,Sparkle_Grovetown_2)
-        
+
     Fuller_Calumet = data.get("Fuller-Calumet")
-    
+
     if Fuller_Calumet:
         Fuller_Calumet_index= 5
-        
+
         update_place_to_xlmap(xl_map,Fuller_Calumet_index,Fuller_Calumet)
-        
-        
+
+
     Sudz_Beverly = data.get("Sudz - Beverly")
-    
+
     if Sudz_Beverly:
         Sudz_Beverly_index = 4
-        
+
         update_place_to_xlmap(xl_map,Sudz_Beverly_index,Sudz_Beverly)
-        
-    ##Hamilton sites 
-    
+
+    ##Hamilton sites
+
     Getaway_Macomb = data.get("Getaway-Macomb")
-    
+
     if Getaway_Macomb:
         Getaway_Macomb_index = 10
         update_place_to_xlmap(xl_map,Getaway_Macomb_index,Getaway_Macomb)
-        
+
     Getaway_Morton = data.get("Getaway-Morton")
-    
+
     if Getaway_Morton:
         Getaway_Morton_index=11
         update_place_to_xlmap(xl_map,Getaway_Morton_index,Getaway_Morton)
-        
+
     Getaway_Ottawa = data.get("Getaway-Ottawa")
-    
+
     if Getaway_Ottawa:
         Getaway_Ottawa_index = 12
         update_place_to_xlmap(xl_map,Getaway_Ottawa_index,Getaway_Ottawa)
-        
-    Getaway_Peru = data.get("Getaway-Peru")    
-    
+
+    Getaway_Peru = data.get("Getaway-Peru")
+
     if Getaway_Peru:
         Getaway_Peru_index = 13
         update_place_to_xlmap(xl_map,Getaway_Peru_index,Getaway_Peru)
-        
-    
-    #Hamilton 
-    
+
+
+    #Hamilton
+
     Splash_Peoria = data.get("Splash-Peoria")
-    
+
     if Splash_Peoria:
         Splash_Peoria_index = 9
         update_place_to_xlmap(xl_map,Splash_Peoria_index,Splash_Peoria)
 
-    #computation for first three columns 
+    #computation for first three columns
     # sum([ xl_map[2][i+1] for i in range(3,13)])
-    
+
     #first index
     car_count_monday_to_friday_ILL = do_sum(xl_map,2,range(3,13))
     xl_map[2][2] = car_count_monday_to_friday_ILL
-    
+
     car_count_monday_to_friday_GA_SC = do_sum(xl_map,2,range(13,22))
     xl_map[2][3] = car_count_monday_to_friday_GA_SC
-    
+
     car_count_monday_to_friday_Total = sum([car_count_monday_to_friday_ILL,car_count_monday_to_friday_GA_SC])
-    
+
     xl_map[2][1]=car_count_monday_to_friday_Total
-    
-    
-    
-    #secound index 
+
+
+
+    #secound index
     car_count_saturday_to_sunday_ILL = do_sum(xl_map,3,range(3,13))
     xl_map[3][2] = car_count_saturday_to_sunday_ILL
-    
+
     car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,3,range(13,22))
     xl_map[3][3] = car_count_saturday_to_sunday_GA_SC
-    
+
     car_count_saturday_to_sunday_Total = sum([car_count_saturday_to_sunday_ILL, car_count_saturday_to_sunday_GA_SC])
-    
+
     xl_map[3][1] = car_count_saturday_to_sunday_Total
-    
-    #third row 
-    
+
+    #third row
+
     retail_car_count_monday_to_friday_ILL = do_sum(xl_map,4,range(3,13))
     xl_map[4][2] = retail_car_count_monday_to_friday_ILL
-    
+
     retail_car_count_monday_to_friday_GA_SC = do_sum(xl_map,4,range(13,22))
     xl_map[4][3] = retail_car_count_monday_to_friday_GA_SC
-    
+
     retail_car_count_monday_to_friday_Total = sum([retail_car_count_monday_to_friday_ILL,retail_car_count_monday_to_friday_GA_SC])
-    
+
     xl_map[4][1]=retail_car_count_monday_to_friday_Total
-    
+
     # Reatil car cound satruday to sunday
-    
+
     retail_car_count_saturday_to_sunday_ILL = do_sum(xl_map,5,range(3,13))
     xl_map[5][2] = retail_car_count_saturday_to_sunday_ILL
-    
+
     retail_car_count_saturday_to_sunday_GA_SC = do_sum(xl_map,5,range(13,22))
     xl_map[5][3] = retail_car_count_saturday_to_sunday_GA_SC
-    
+
     retail_car_count_saturday_to_sunday_Total = sum([retail_car_count_saturday_to_sunday_ILL,retail_car_count_saturday_to_sunday_GA_SC])
-    
+
     xl_map[5][1]=retail_car_count_saturday_to_sunday_Total
-    
+
     loc_1 = [[2,3],[3,3]]
     total_cars_GA_SC=do_sum_location(xl_map,loc_1)
-    
+
     xl_map[6][3]=total_cars_GA_SC
-    
+
     loc_2=[[2,2],[3,2]]
     total_cars_in_ILL = do_sum_location(xl_map,loc_2)
-    
+
     xl_map[6][2] = total_cars_in_ILL
-    
+
     loc_3=[[6,3],[6,2]]
-    
+
     Total_cars_Total = do_sum_location(xl_map,loc_3)
     xl_map[6][1]=Total_cars_Total
-    
+
     #Retail Revenue Monday to Friday
     retail_revenue_monday_to_friday_ILL = do_sum(xl_map,7,range(3,13))
     xl_map[7][2] = retail_revenue_monday_to_friday_ILL
-    
+
     retail_revenue_monday_to_friday_GA_SC = do_sum(xl_map,7,range(13,22))
     xl_map[7][3] = retail_revenue_monday_to_friday_GA_SC
-    
+
     retail_revenue_monday_to_friday_Total = sum([retail_revenue_monday_to_friday_ILL,retail_revenue_monday_to_friday_GA_SC])
-    
+
     xl_map[7][1]=retail_revenue_monday_to_friday_Total
-    
-    
+
+
     #Reatil Revenue Saturda to Sunday
     retail_revenue_saturday_to_sunday_ILL = do_sum(xl_map,8,range(3,13))
     xl_map[8][2] = retail_revenue_saturday_to_sunday_ILL
-    
+
     retail_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,8,range(13,22))
     xl_map[8][3] = retail_revenue_saturday_to_sunday_GA_SC
-    
+
     retail_revenue_saturday_to_sunday_Total = sum([retail_revenue_saturday_to_sunday_ILL,retail_revenue_saturday_to_sunday_GA_SC])
-    
+
     xl_map[8][1]=retail_revenue_saturday_to_sunday_Total
-    
+
     #Total Revnue Monday to Friday
     Total_revenue_monday_to_friday_ILL = do_sum(xl_map,9,range(3,13))
     xl_map[9][2] = Total_revenue_monday_to_friday_ILL
-    
+
     Total_revenue_monday_to_friday_GA_SC = do_sum(xl_map,9,range(13,22))
     xl_map[9][3] = Total_revenue_monday_to_friday_GA_SC
-    
+
     Total_revenue_monday_to_friday = sum([Total_revenue_monday_to_friday_ILL,Total_revenue_monday_to_friday_GA_SC])
-    
+
     xl_map[9][1]=Total_revenue_monday_to_friday
-    
+
     # Total Revenue Saturday to Sunday
     Total_revenue_saturday_to_sunday_ILL = do_sum(xl_map,10,range(3,13))
     xl_map[10][2] = Total_revenue_saturday_to_sunday_ILL
-    
+
     Total_revenue_saturday_to_sunday_GA_SC = do_sum(xl_map,10,range(13,22))
     xl_map[10][3] = Total_revenue_saturday_to_sunday_GA_SC
-    
+
     Total_revenue_saturday_sunday = sum([Total_revenue_saturday_to_sunday_ILL,Total_revenue_saturday_to_sunday_GA_SC])
-    
-    xl_map[10][1]=Total_revenue_saturday_sunday 
-    
-    # Total Revenue 
+
+    xl_map[10][1]=Total_revenue_saturday_sunday
+
+    # Total Revenue
     loc_4=[[9,2],[10,2]]
     Total_revenue_ILL = do_sum_location(xl_map,loc_4)
     xl_map[11][2] =Total_revenue_ILL
-    
+
     loc_5=[[9,3],[10,3]]
     Total_revenue_GA_SC = do_sum_location(xl_map,loc_5)
     xl_map[11][3]= Total_revenue_GA_SC
-    
+
     Total_revenue_Total = sum([Total_revenue_ILL,Total_revenue_GA_SC])
     xl_map[11][1] =Total_revenue_Total
-    
+
     #Average Retail Visit
 
-    
-    
+
+
     Average_retail_visit_IL_val =Average_retail_visit_IL_function(retail_revenue_monday_to_friday_ILL,
                                      retail_revenue_saturday_to_sunday_ILL,
                                      retail_car_count_monday_to_friday_ILL,
                                      retail_car_count_saturday_to_sunday_ILL)
     xl_map[12][2]=round(Average_retail_visit_IL_val,2)
-    
-    
+
+
 
     Average_retail_visit__GA_SC_val = Average_retail_visit__GA_SC_fucntion(retail_revenue_monday_to_friday_GA_SC
                                                                             ,retail_revenue_saturday_to_sunday_GA_SC,
                                                                             retail_car_count_monday_to_friday_GA_SC,
                                                                             retail_car_count_saturday_to_sunday_GA_SC)
     xl_map[12][3] = round(Average_retail_visit__GA_SC_val,2)
-    
+
     Average_retail_visit_Total_val =Average_retail_visit_Total_function(retail_revenue_monday_to_friday_Total,
                                         retail_revenue_saturday_to_sunday_Total,
                                         retail_car_count_monday_to_friday_Total,
                                         retail_car_count_saturday_to_sunday_Total)
     xl_map[12][1] = round(Average_retail_visit_Total_val,2)
-    
-    #Average Member visit 
-    
+
+    #Average Member visit
+
     Average_memeber_visit_ILL_val =Average_memeber_visit_ILL_function(Total_revenue_ILL,retail_revenue_monday_to_friday_ILL,
                                        retail_revenue_saturday_to_sunday_ILL,total_cars_in_ILL,
                                        retail_car_count_monday_to_friday_ILL,retail_car_count_saturday_to_sunday_ILL)
     xl_map[13][2] = round(Average_memeber_visit_ILL_val,2)
-    
+
     Average_memeber_visit_GA_SC_val = Average_memeber_visit_GA_SC_function(Total_revenue_GA_SC,
         retail_revenue_monday_to_friday_GA_SC,retail_revenue_saturday_to_sunday_GA_SC,
         retail_car_count_monday_to_friday_GA_SC,retail_car_count_saturday_to_sunday_GA_SC,total_cars_GA_SC)
-    
+
     xl_map[13][3] = round(Average_memeber_visit_GA_SC_val,2)
-    
+
     Average_memeber_visit_Total_val =Average_memeber_visit_Total_function(Total_revenue_Total,retail_revenue_monday_to_friday_Total
                         ,retail_revenue_saturday_to_sunday_Total,Total_cars_Total,retail_car_count_monday_to_friday_Total,
                         retail_car_count_saturday_to_sunday_Total)
-    
+
     xl_map[13][1] = round(Average_memeber_visit_Total_val,2)
-    
+
     #Staff Hours Monday to Friday
-    
+
     staff_hours_monday_to_friday_ILL = do_sum(xl_map,14,range(3,13))
     xl_map[14][2] = staff_hours_monday_to_friday_ILL
-    
+
     staff_hours_monday_to_friday_GA_SC = do_sum(xl_map,14,range(13,22))
-    
+
     xl_map[14][3] = staff_hours_monday_to_friday_GA_SC
-    
+
     staff_hours_monday_to_friday_Total = sum([staff_hours_monday_to_friday_ILL,staff_hours_monday_to_friday_GA_SC])
-    
+
     xl_map[14][1] = staff_hours_monday_to_friday_Total
-    
-    
+
+
     #Staff Hours Saturday to Sunday
 
     staff_hours_saturday_to_sunday_ILL = do_sum(xl_map,15,range(3,13))
     xl_map[15][2] = staff_hours_saturday_to_sunday_ILL
-    
+
     staff_hours_saturday_to_sunday_GA_SC = do_sum(xl_map,15,range(13,22))
-    
+
     xl_map[15][3] = staff_hours_saturday_to_sunday_GA_SC
-    
+
     staff_hours_saturday_to_sunday_Total = sum([staff_hours_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_GA_SC])
-    
-    xl_map[15][1] = staff_hours_saturday_to_sunday_Total  
-    
+
+    xl_map[15][1] = staff_hours_saturday_to_sunday_Total
+
     # Cost per labour hour  Monday to friday
     cost_per_labour_hour_monday_to_friday_ILL_val =cost_per_labour_hour_monday_to_friday_ILL_function(car_count_monday_to_friday_ILL,staff_hours_monday_to_friday_ILL)
     xl_map[16][2] = round(cost_per_labour_hour_monday_to_friday_ILL_val,2)
-    
-    
+
+
     cost_per_labour_hour_monday_to_friday_GA_SC_val = cost_per_labour_hour_monday_to_friday_GA_SC_fucntion(car_count_monday_to_friday_GA_SC,staff_hours_monday_to_friday_GA_SC)
     xl_map[16][3] = round(cost_per_labour_hour_monday_to_friday_GA_SC_val,2)
-    
-    
+
+
     cost_per_labour_hour_monday_to_friday_Total_val =cost_per_labour_hour_monday_to_friday_Total_function(car_count_monday_to_friday_Total,staff_hours_monday_to_friday_Total)
-    
+
     xl_map[16][1] = round(cost_per_labour_hour_monday_to_friday_Total_val,2)
-    
+
     #Cost per laobour hour Saturday and Sunday
     cost_per_labour_hour_saturday_to_sunday_ILL_val = cost_per_labour_hour_saturday_to_sunday_ILL_function(car_count_saturday_to_sunday_ILL,staff_hours_saturday_to_sunday_ILL)
     xl_map[17][2] = round(cost_per_labour_hour_saturday_to_sunday_ILL_val,2)
-    
-    
-    
+
+
+
     cost_per_labour_hour_saturday_to_sunday_GA_SC_val = cost_per_labour_hour_saturday_to_sunday_GA_SC_function(car_count_saturday_to_sunday_GA_SC,staff_hours_saturday_to_sunday_GA_SC)
     xl_map[17][3] = round(cost_per_labour_hour_saturday_to_sunday_GA_SC_val,2)
-    
+
     cost_per_labour_hour_saturday_to_sunday_Total= car_count_saturday_to_sunday_Total/staff_hours_saturday_to_sunday_Total if staff_hours_saturday_to_sunday_Total!=0 else ""
-    
+
     xl_map[17][1] = round(cost_per_labour_hour_saturday_to_sunday_Total,2) if cost_per_labour_hour_saturday_to_sunday_Total else ""
-    
+
     # Total cars per man hour
-    
+
 
     Total_cars_per_man_hour_ILL_val =Total_cars_per_man_hour_ILL_function(total_cars_in_ILL,
                                          staff_hours_monday_to_friday_ILL,
                                          staff_hours_saturday_to_sunday_ILL)
     xl_map[18][2] = round(Total_cars_per_man_hour_ILL_val,2)
-    
+
     Total_cars_per_man_hour_GA_SC_val = Total_cars_per_man_hour_GA_SC_function(total_cars_GA_SC, staff_hours_monday_to_friday_GA_SC,
                                                                                staff_hours_saturday_to_sunday_GA_SC)
-    
+
     xl_map[18][3] = round(Total_cars_per_man_hour_GA_SC_val,2)
-    
-    
+
+
     Total_cars_per_man_hour_total_val =Total_cars_per_man_hour_total_function(Total_cars_Total,
                                            staff_hours_monday_to_friday_Total,
                                            staff_hours_saturday_to_sunday_Total)
     xl_map[18][1] = round(Total_cars_per_man_hour_total_val,2)
-    
-    #Total club plans sold 
+
+    #Total club plans sold
     Total_club_plans_sold_ILL = do_sum(xl_map,19,range(3,13))
-    
+
     xl_map[19][2] = Total_club_plans_sold_ILL
-    
+
     Total_club_plans_sold_GA_SC = do_sum(xl_map,19,range(13,22))
-    
+
     xl_map[19][3] = Total_club_plans_sold_GA_SC
-    
+
     Total_club_plans_sold_Total = sum([Total_club_plans_sold_ILL,Total_club_plans_sold_GA_SC])
-    
+
     xl_map[19][1] = Total_club_plans_sold_Total
-    
-    
-    #Conversion Rate 
+
+
+    #Conversion Rate
     Conversion_rate_ILL_val =Conversion_rate_ILL_function(Total_club_plans_sold_ILL,
                                                           retail_car_count_monday_to_friday_ILL,
                                                           retail_car_count_saturday_to_sunday_ILL)
     xl_map[20][2] = round((Conversion_rate_ILL_val * 100),2)
-    
+
     Conversion_rate_GA_SC_val =Conversion_rate_GA_SC_function(Total_club_plans_sold_GA_SC,retail_car_count_monday_to_friday_GA_SC,
                                    retail_car_count_saturday_to_sunday_GA_SC)
-    
+
     xl_map[20][3]= round((Conversion_rate_GA_SC_val * 100),2)
-    
-    
+
+
 
     Conversion_rate_Total_val = Conversion_rate_Total_function(Total_club_plans_sold_Total,
                                                                retail_car_count_monday_to_friday_Total,retail_car_count_saturday_to_sunday_Total)
     xl_map[20][1] = round((Conversion_rate_Total_val * 100),2)
-    
-    
-    #Total club plan members 
+
+
+    #Total club plan members
     Total_club_planmembers_ILL = do_sum(xl_map,21,range(3,13))
-    
+
     xl_map[21][2] = Total_club_planmembers_ILL
-    
+
     Total_club_planmembers_GA_SC = do_sum(xl_map,21,range(13,22))
-    
-    xl_map[21][3] = Total_club_planmembers_GA_SC 
-    
+
+    xl_map[21][3] = Total_club_planmembers_GA_SC
+
     Total_club_planmembers_Total = sum([Total_club_planmembers_ILL,Total_club_planmembers_GA_SC])
-    
+
     xl_map[21][1] = Total_club_planmembers_Total
-    
-    #Toatl Cars for all locations 
-    total_cars_row = 6 
+
+    #Toatl Cars for all locations
+    total_cars_row = 6
     for i in range(3,22):
         xl_map[total_cars_row][i+1]= do_sum_location(xl_map,[[2,i+1],[3,i+1]])
-    
-    
+
+
     revenue_row = 11
-    
-    #Total Revenue calculatio n for all locations 
+
+    #Total Revenue calculatio n for all locations
     for i in range(3,22):
         xl_map[revenue_row][i+1]= do_sum_location(xl_map,[[9,i+1],[10,i+1]])
-    
+
     #Average_retail_visit
     average_retail_visit_row = 12
     for i in range(3,22):
         retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
         retail_car_count_mon_sun = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
-        
+
         average_retail_visit_val = retail_revenue_mon_sun/retail_car_count_mon_sun if retail_car_count_mon_sun != 0 else ""
         xl_map[average_retail_visit_row][i+1]=   round(average_retail_visit_val,2) if average_retail_visit_val else ""
-    
-    
+
+
     #Average member visit
     average_member_visit_row = 13
     for i in range(3,22):
         total_revenue = xl_map[11][i+1]
         total_revenue = total_revenue if isinstance(total_revenue,int) or isinstance(total_revenue,float) else 0
-        
+
         retail_revenue_mon_sun = do_sum_location(xl_map,location=[[7,i+1],[8,i+1]])
-        
+
         total_cars = xl_map[6][i+1]
         total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
-        
+
         retail_car_count_mon_sun  = do_sum_location(xl_map,location=[[4,i+1],[5,i+1]])
-        
+
         average_member_visit_val = (total_revenue-retail_revenue_mon_sun)/(total_cars-retail_car_count_mon_sun) if total_cars-retail_car_count_mon_sun !=0 else ""
-        
+
         xl_map[average_member_visit_row][i+1] = round(average_member_visit_val,2) if average_member_visit_val else ""
-    
-    #Total cars per man hour 
-    total_cars_per_man_hour_row = 18 
+
+    #Total cars per man hour
+    total_cars_per_man_hour_row = 18
     for i in range(3,22):
         total_cars = xl_map[6][i+1]
         total_cars = total_cars if isinstance(total_cars,int) or isinstance(total_cars,float) else 0
         staff_hours_monday_to_saturday = do_sum_location(xl_map,[[14,i+1],[15,i+1]])
-        
+
         total_cars_per_man_hour_val = total_cars/staff_hours_monday_to_saturday if staff_hours_monday_to_saturday !=0 else ""
-        
+
         xl_map[total_cars_per_man_hour_row][i+1] = round(total_cars_per_man_hour_val,2) if total_cars_per_man_hour_val else ""
- 
-        
-      
+
+
+
     # Define cell styles (assuming they are the same as before)
     bg_color = PatternFill(start_color='0b3040', end_color='0b3040', fill_type='solid')
     font_color = Font(color='FFFFFF')
@@ -1044,17 +1044,17 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     darkred_format = PatternFill(start_color='FC0303', end_color='FC0303', fill_type='solid')
     lightred_format = PatternFill(start_color='D98484', end_color='D98484', fill_type='solid')
     yellow=  PatternFill(start_color='D0D48A', end_color='D0D48A', fill_type='solid')
-    
+
     #writing to  actual sheet
     #first row comment section
     # Write comments in the first row
     # worksheet.append([comment])
-    
+
     for row in range(len(xl_map)):
         for col in range(len(xl_map[row])):
             val = xl_map[row][col]
             cell = worksheet.cell(row=row+1, column=col+1, value=val)  # offset by 0 rows for header and comment
-            
+
             # val = add_commas(val)
             # val = float(val)
             # print("type:",type(val),val)
@@ -1069,13 +1069,13 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             # elif val  and row == 12 and col > 0:
             #     if val >= 10:
             #         cell.fill = darkgreen_format
-                    
+
             #     elif val>=5 and val <10: # [5,9] (inclusive intervals)
             #         cell.fill = light_green_format
-                    
+
             #     elif val>=-5 and val <5:  # [-5,4]
             #         cell.fill = lightred_format
-        
+
             #     elif  val <=-10 and val<-5:
             #         cell.fill = darkred_format
 
@@ -1118,8 +1118,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     worksheet.cell(row=legend_start_row + 3, column=1, value='Neutral').fill = legend_styles["Neutral"]
     worksheet.cell(row=legend_start_row + 4, column=1, value='Positive').fill = legend_styles["Positive"]
     worksheet.cell(row=legend_start_row + 5, column=1, value='Very Positive').fill = legend_styles["Very Positive"]
-    
-    #setting cloumn width as deafult 
+
+    #setting cloumn width as deafult
     column_width = 20  # You can change this value to whatever width you need
     first_col_width =25
     for col in range(1, 24):  # Columns A to W are 1 to 23
@@ -1128,15 +1128,15 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             worksheet.column_dimensions[column_letter].width = first_col_width
         else:
             worksheet.column_dimensions[column_letter].width = column_width
-       
-    
+
+
     # Define the border style
 
 
     thick_border = Border(
     left=Side(style='thick'),
     right=Side(style='thick'))
-    
+
     thick_border_bottom = Border(
     left=Side(style='thick'),
     right=Side(style='thick'),
@@ -1155,7 +1155,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         cell1 = worksheet.cell(row=row,column=2)
         cell2 = worksheet.cell(row=row,column=3)
         cell3 = worksheet.cell(row=row,column=4)
-        
+
         if row in [7,12,13,19,21,22]:
             cell0.border=thick_border_bottom
             cell1.border=thick_border_bottom
@@ -1166,8 +1166,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             cell1.border=thick_border
             cell2.border=thick_border
             cell3.border=thick_border
-    
-    #number formates 3 dots       
+
+    #number formates 3 dots
     for row in worksheet.iter_rows():
         for cell in row:
             row_index = cell.row
@@ -1177,21 +1177,21 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 cell.number_format = '#,##0.00'
             elif isinstance(cell.value, (int, float)): #:
                 cell.number_format = '#,##0'
-    #Doller sysmbol     
+    #Doller sysmbol
     for row in range(8,13):
         cell1 = worksheet.cell(row=row,column=2)
         cell2 = worksheet.cell(row=row,column=3)
         cell3 = worksheet.cell(row=row,column=4)
-        
+
         # cell1.border=thick_border
         # cell2.border=thick_border
         # cell3.border=thick_border
-        
+
         cells=[cell1,cell2,cell3]
         for cell in cells:
             if isinstance(cell.value, (int, float)) and cell.value >= 1000:
-                cell.number_format = '"$"#,##0'     
-    
+                cell.number_format = '"$"#,##0'
+
     #finding past week averages for Total car count
     all_locations = [Sudz_Beverly,Fuller_Calumet,
                     Fuller_Cicero,Fuller_Matteson,
@@ -1200,8 +1200,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                     Sparkle_Evans,Sparkle_Furrys_Ferry,Sparkle_Greenwood,
                     Sparkle_Grovetown_1,Sparkle_Grovetown_2,Sparkle_North_Augusta,
                     Sparkle_Peach_Orchard,Sparkle_Windsor_Spring]
-    
-    
+
+
     lst_main = ["Totals","ILL",
                 "GA / SC"]
     ga_sc = all_locations[10:]
@@ -1211,63 +1211,63 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ill_sum_past = sum(ill_past_4_weeks_car_cnt)/4
     current_ill_week_cnt = xl_map[6][2]
     ill_average_percent = ((current_ill_week_cnt - ill_sum_past)/ ill_sum_past)*100
-    
+
     ga_sc_past_4_weeks_car_cnt = [loc_data.get("past_4_week_cnt") for loc_data in ga_sc if loc_data]
     ga_sc_sum_past = sum(ga_sc_past_4_weeks_car_cnt)/4
     current_ga_sc_week_cnt = xl_map[6][3]
     ga_sc_average_percent= ((current_ga_sc_week_cnt-ga_sc_sum_past)/ga_sc_sum_past)*100 if ga_sc_sum_past else ''
-    
+
     totals_past = ill_sum_past +ga_sc_sum_past
     totals_current = xl_map[6][1]
     total_average_percent = ((totals_current-totals_past)/totals_past)*100
-    
+
     ill_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ill if loc_data]
     ill_total_revenue_avg = sum(ill_total_revenue_past_4_weeks)/4
     ill_curent_revenue = xl_map[11][2]
     ill_avg_revenue_change  = ((ill_curent_revenue-ill_total_revenue_avg)/ill_total_revenue_avg)*100
-    
+
     ga_sc_total_revenue_past_4_weeks = [loc_data.get("past_4_weeks_total_revenue") for loc_data in ga_sc if loc_data]
     ga_sc_avg_revenue = sum(ga_sc_total_revenue_past_4_weeks)/4
     ga_sc_curent_revenue  = xl_map[11][3]
-    
+
     ga_sc_avg_revenue_change = ((ga_sc_curent_revenue - ga_sc_avg_revenue)/ga_sc_avg_revenue)*100
-    
+
     total_revenue_past_4_avg_total = ill_total_revenue_avg + ga_sc_avg_revenue
     total_reveneu_curent = ill_curent_revenue + ga_sc_curent_revenue
-    
+
     total_revenue_total_change = ((total_reveneu_curent - total_revenue_past_4_avg_total)/total_revenue_past_4_avg_total)*100
-    
-    
+
+
     ill_past_4_weeks_arm_plan_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ill if loc_data]
     ill_past_4_weeks_arm_plan_sold_sum = sum(ill_past_4_weeks_arm_plan_sold)
-    
+
     ill_past_4_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ill if loc_data]
     ill_past_4_retail_car_count_sum = sum(ill_past_4_retail_car_count)
-    
+
     ill_past_4_conversation_rate = (ill_past_4_weeks_arm_plan_sold_sum/ill_past_4_retail_car_count_sum)*100
-    
+
     ill_current_conversation_rate = xl_map[20][2]
     ill_conversation_rate_change = ill_current_conversation_rate - ill_past_4_conversation_rate
-    
+
     ga_sc_past_4_weeks_arm_plans_sold = [loc_data.get("past_4_weeks_arm_plans_sold_cnt") for loc_data in ga_sc if loc_data]
     ga_sc_past_4_weeks_arm_plans_sold_sum = sum(ga_sc_past_4_weeks_arm_plans_sold)
-    
+
     ga_sc_past_4_weeks_retail_car_count = [loc_data.get("past_4_weeks_retail_car_count") for loc_data in ga_sc if loc_data]
     ga_sc_past_4_weeks_retail_car_count_sum = sum(ga_sc_past_4_weeks_retail_car_count)
-    
+
     ga_sc_past_4_conversation_rate = ( ga_sc_past_4_weeks_arm_plans_sold_sum/ga_sc_past_4_weeks_retail_car_count_sum)*100
-    
+
     ga_sc_current_conversation_rate  = xl_map[20][3]
-    ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate 
-    
+    ga_sc_conversation_change = ga_sc_current_conversation_rate - ga_sc_past_4_conversation_rate
+
     past_total_arm_plans_sold = ill_past_4_weeks_arm_plan_sold_sum + ga_sc_past_4_weeks_arm_plans_sold_sum
-    
+
     past_total_reatil_car_count = ill_past_4_retail_car_count_sum + ga_sc_past_4_weeks_retail_car_count_sum
-    
+
     past_total_conversation_change = (past_total_arm_plans_sold/past_total_reatil_car_count)*100
-    
+
     current_total_conversation_rate = xl_map[20][1]
-    
+
     total_conversation_change = current_total_conversation_rate - past_total_conversation_change
 
     # Car Count Mon-fri
@@ -1370,37 +1370,37 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     # Avg retail visit
     ill_past_4_weeks_retail_car_count_mon_fri = [loc_data.get("past_4_week_retail_car_count_mon_fri", 0) for loc_data in ill if loc_data]
     ill_past_4_weeks_retail_car_count_mon_fri_avg = sum(ill_past_4_weeks_retail_car_count_mon_fri)/4
-    
+
     ill_past_4_weeks_retail_car_count_sat_sun = [loc_data.get("past_4_week_retail_car_count_sat_sun", 0) for loc_data in ill if loc_data]
     ill_past_4_weeks_retail_car_count_sat_sun_avg = sum(ill_past_4_weeks_retail_car_count_sat_sun)/4
-    
+
     ill_past_4_retail_car_count_avg = ill_past_4_weeks_retail_car_count_mon_fri_avg+ill_past_4_weeks_retail_car_count_sat_sun_avg
-    
+
     ill_past_4_retail_revenue_avg = ill_past_4_week_retail_revenue_mon_fri_avg+ill_past_4_week_retail_revenue_sat_sun_avg
-    
+
     ill_past_4_week_avg_ratail_visit = (ill_past_4_retail_revenue_avg) /(ill_past_4_retail_car_count_avg)
     ill_current_avg_ratail_visit = xl_map[12][2]
-    
-    
+
+
     ga_sc_past_4_weeks_retail_car_count_mon_fri = [loc_data.get("past_4_week_retail_car_count_mon_fri", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_retail_car_count_mon_fri_avg = sum(ga_sc_past_4_weeks_retail_car_count_mon_fri)/4
-    
-    
+
+
     ga_sc_past_4_weeks_retail_car_count_sat_sun = [loc_data.get("past_4_week_retail_car_count_sat_sun", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_retail_car_count_sat_sun_avg = sum(ga_sc_past_4_weeks_retail_car_count_sat_sun)/4
-    
+
     ga_sc_past_4_weeks_retail_car_count_avg = ga_sc_past_4_retail_car_count_mon_fri_avg + ga_sc_past_4_retail_car_count_sat_sun_avg
-    
+
     ga_sc_past_4_retail_revenue_avg = ga_sc_past_4_week_retail_revenue_mon_fri_avg+ga_sc_past_4_week_retail_revenue_sat_sun_avg
-    
+
     ga_sc_past_4_week_avg_ratail_visit = handle_zero_divison(ga_sc_past_4_retail_revenue_avg,ga_sc_past_4_weeks_retail_car_count_avg)
     # (ga_sc_past_4_retail_revenue_avg)/(ga_sc_past_4_weeks_retail_car_count_avg)
     ga_sc_curr_avg_ratail_visit = xl_map[12][3]
-    
+
     past_4_weeks_retail_revenue_total_avg  = ill_past_4_retail_revenue_avg + ga_sc_past_4_retail_revenue_avg
-    
+
     past_4_weeks_retail_car_count_avg      = ill_past_4_retail_car_count_avg  + ga_sc_past_4_weeks_retail_car_count_avg
-    
+
     total_past_4_week_avg_ratail_visit = handle_zero_divison(past_4_weeks_retail_revenue_total_avg,past_4_weeks_retail_car_count_avg)
     #(past_4_weeks_retail_revenue_total_avg)/(past_4_weeks_retail_car_count_avg)
     total_curr_avg_ratail_visit = xl_map[12][1]
@@ -1409,7 +1409,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ill_past_4_week_labour_hours_mon_fri = [loc_data.get("past_4_week_labour_hours_mon_fri", 0) for loc_data in ill if loc_data]
     ill_past_4_week_labour_hours_mon_fri_sum = sum(ill_past_4_week_labour_hours_mon_fri)
     ill_past_4_week_labour_hours_mon_fri_avg = ill_past_4_week_labour_hours_mon_fri_sum / 4
-    
+
     ill_current_week_cars_per_labour_hour_mon_fri = xl_map[16][2]
     ' ill_sum_past_mon_fri   is the avg of  car count mon fri past week '
     ill_past_4_weeks_cars_per_labour_hour_mon_fri = ill_sum_past_mon_fri / ill_past_4_week_labour_hours_mon_fri_avg
@@ -1417,23 +1417,23 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ga_sc_past_4_week_labour_hours_mon_fri = [loc_data.get("past_4_week_labour_hours_mon_fri", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_week_labour_hours_mon_fri_sum = sum(ga_sc_past_4_week_labour_hours_mon_fri)
     ga_sc_past_4_week_labour_hours_mon_fri_avg = ga_sc_past_4_week_labour_hours_mon_fri_sum / 4
-    
-    
+
+
     ga_sc_current_week_cars_per_labour_hour_mon_fri  = xl_map[16][3]
     ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri  = ga_sc_sum_past_mon_fri / ga_sc_past_4_week_labour_hours_mon_fri_avg
-    
-    
+
+
     total_past_4_week_cars_mon_fri  = ill_sum_past_mon_fri + ga_sc_sum_past_mon_fri
     total_past_4_weeks_labour_hours_mon_fri = ill_past_4_week_labour_hours_mon_fri_avg + ga_sc_past_4_week_labour_hours_mon_fri_avg
     total_current_cars_per_labour_hour_mon_fri = xl_map[16][1]
     total_past_4_week_cars_per_labour_hour_mon_fri  = total_past_4_week_cars_mon_fri / total_past_4_weeks_labour_hours_mon_fri
-    
-    
+
+
 
     # past_4_week_labour_hours_sat_sun
     ill_past_4_week_labour_hours_sat_sun = [loc_data.get("past_4_week_labour_hours_sat_sun", 0) for loc_data in ill if loc_data]
     ill_past_4_week_labour_hours_sat_sun_sum = sum(ill_past_4_week_labour_hours_sat_sun)
-    ill_past_4_week_labour_hours_sat_sun_avg = ill_past_4_week_labour_hours_sat_sun_sum / 4 
+    ill_past_4_week_labour_hours_sat_sun_avg = ill_past_4_week_labour_hours_sat_sun_sum / 4
 
     ill_current_cars_per_labour_hour_sat_sun  = xl_map[17][2]
     'here ill_sum_past_sat_sun is the avg of car count of past 4 weeks '
@@ -1441,19 +1441,19 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 
     ga_sc_past_4_week_labour_hours_sat_sun = [loc_data.get("past_4_week_labour_hours_sat_sun", 0) for loc_data in ga_sc if loc_data]
     ga_sc_past_4_week_labour_hours_sat_sun_sum = sum(ga_sc_past_4_week_labour_hours_sat_sun)
-    ga_sc_past_4_week_labour_hours_sat_sun_avg = ga_sc_past_4_week_labour_hours_sat_sun_sum / 4 
-    
+    ga_sc_past_4_week_labour_hours_sat_sun_avg = ga_sc_past_4_week_labour_hours_sat_sun_sum / 4
+
     ga_sc_current_cars_per_labour_hour_sat_sun  =  xl_map[17][3]
     'ga_sc_sum_past_sat_sun is the avg of past 4 week car count'
     ga_sc_past_4_week_cars_per_labour_hour_sat_sun =  ga_sc_sum_past_sat_sun/ ga_sc_past_4_week_labour_hours_sat_sun_avg
-    
-    
-    
+
+
+
     total_current_cars_per_labour_hour_sat_sun = xl_map[17][1]
     total_past_4_week_cars_sat_sun = ill_sum_past_sat_sun + ga_sc_sum_past_sat_sun
     total_past_4_labour_hours_sat_sun = ill_past_4_week_labour_hours_sat_sun_avg + ga_sc_past_4_week_labour_hours_sat_sun_avg
     total_cars_per_labour_hour_sat_sun = total_past_4_week_cars_sat_sun / total_past_4_labour_hours_sat_sun
-    
+
 
     # Total Cars Per Man Hour
     ill_past_4_week_total_cars_per_man_hour = (ill_sum_past_mon_fri+ill_sum_past_sat_sun)/((ill_past_4_week_labour_hours_mon_fri_avg+ill_past_4_week_labour_hours_sat_sun_avg))
@@ -1462,10 +1462,10 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     ga_sc_past_4_week_total_cars_per_man_hour = (ga_sc_sum_past_mon_fri+ga_sc_sum_past_sat_sun)/((ga_sc_past_4_week_labour_hours_mon_fri_avg+ga_sc_past_4_week_labour_hours_sat_sun_avg))
     ga_sc_curr_total_cars_per_man_hour = xl_map[18][3]
 
-    total_past_4_week_total_cars_per_man_hour = (past_4_week_total_car_cnt_mon_fri + past_4_week_total_car_cnt_sat_sun) / (total_past_4_weeks_labour_hours_mon_fri +total_past_4_labour_hours_sat_sun) 
+    total_past_4_week_total_cars_per_man_hour = (past_4_week_total_car_cnt_mon_fri + past_4_week_total_car_cnt_sat_sun) / (total_past_4_weeks_labour_hours_mon_fri +total_past_4_labour_hours_sat_sun)
     total_curr_total_cars_per_man_hour = xl_map[18][1]
-    
-    
+
+
     colours = darkgreen_format,light_green_format,darkred_format,lightred_format
     print(f"ill avg : {ill_average_percent}")
     print("ill avg revenue:",ill_avg_revenue_change)
@@ -1483,13 +1483,13 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_new(current_ga_sc_week_cnt,ga_sc_sum_past,7,4,worksheet,colours)
     # set_colour(total_average_percent,7,2,worksheet,colours) #for total total
     set_colour_new(totals_current,totals_past,7,2,worksheet,colours)  #total  cars total
-    
-    # set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill 
+
+    # set_colour(ill_avg_revenue_change,12,3,worksheet,colours) #ill
     set_colour_new(ill_curent_revenue,ill_total_revenue_avg,12,3,worksheet,colours)
     # set_colour(ga_sc_avg_revenue_change,12,4,worksheet,colours) #ga sc
-    set_colour_new(ga_sc_curent_revenue,ga_sc_avg_revenue,12,4,worksheet,colours)  #ga sc revenue 
+    set_colour_new(ga_sc_curent_revenue,ga_sc_avg_revenue,12,4,worksheet,colours)  #ga sc revenue
     # set_colour(total_revenue_total_change,12,2,worksheet,colours)
-    set_colour_new(total_reveneu_curent,total_revenue_past_4_avg_total,12,2,worksheet,colours) #totalk revenue 
+    set_colour_new(total_reveneu_curent,total_revenue_past_4_avg_total,12,2,worksheet,colours) #totalk revenue
     print("Conversion Rate")
     logger.info("Conversion Rate")
     set_colour_new(ill_current_conversation_rate,ill_past_4_conversation_rate,21,3,worksheet,colours)  #conversation rate
@@ -1513,7 +1513,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_new(current_ill_week_retail_cnt_mon_fri, ill_sum_retail_car_cnt_mon_fri, 5, 3, worksheet, colours) # retail count mon-fri ill
     set_colour_new(current_ga_sc_week_retail_cnt_mon_fri, ga_sc_sum_retail_car_cnt_mon_fri, 5, 4, worksheet, colours) # retail count mon-fri
     set_colour_new(curr_total_retail_car_cnt_mon_fri, past_4_week_total_retail_car_cnt_mon_fri, 5, 2, worksheet, colours) # retail count mon-fri
-    
+
     print('Retail count sat sun')
     logger.info('Retail count sat sun')
     set_colour_new(current_ill_week_retail_cnt_sat_sum, ill_sum_retail_car_cnt_sat_avg, 6, 3, worksheet, colours) # retail count sat-sun ill
@@ -1525,24 +1525,24 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_new(current_ill_retail_revenue_mon_fri, ill_past_4_week_retail_revenue_mon_fri_avg, 8, 3, worksheet, colours)
     set_colour_new(current_ga_sc_retail_revenue_mon_fri, ga_sc_past_4_week_retail_revenue_mon_fri_avg, 8, 4, worksheet, colours)
     set_colour_new(curr_total_retail_revenue_mon_fri, past_4_total_retail_revenue_mon_fri, 8, 2, worksheet, colours)
-    
+
     print('Retail Revenue count sat sun')
     logger.info('Retail Revenue count sat sun')
-    set_colour_new(current_ill_retail_revenue_sat_sun, ill_past_4_week_retail_revenue_sat_sun_avg, 9, 3, worksheet, colours) 
-    set_colour_new(current_ga_sc_retail_revenue_sat_sun, ga_sc_past_4_week_retail_revenue_sat_sun_avg, 9, 4, worksheet, colours) 
+    set_colour_new(current_ill_retail_revenue_sat_sun, ill_past_4_week_retail_revenue_sat_sun_avg, 9, 3, worksheet, colours)
+    set_colour_new(current_ga_sc_retail_revenue_sat_sun, ga_sc_past_4_week_retail_revenue_sat_sun_avg, 9, 4, worksheet, colours)
     set_colour_new(curr_total_retail_revenue_sat_sun, past_4_total_retail_revenue_sat_sun, 9, 2, worksheet, colours)
 
     print('Total Revenue count Mon Fri')
     logger.info('Total Revenue count Mon Fri')
     set_colour_new(current_ill_total_revenue_mon_fri, ill_past_4_week_total_revenue_mon_fri_avg, 10, 3, worksheet, colours)
-    set_colour_new(current_ga_sc_total_revenue_mon_fri, ga_sc_past_4_week_total_revenue_mon_fri_avg, 10, 4, worksheet, colours) 
+    set_colour_new(current_ga_sc_total_revenue_mon_fri, ga_sc_past_4_week_total_revenue_mon_fri_avg, 10, 4, worksheet, colours)
     set_colour_new(curr_total_total_revenue_mon_fri, past_4_total_total_revenue_mon_fri, 10, 2, worksheet, colours)
-    
+
     print('Total Revenue count Sat Sun')
     logger.info('Total Revenue count Sat Sun')
-    set_colour_new(current_ill_total_revenue_sat_sun, ill_past_4_week_total_revenue_sat_sun_avg, 11, 3, worksheet, colours) 
-    set_colour_new(current_ga_sc_total_revenue_sat_sun, ga_sc_past_4_week_total_revenue_sat_sun_avg, 11, 4, worksheet, colours) 
-    set_colour_new(curr_total_total_revenue_sat_sun, past_4_total_total_revenue_sat_sun, 11, 2, worksheet, colours) 
+    set_colour_new(current_ill_total_revenue_sat_sun, ill_past_4_week_total_revenue_sat_sun_avg, 11, 3, worksheet, colours)
+    set_colour_new(current_ga_sc_total_revenue_sat_sun, ga_sc_past_4_week_total_revenue_sat_sun_avg, 11, 4, worksheet, colours)
+    set_colour_new(curr_total_total_revenue_sat_sun, past_4_total_total_revenue_sat_sun, 11, 2, worksheet, colours)
 
     print('Avg retail visit')
     logger.info('Avg retail visit')
@@ -1552,14 +1552,14 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
 
     print('Cars Per Labor Hour Mon - Fri')
     logger.info('Cars Per Labor Hour Mon - Fri')
-    set_colour_new(ill_current_week_cars_per_labour_hour_mon_fri, ill_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 3, worksheet, colours) 
-    set_colour_new(ga_sc_current_week_cars_per_labour_hour_mon_fri, ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 4, worksheet, colours) 
+    set_colour_new(ill_current_week_cars_per_labour_hour_mon_fri, ill_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 3, worksheet, colours)
+    set_colour_new(ga_sc_current_week_cars_per_labour_hour_mon_fri, ga_sc_past_4_weeks_cars_per_labour_hour_mon_fri, 17, 4, worksheet, colours)
     set_colour_new(total_current_cars_per_labour_hour_mon_fri, total_past_4_week_cars_per_labour_hour_mon_fri, 17, 2, worksheet, colours)
 
     print('Cars Per Labor Hour Sat & Sun')
     logger.info('Cars Per Labor Hour Sat & Sun')
-    set_colour_new(ill_current_cars_per_labour_hour_sat_sun, ill_past_4_week_cars_per_labour_hour_sat_sun, 18, 3, worksheet, colours) 
-    set_colour_new(ga_sc_current_cars_per_labour_hour_sat_sun, ga_sc_past_4_week_cars_per_labour_hour_sat_sun, 18, 4, worksheet, colours) 
+    set_colour_new(ill_current_cars_per_labour_hour_sat_sun, ill_past_4_week_cars_per_labour_hour_sat_sun, 18, 3, worksheet, colours)
+    set_colour_new(ga_sc_current_cars_per_labour_hour_sat_sun, ga_sc_past_4_week_cars_per_labour_hour_sat_sun, 18, 4, worksheet, colours)
     set_colour_new(total_current_cars_per_labour_hour_sat_sun, total_cars_per_labour_hour_sat_sun, 18, 2, worksheet, colours)
 
     #Total Cars Per Man Hour
@@ -1568,8 +1568,8 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     set_colour_new(total_curr_total_cars_per_man_hour, total_past_4_week_total_cars_per_man_hour, 19, 2, worksheet, colours)
 
     print()
-    
-    
+
+
     loc_names = ["Sudz - Beverly",'Fuller-Calumet',
                 "Fuller-Cicero","Fuller-Matteson","Fuller-Elgin",
                 "Splash-Peoria","Getaway-Macomb","Getaway-Morton",
@@ -1577,7 +1577,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
                 "Sparkle-Evans","Sparkle-Furrys Ferry","Sparkle-Greenwood",
                 "Sparkle-Grovetown 1","Sparkle-Grovetown 2","Sparkle-North Augusta",
                 "Sparkle-Peach Orchard","Sparkle-Windsor Spring"]
-    
+
     for index,place_dictionary in enumerate(all_locations):
         #Total Cars
         if not place_dictionary:
@@ -1586,20 +1586,20 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         past_4_week_total_cars = place_dictionary.get("past_4_week_cnt")
         change_in_total_car_count_percent  = chnage_total_car_count_fun(current_week_total_cars,past_4_week_total_cars)
         past_4_week_total_cars_avg  = do_avg(past_4_week_total_cars)
-        #set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars 
+        #set_colour(change_in_total_car_count_percent,7,index+5,worksheet,colours) #for total cars
         set_colour_new(current_week_total_cars,past_4_week_total_cars_avg,7,index+5,worksheet,colours)
-        
+
         print(f"{loc_names[index]}=>chnage car count  {change_in_total_car_count_percent}")
         current_week_conversatio_rate = place_dictionary.get("conversion_rate")
         past_4_week_conversation_rate =  place_dictionary.get("past_4_week_conversion_rate")
-        
+
         set_colour_new(current_week_conversatio_rate,past_4_week_conversation_rate,21,index+5,worksheet,colours) #conversation rate colours
         #Total Revenue
         #print(f"{loc_names[index]}=>chnage conversation rate   {change_in_conversationrate}")
         current_revenue_total = place_dictionary.get("total_revenue")
         past_4_week_revenue_total = place_dictionary.get("past_4_weeks_total_revenue")
         past_4_week_revenue_total_avg = do_avg(past_4_week_revenue_total)
-        
+
         change_in_total_revenue = chnage_total_revenue_fun(current_revenue_total,past_4_week_revenue_total)
         print(f"{loc_names[index]}=>chnage total revenue    {change_in_total_revenue}")
         set_colour_new(current_revenue_total, past_4_week_revenue_total_avg,12, index+5,worksheet,colours)
@@ -1617,7 +1617,7 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         past_4_week_retail_car_count_mon_fri_avg = place_dictionary.get('past_4_week_retail_car_count_mon_fri', 0)/4
         curr_week_retail_car_count_sat_sun = xl_map[4][index+4]
         set_colour_new(curr_week_retail_car_count_sat_sun, past_4_week_retail_car_count_mon_fri_avg, 5, index+5, worksheet, colours)
-        
+
         past_4_week_retail_car_count_sat_sun_avg = place_dictionary.get('past_4_week_retail_car_count_sat_sun', 0)/4
         curr_week_retail_car_count_sat_sun = xl_map[5][index+4]
         set_colour_new(curr_week_retail_car_count_sat_sun, past_4_week_retail_car_count_sat_sun_avg, 6, index+5, worksheet, colours)
@@ -1645,9 +1645,9 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
         #Avg. Retail Visit
         past_retail_car_count_mon_fri_avg = place_dictionary.get('past_4_week_retail_car_count_mon_fri', 0)/4
         past_retail_car_count_sat_sun_avg = place_dictionary.get('past_4_week_retail_car_count_sat_sun', 0)/4
-        
+
         past_retail_car_count_avg  = past_retail_car_count_mon_fri_avg  + past_retail_car_count_sat_sun_avg
-        
+
         print("Avg. Retail Visit")
         logger.info("Avg. Retail Visit")
         past_4_week_avg_ratail_visit = (past_4_week_retail_revenue_mon_fri_avg+past_4_week_retail_revenue_sat_sun_avg)/(past_retail_car_count_avg) if past_retail_car_count_avg != 0 else 0
@@ -1673,16 +1673,16 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
             curr_total_cars_per_man_hour = xl_map[18][index+4]
             set_colour_new(curr_total_cars_per_man_hour, past_4_week_total_cars_per_man_hour, 19, index+5, worksheet, colours)
 
-        
+
         print("\n"*2)
-        
-    
-    
+
+
+
 
     #applying bold font
     # Define a bold font style
     bold_font = Font(bold=True)
-    
+
     for row in worksheet.iter_rows(min_row=7, max_row=7, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
@@ -1690,11 +1690,11 @@ def prepare_xlmap(data,comment="The comment section",filename="test.xlsx",sheet_
     for row in worksheet.iter_rows(min_row=12, max_row=13, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
-            
+
     for row in worksheet.iter_rows(min_row=19, max_row=19, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
-            
+
     for row in worksheet.iter_rows(min_row=21, max_row=21, min_col=1, max_col=4):
         for cell in row:
             cell.font = bold_font
@@ -1712,17 +1712,17 @@ def get_week_dates_for_storage():
     "will retun in '%Y' ==> 2024"
     # Get the current date
     today = datetime.today()
-    
+
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
-    
+
     # Find the current week's Sunday date
     current_week_sunday = current_week_monday + timedelta(days=6)
-    
+
     # Format the dates in dd/mm/yyyy format
     #monday_date_str = current_week_monday.strftime("%m/%d/%Y")
     sunday_date_str = current_week_sunday.strftime("%Y") #%m_%Y
-    
+
     #old ret f"{monday_date_str}-{sunday_date_str}".replace('/','_')
     return sunday_date_str
 
@@ -1738,7 +1738,7 @@ def create_storage_directory(path):
     except OSError as error:
         print(f"Directory '{path}' cannot be created: {error}")
         logger.info(f"Directory '{path}' cannot be created: {error}")
-    
+
     return created_path
 
 
@@ -1763,7 +1763,7 @@ if __name__=="__main__":
         SMTP_USER=env_vars.get("SMTP_USER")
         SMTP_PASSWORD=env_vars.get("SMTP_PASSWORD")
         TO_EMAIL=env_vars.get("TO_EMAIL")
-    
+
     # Configuration
     subject = 'Weekly reports'
     body = 'This is the body of the email.'
@@ -1774,42 +1774,42 @@ if __name__=="__main__":
     smtp_port = emailConfig.SMTP_PORT
     smtp_user = emailConfig.SMTP_USER
     smtp_password = emailConfig.SMTP_PASSWORD
-    
-    
+
+
     cc_emails=["CR@SparkleCW.com","FZ@SparkleCW.com","Rick@SparkleStatus.com","Shane@SparkleStatus.com", "mgiamalis@firmament.com","tech@reluconsultancy.in"]
     # cc_emails=[]
-    
+
     # # -----------------Actual script  ----------------------------#
-    
+
     path = get_week_dates_for_storage()
     storage_path = create_storage_directory(path)
     weeks_days_current = get_week_dates_for_current() # "2024-07-29"
-    
+
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_sitewatch(weeks_days_current)
     print(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     logger.info(f"sitewatch week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
-    
-    
+
+
     sitewatch_report = sitewatch_week_report("",monday_date_str,friday_date_str,saturday_date_str, sunday_date_str)
-    
+
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  format_date_washify(weeks_days_current)
-    
+
     print(f"washify week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     logger.info(f"washify week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     washify_report = washify_week_report("", monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
+
     #for hamilton dates
     monday_date_str, friday_date_str, saturday_date_str, sunday_date_str = format_date_hamilton(weeks_days_current)
 
-    
+
     print(f"hamilton week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     logger.info(f"hamilton week days : {monday_date_str} {friday_date_str} {saturday_date_str} {sunday_date_str}")
     hamilton_report = hamilton_week_report(monday_date_str, friday_date_str, saturday_date_str, sunday_date_str)
-    
+
     data = sitewatch_report
-    
+
     data.update(washify_report)
-    
+
     data.update(hamilton_report)
 
     with open("all_data.json", 'w') as f:
@@ -1817,22 +1817,22 @@ if __name__=="__main__":
 
     # with open("all_data.json", 'r') as f:
     #     data = json.load(f)
-    
+
     comment =f"Ending {sunday_date_str}"
     sheet_name= sunday_date_str.replace("/","-")
     filename=f"{path}.xlsx"
     file_name_with_fullpath = os.path.join(storage_path,filename)
     prepare_xlmap(data,comment,sheet_name=sheet_name,filename=file_name_with_fullpath)
-    
+
     print("final data:")
     print(data)
     # Directory containing Excel files
     directory_path = storage_path
     attachments = get_excel_files(directory_path)
-    
+
     #Sending email to email address
     body = f'weekly report Ending {sunday_date_str}'
-    
+
     zero_val_check = check_zero_values(file_name_with_fullpath,sheet_name)
     if zero_val_check:
         body = f'Error in report  Ending {sunday_date_str}'
@@ -1841,21 +1841,21 @@ if __name__=="__main__":
         cc_emails = cc_emails.extend(relu_emails)
         send_email_on_error(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password,cc_emails)
         logger.info("error in weekly report ")
-        
+
     else:
         body = f'weekly report Ending {sunday_date_str}'
         send_email(subject, body, to_email, from_email, from_name, smtp_server, smtp_port, smtp_user, smtp_password, attachments,cc_emails)
 
-    # prepare_xlmap(data,comment,sheet_name=sheet_name)
-    # # -----------------Actual script  ----------------------------#
-    
+    prepare_xlmap(data,comment,sheet_name=sheet_name)
+    # -----------------Actual script  ----------------------------#
+
     # -----------------cron jaob info ------------ ------------#
     # #Below script will run on every sunday 12 after noon
     #0 10 * * 1 /home/ubuntu/CAR_WASH_2/carwash_weekly/weekly_run.sh
     #sudo timedatectl set-timezone America/Chicago
-    
+
     logger.info("!!! completed main script !!!!")
 
-    
+
 
 

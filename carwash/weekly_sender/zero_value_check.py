@@ -1,6 +1,6 @@
 import openpyxl
 import logging
-logger =logging.getLogger(__file__)
+logger = logging.getLogger(__file__)
 import os
 from dotenv import load_dotenv
 
@@ -22,7 +22,7 @@ def check_zero_values(filename, sheet_name):
                 # if value is isinstance(value,(int,float)):
                 #     if value==0:
                         # print("Error in report")
-                
+
     except KeyError:
         logger.error(f"Sheet not found: {sheet_name}")
         ret=True
@@ -32,12 +32,12 @@ def check_zero_values(filename, sheet_name):
     except Exception as e:
         logger.error(f"An error occurred: {e}")
         ret=True
-        
+
     return ret
 
 if __name__ == "__main__":
     from custom_mailer import send_email,get_excel_files,send_email_on_error
-    
+
     load_dotenv()
 
     class emailConfig:
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         SMTP_USER=env_vars.get("SMTP_USER")
         SMTP_PASSWORD=env_vars.get("SMTP_PASSWORD")
         TO_EMAIL=env_vars.get("TO_EMAIL")
-    
+
     # Configuration
     subject = 'Weekly reports'
     body = 'This is the body of the email.'
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     smtp_password = emailConfig.SMTP_PASSWORD
     # Set logging level to INFO
     logging.basicConfig(level=logging.INFO)
-    
+
     print()
     zero_val_check = check_zero_values(filename="/home/ubuntu/CAR_WASH_2/carwash_weekly/carwash/weekly_sender/data/2024/2024.xlsx", sheet_name="2024-10-13")
     sunday_date_str ='2024-10-13'

@@ -1,0 +1,24 @@
+{
+    "Splash-Peoria": {
+        "car_count_current_year": 2485,
+        "arm_plans_reedemed_current_year_cnt": "",
+        "retail_car_count_current_year": 744,
+        "retail_revenue_current_year": 12135.0,
+        "total_revenue_current_year": 64797.2,
+        "labour_hours_current_year": "",
+        "cars_per_labour_hour_current_year": "",
+        "arm_plans_sold_cnt_current_year": 58,
+        "car_count_last_year": 4613,
+        "arm_plans_reedemed_last_year": "",
+        "retail_car_count_last_year": 2564,
+        "retail_revenue_last_year": 42480.0,
+        "total_revenue_last_year": 75901.24,
+        "labour_hours_last_year": "",
+        "cars_per_labour_hour_last_year": "",
+        "arm_plans_sold_cnt_last_year": 49,
+        "total_arm_planmembers_cnt_current_year": 2305,
+        "total_arm_planmembers_cnt_last_year": 1362,
+        "conversion_rate_current_year": 7.8,
+        "conversion_rate_last_year": 1.91
+    }
+}

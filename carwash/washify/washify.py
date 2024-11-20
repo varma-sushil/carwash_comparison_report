@@ -1,5 +1,5 @@
 import json
-import os 
+import os
 import sys
 import datetime
 import requests
@@ -62,32 +62,32 @@ if IS_PROXY:
 def get_week_dates():
     # Get the current date
     today = datetime.today()
-    
+
     # Find the current week's Monday date
     current_week_monday = today - timedelta(days=today.weekday())
-    
+
     # Find the current week's Sunday date
     current_week_sunday = current_week_monday + timedelta(days=6)
-    
+
     # Find the current week's Friday date
     current_week_friday = current_week_monday + timedelta(days=4)
-    
+
     # Find the current week's Saturday date
     current_week_saturday = current_week_monday + timedelta(days=5)
-    
+
     # Format the dates in mm/dd/yyyy format
     monday_date_str = current_week_monday.strftime("%m/%d/%Y")
     friday_date_str = current_week_friday.strftime("%m/%d/%Y")
     saturday_date_str = current_week_saturday.strftime("%m/%d/%Y")
     sunday_date_str = current_week_sunday.strftime("%m/%d/%Y")
-    
+
     return monday_date_str, friday_date_str, saturday_date_str, sunday_date_str
 
 def generate_past_4_weeks_days(date_str):
     # Convert the string date to a datetime object
     date_format = "%m/%d/%Y"
     monday = datetime.strptime(date_str, date_format)
-    
+
     # Subtract one day
     one_day_before = monday - timedelta(days=1)
     four_weeks_before = monday - timedelta(days=(7*4))
@@ -108,7 +108,7 @@ def generate_past_4_week_days_full(mondaystr):
     # Convert the string date to a datetime object
     date_format = "%m/%d/%Y"
     input_date = datetime.strptime(mondaystr, date_format)
-    
+
     # Calculate one day before the input date and four weeks (28 days) before the input date
     one_day_before = input_date - timedelta(days=1)
     four_weeks_before = input_date - timedelta(days=7*4)
@@ -127,7 +127,7 @@ def generate_past_4_week_days_full(mondaystr):
     # Print the result
 
     full_days = [required_days[i:i + 4] for i in range(0, len(required_days), 4)]
-    
+
     #     print(day)
 
     return full_days
@@ -184,8 +184,6 @@ proxy = {
 }
 
 
-
-
 class washifyClient():
     def __init__(self,) -> None:
         self.proxies = proxies
@@ -214,21 +212,21 @@ class washifyClient():
                 'sec-fetch-site': 'same-site',
                 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             }
-        
+
         # json_data = {
         #         'username': 'Cameron',
         #         'password': 'Password1',
         #         'companyName': 'cleangetawayexpress',
         #         'userType': 'CWA',
         #     }
-        
+
         json_data = {
                 'username': username,
                 'password': password,
                 'companyName': companyName,
                 'userType': userType,
             }
-        
+
         try:
             response = requests.post('https://washifyapi.com:8298/api/AccountLogin/ValidateUserCredentials', headers=headers, json=json_data,proxies=self.proxies)
             if response.status_code==200:
@@ -291,11 +289,11 @@ class washifyClient():
         except (FileExistsError,FileNotFoundError):
             print("Cookeis file not found !")
             logging.info("Cookeis file not found !")
-        
+
         except Exception as e:
             print(f"Exception : {e}")
             logging.info(f"Exception : {e}")
-        
+
         return common_data
 
     def check_login(self,proxy)->bool:
@@ -351,7 +349,7 @@ class washifyClient():
             else :
                 logging.info("retrying after 5 secounds")
                 time.sleep(5)
-        
+
         return login_passed
 
     def get_user_locations(self):
@@ -394,7 +392,7 @@ class washifyClient():
             else:
                 logging.info("retrying after 5 secounds")
                 time.sleep(5)
-        
+
         return data
 
     def get_car_count_report(self,location:list,StartDate,EndDate):
@@ -435,20 +433,20 @@ class washifyClient():
                         unlimited_cars_washed = single_data.get("unilitedCarwashed",0)
                         staff_hours = single_data.get("totalhrs",0.0)
                         result["car_count"] = result.get("car_count",0)+car_count
-                        
+
                         result["retail_car_count"]=result.get("retail_car_count",0)+(car_count-unlimited_cars_washed)
                         result['totalhrs'] = result.get("totalhrs",0.0)+staff_hours
                     break
-                    
-                    
+
+
             except Exception as e :
                 print(f"Excpetion in get_car_count_report() {e}")
                 logging.info(f"Excpetion in get_car_count_report() {e}")
             logging.info("retrying after 5 secounds")
             time.sleep(5)
-            
+
         return result
-    
+
     def get_financal_revenue_summary(self):
         data =None
         headers = {
@@ -492,15 +490,15 @@ class washifyClient():
         )
             if response.status_code==200:
                 data = response.json()
-        
+
         except Exception as e:
             print(f"Error in get_financal_revenue_summary() {e}")
             logging.info(f"Error in get_financal_revenue_summary() {e}")
 
         return data
- 
- 
-    
+
+
+
     def GetRevenuReportFinancialWashPackage(self,client_locations:list, monday,sunday):
         "WASH PACKAGES"
         data = None
@@ -543,7 +541,7 @@ class washifyClient():
         except Exception as e:
             print(f" Exception in GetRevenuReportFinancialWashPackage()  {e}")
             logging.info(f" Exception in GetRevenuReportFinancialWashPackage()  {e}")
-            
+
         return data
 
     def GetRevenuReportFinancialWashPackage_formatter(self,data):
@@ -560,25 +558,25 @@ class washifyClient():
             financialWashPackage = data.get("financialWashPackage")
             for wash_package in financialWashPackage:
                 wash_package_structure={}
-                
+
                 cUnlimited  = wash_package.get("cUnlimited")
                 Wash_Packages_Unlimited_total+=cUnlimited
-                
+
                 virtualWashNumber  = wash_package.get("virtualWashNumber")
                 Wash_Packages_Virtual_Wash_total+=virtualWashNumber
-                
+
                 nonUnlimited    =   wash_package.get("nonUnlimited")
                 Wash_Packages_Non_Unlimited_total+=nonUnlimited
-                
+
                 total    =   wash_package.get("total")
                 Wash_Packages_Total_total += total
-                
+
                 price  =  wash_package.get("price")
                 Wash_Packages_Amount_total +=price
-                
+
                 amount   =  wash_package.get("amount")
                 Wash_Packages_Total_Amount_total +=amount
-                
+
                 wash_package_structure['Wash_Packages_ServiceName'] = wash_package.get("serviceName")
                 wash_package_structure["Wash_Packages_Unlimited"]   = cUnlimited
                 wash_package_structure["Wash_Packages_Virtual_Wash"] = virtualWashNumber
@@ -588,7 +586,7 @@ class washifyClient():
                 wash_package_structure["Wash_Packages_Total_Amount"]  =locale.currency(float(amount), grouping=True)
                 # print(type(wash_package.get("amount")))
                 wash_packages_all.append(wash_package_structure)
-            
+
             wash_package_total_structure={
                 "Wash_Packages_ServiceName":"Total:",
                 "Wash_Packages_Unlimited":Wash_Packages_Unlimited_total,
@@ -596,11 +594,11 @@ class washifyClient():
                 "Wash_Packages_Non_Unlimited":Wash_Packages_Non_Unlimited_total,
                 "Wash_Packages_Total":Wash_Packages_Total_total,
                 "Wash_Packages_Amount":locale.currency(float(Wash_Packages_Amount_total), grouping=True),
-                "Wash_Packages_Total_Amount":locale.currency(float(Wash_Packages_Total_Amount_total), grouping=True)   
+                "Wash_Packages_Total_Amount":locale.currency(float(Wash_Packages_Total_Amount_total), grouping=True)
             }
-            
+
             wash_packages_all.append(wash_package_total_structure) #last ALl total row
-                
+
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialWashPackage_formatter() {e}")
@@ -611,7 +609,7 @@ class washifyClient():
     def GetRevenuReportFinancialWashDiscounts(self,client_locations,monday,sunday):
         "DISCOUNTS"
         data=None
-        
+
 
 
         headers = {
@@ -656,38 +654,38 @@ class washifyClient():
             logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts()  {e}")
 
         return data
-    
+
     def  GetRevenuReportFinancialWashDiscounts_formatter(self,data):
         "DISCOUNTS formatter"
         discount_all =[]
         Wash_Packages_Discount_Number_total  = 0
         Wash_Packages_Discount_Service_Price_total = 0
         Wash_Packages_Discount_Total_Discount = 0
-        
+
         try:
             data = data.get("data")
             financialWashDiscounts = data.get("financialWashDiscounts")
-            
+
             for wash_discount in financialWashDiscounts:
                 wash_discount_structure = {}
-                
+
                 number   =  wash_discount.get("number")
                 Wash_Packages_Discount_Number_total+=number
-                
+
                 discountPrice  = wash_discount.get("discountPrice")
                 Wash_Packages_Discount_Service_Price_total+=discountPrice
-                
+
                 totalAmt   =  wash_discount.get("totalAmt")
                 Wash_Packages_Discount_Total_Discount+=totalAmt
-                
-                
+
+
                 wash_discount_structure["Wash_Packages_Discount_ServiceName"] = wash_discount.get("discountName")
                 wash_discount_structure["Wash_Packages_Discount_Number"]      = number
                 wash_discount_structure["Wash_Packages_Discount_Service Price ($)"] = locale.currency(float(discountPrice), grouping=True)
                 wash_discount_structure["Wash_Packages_Discount_Total Discount ($)"] = locale.currency(float(totalAmt), grouping=True)
-                
+
                 discount_all.append(wash_discount_structure)
-                
+
             #appending Grand total
             discounts_all_total_structure = {
                 "Wash_Packages_Discount_ServiceName":"Total:",
@@ -696,12 +694,12 @@ class washifyClient():
                 "Wash_Packages_Discount_Total Discount ($)":locale.currency(float(Wash_Packages_Discount_Total_Discount), grouping=True)
             }
             discount_all.append(discounts_all_total_structure)
-            
-            
+
+
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashDiscounts_formatter() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts_formatter() {e}")
-          
+
         return discount_all
 
     def GetRevenuReportFinancialWashDiscounts_formatter2(self,data):
@@ -710,32 +708,32 @@ class washifyClient():
         DISCOUNTS_Number_total = 0
         DISCOUNTS_Price_total = 0
         DISCOUNTS_Revenue_total = 0
-        
+
         try:
-            
+
             data = data.get("data")
 
-            financialWashDiscounts = data.get("financialWashDiscounts")     
-            
+            financialWashDiscounts = data.get("financialWashDiscounts")
+
             for wash_discount in financialWashDiscounts:
-                
+
                 number  = int(wash_discount.get("number",0))
                 DISCOUNTS_Number_total+=number
-                
+
                 discountPrice  = float(wash_discount.get("discountPrice",0.0))
                 DISCOUNTS_Price_total+=discountPrice
-                
+
                 totalAmt  =  float(wash_discount.get("totalAmt",0.0))
                 DISCOUNTS_Revenue_total+=totalAmt
-                
+
                 discount_discount_structure = {}                                                             # Discount Discount
                 discount_discount_structure["DISCOUNTS_Discount"] = wash_discount.get("discountName")
                 discount_discount_structure["DISCOUNTS_Number"]      = number
                 discount_discount_structure["DISCOUNTS_Price ($)"] = locale.currency(float(discountPrice), grouping=True)
                 discount_discount_structure["DISCOUNTS_Revenue"] = locale.currency(float(totalAmt), grouping=True)
-                
+
                 discount_discount_all.append(discount_discount_structure)
-                
+
             #Total table Discount discount
             discount_discount_total={
                 "DISCOUNTS_Discount":"Total:",
@@ -743,18 +741,18 @@ class washifyClient():
                 "DISCOUNTS_Price ($)":locale.currency(float(DISCOUNTS_Price_total), grouping=True),
                 "DISCOUNTS_Revenue":locale.currency(float(DISCOUNTS_Revenue_total), grouping=True)
             }
-            
+
             discount_discount_all.append(discount_discount_total)
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialWashDiscounts_fromatter2 {e}")
             logging.info(f"Exception in GetRevenuReportFinancialWashDiscounts_fromatter2 {e}")
-            
+
         return discount_discount_all
 
     # def GetRevenuReportFinancialWashDiscounts(self):
-        
+
     #     data = None
-        
+
     #     headers = {
     #         'accept': 'application/json, text/plain, */*',
     #         'accept-language': 'en-US,en;q=0.9',
@@ -792,18 +790,18 @@ class washifyClient():
     #             headers=headers,
     #             json=json_data,
     #         )
-            
+
     #         if response.status_code==200:
     #             data = response.json()
     #     except Exception as e:
     #         print(f"Exception in GetRevenuReportFinancialWashDiscounts() {e}")
 
     #     return data
-   
- 
- 
-   
-    
+
+
+
+
+
     def GetRevenuReportFinancialPackagesDiscount(self,client_locations,monday,sunday):
         "WASH EXTRAS"
         data = None
@@ -847,7 +845,7 @@ class washifyClient():
         except Exception as e:
             print(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
             logging.info(f"Exception on GetRevenuReportFinancialPackagesDiscount() {e}")
-            
+
         return data
 
     def GetRevenuReportFinancialPackagesDiscount_formatter(self,data):
@@ -856,40 +854,40 @@ class washifyClient():
         Wash_Extras_Number_total=0
         Wash_Extras_Amount_total = 0
         Wash_Extras_Total_Amount_total = 0
-        
+
         try:
             data = data.get("data")
-            financialPackagesDiscount = data.get("financialPackagesDiscount") 
-            
+            financialPackagesDiscount = data.get("financialPackagesDiscount")
+
             for wash_extra in financialPackagesDiscount:
                 wash_extra_structure={}
-                
+
                 number = int(wash_extra.get("number",0))
                 # print("number:",type(number))
                 Wash_Extras_Number_total+=number
-                
+
                 servicePrice = float(wash_extra.get("servicePrice",0.0))
                 Wash_Extras_Amount_total+=servicePrice
-                
+
                 totalAmount = float(wash_extra.get("totalAmount",0.0))
                 Wash_Extras_Total_Amount_total+=totalAmount
-                
+
                 wash_extra_structure["Wash_Extras_ServiceName"] = wash_extra.get("serviceName")
                 wash_extra_structure["Wash_Extras_Number"]      = number
                 wash_extra_structure["Wash_Extras_Amount ($)"]  = locale.currency(float(servicePrice), grouping=True)
                 wash_extra_structure["Wash_Extras_Total_Amount ($)"] = locale.currency(float(totalAmount), grouping=True)
-                
+
                 wash_extras_all.append(wash_extra_structure)
-            #adding final total value 
+            #adding final total value
             wash_extras_total_structure = {
                 "Wash_Extras_ServiceName":"Total:",
                 "Wash_Extras_Number":Wash_Extras_Number_total,
                 "Wash_Extras_Amount ($)":locale.currency(float(Wash_Extras_Amount_total), grouping=True),
                 "Wash_Extras_Total_Amount ($)":locale.currency(float(Wash_Extras_Total_Amount_total), grouping=True)
-            }   
-            
+            }
+
             wash_extras_all.append(wash_extras_total_structure)
-                
+
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPackagesDiscount_formatter()  {e}")
             logging.info(f"Exception in GetRevenuReportFinancialPackagesDiscount_formatter()  {e}")
@@ -904,7 +902,7 @@ class washifyClient():
         "UNLIMITED SALES clubplans sold"
         data = None
         sale_count_total=0
-        
+
 
 
         headers = {
@@ -948,11 +946,11 @@ class washifyClient():
                     sale_count_total = 0
                     for unlimited_sale in unlimited_sales:
                         unlimite_sale_type = unlimited_sale.get("unlimited_Sales")
-                        
+
                         if unlimite_sale_type in ["New Sales","Re Signups"]:
                             sale_cnt = unlimited_sale.get("number",0)
                             sale_count_total += sale_cnt
-                    
+
                     break
             except Exception as e:
                 print(f"Exception in GetRevenuReportFinancialUnlimitedSales() {e}")
@@ -964,55 +962,55 @@ class washifyClient():
 
     def GetRevenuReportFinancialUnlimitedSales_formatter(self,data):
         "UNLIMITED SALES formatter"
-        
+
         unlimited_sales_all =[]
-        
+
         Unlimited_Sales_Number_total = 0
         Unlimited_Sales_Revenue_total =0
         try:
             data = data.get("data")
             financialUnlimitedSales  = data.get("financialUnlimitedSales")
-            
+
             for sales_data in financialUnlimitedSales:
                 sales_data_structure ={}
                 # print(sales_data)
                 number  = int(sales_data.get("number",0))
                 Unlimited_Sales_Number_total+=number
-                
+
                 price  =  float(sales_data.get("price",0.0))
                 Unlimited_Sales_Revenue_total+=price
-                
+
                 sales_data_structure["Unlimited_Sales"] = sales_data.get("unlimited_Sales")
                 sales_data_structure["Unlimited_Sales_Service"] = sales_data.get("serviceName")
                 sales_data_structure["Unlimited_Sales_Number"]  = number
-                sales_data_structure["Unlimited_Sales_Revenue ($)"] = locale.currency(float(price), grouping=True) 
-                
+                sales_data_structure["Unlimited_Sales_Revenue ($)"] = locale.currency(float(price), grouping=True)
+
                 unlimited_sales_all.append(sales_data_structure)
-              
+
             #final table total
             unlimited_sales__total = {
                 "Unlimited_Sales":"Total:",
                 "Unlimited_Sales_Service":"",
                 "Unlimited_Sales_Number":Unlimited_Sales_Number_total,
                 "Unlimited_Sales_Revenue ($)":locale.currency(float(Unlimited_Sales_Revenue_total), grouping=True)
-            }    
-            
+            }
+
             unlimited_sales_all.append(unlimited_sales__total)
-            
+
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialUnlimitedSales_formatter() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialUnlimitedSales_formatter() {e}")
-            
+
         return unlimited_sales_all
 
- 
- 
- 
+
+
+
 
     def GetRevenuReportFinancialGiftcardsale(self,client_locations,monday,sunday):
         "GIFT CARD SALES"
         data = None
-        
+
 
 
         headers = {
@@ -1049,40 +1047,40 @@ class washifyClient():
                 json=json_data,
                 proxies=self.proxies
             )
-            
+
             if response.status_code==200:
                 data = response.json()
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialGiftcardsale() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialGiftcardsale() {e}")
-            
+
         return data
 
     def GetRevenuReportFinancialGiftcardsale_formatter(self,data):
         "GIFT CARD SALES formatter "
-        
+
         gift_card_sale_all =[]
         GIFT_CARD_SALESr_Amount_total = 0
         try:
             data = data.get("data")
 
             financialGiftcardsale = data.get("financialGiftcardsale")
-            
+
             for gift_card in financialGiftcardsale:
                 gift_card_sale_structure = {}
-                
+
                 price   =  float(gift_card.get("price",0.0))
                 GIFT_CARD_SALESr_Amount_total+=price
-                
+
                 gift_card_sale_structure["GIFT_CARD_SALES_DATE"] = gift_card.get("date")  #giftcarsd sales
                 gift_card_sale_structure["GIFT_CARD_SALES_TIME"] = gift_card.get("time")
                 gift_card_sale_structure["GIFT_CARD_SALES_Card_Number"] = gift_card.get("coupanNumber")
                 gift_card_sale_structure["GIFT_CARD_SALESr_Amount ($)"] = locale.currency(float(price), grouping=True)
                 gift_card_sale_structure["GIFT_CARD_SALES_Source"]      = gift_card.get("transactionFrom")
-                
+
                 gift_card_sale_all.append(gift_card_sale_structure)
-                
-            #final total table 
+
+            #final total table
             giftcard_sale_total = {
                 "GIFT_CARD_SALES_DATE":"Total:",
                 "GIFT_CARD_SALES_TIME":"",
@@ -1094,7 +1092,7 @@ class washifyClient():
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialGiftcardsale_formatter() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialGiftcardsale_formatter() {e}")
-            
+
         return gift_card_sale_all
 
 
@@ -1102,7 +1100,7 @@ class washifyClient():
     # def GetRevenuReportFinancialWashDiscounts(self):
     #     "DISCOUNTS"
     #     data = None
-        
+
 
     #     headers = {
     #         'accept': 'application/json, text/plain, */*',
@@ -1153,14 +1151,14 @@ class washifyClient():
     #             data = response.json()
     #     except Exception as e:
     #         print(f"Exception in GetRevenuReportFinancialWashDiscounts() {e}")
-            
+
     #     return data
 
     def GetRevenuReportFinancialRevenueSummary(self,client_locations,monday,sunday):
         "GIFT CARD REDEEMED netPrice total(totalrevenue)"
-        
+
         result = {}
-        
+
 
 
         headers = {
@@ -1189,7 +1187,7 @@ class washifyClient():
             'ReportBy': '',
             'CommonCompanySettings': self.get_common_data(),
         }
-        
+
         while True:
             try:
                 response = requests.post(
@@ -1198,7 +1196,7 @@ class washifyClient():
                     json=json_data,
                     proxies=self.proxies
                 )
-                
+
                 if response.status_code==200:
                     data = response.json().get("data")
                     finanacial_sumamry= data.get("financialRevenueSummary")[0]
@@ -1212,45 +1210,45 @@ class washifyClient():
             logging.info("retrying after 5 secounds")
             time.sleep(5)
 
-        return result 
-    
+        return result
+
     def GetRevenuReportFinancialRevenueSummary_formatted(self,data):
         "GIFT CARD REDEEMED formatter"
-        
+
         reedemed_giftcard_all =[]
         GIFT_CARD_REDEEMED_Amount_total = 0
         try:
             data = data.get("data")
 
             financialGiftcardRedeemed = data.get("financialGiftcardRedeemed")
-            
-            
+
+
             for reedemed_giftcard in financialGiftcardRedeemed:
                 reedemed_giftcard_structure = {}
                 # print(reedemed_giftcard)
-                
+
                 price = float(reedemed_giftcard.get("price",0.0))
                 GIFT_CARD_REDEEMED_Amount_total+=price
-                
+
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_DATE"] = reedemed_giftcard.get("date")
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_TIME"] = reedemed_giftcard.get("time")
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_CARD_NUMBER"] = reedemed_giftcard.get("coupanNumber")
                 reedemed_giftcard_structure["GIFT_CARD_REDEEMED_Amount ($)"]  = locale.currency(float(price), grouping=True)
-                
+
                 reedemed_giftcard_all.append(reedemed_giftcard_structure)
             #reedem giftcard total
-            
+
             reedem_total_structure ={
                 "GIFT_CARD_REDEEMED_DATE":"Total:",
                 "GIFT_CARD_REDEEMED_TIME":"",
                 "GIFT_CARD_REDEEMED_CARD_NUMBER":"",
                 "GIFT_CARD_REDEEMED_Amount ($)":locale.currency(float(GIFT_CARD_REDEEMED_Amount_total), grouping=True)
-            }    
+            }
             reedemed_giftcard_all.append(reedem_total_structure)
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialRevenueSummary_formatter()  {e}")
             logging.info(f"Exception in GetRevenuReportFinancialRevenueSummary_formatter()  {e}")
-            
+
         return reedemed_giftcard_all
 
 
@@ -1300,12 +1298,12 @@ class washifyClient():
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPaymentNew() {e}")
             logging.info(f"Exception in GetRevenuReportFinancialPaymentNew() {e}")
-            
+
         return data
 
     def GetRevenuReportFinancialPaymentNew_formatter(self,data):
         "Payment formatter"
-        
+
         payment_data_all =[]
         Payment_Cash_total = 0
         Payment_Credit_Card_total = 0
@@ -1316,30 +1314,30 @@ class washifyClient():
         try:
             data = data.get('data')
             financialPaymentNew = data.get("financialPaymentNew")
-            
+
             for payment in financialPaymentNew:
                 payment_structure = {}
                 # print(payment)
 
                 cash = float(payment.get("cash",0.0))
                 Payment_Cash_total+=cash
-                
+
                 creditCard = float(payment.get("creditCard",0.0))
                 Payment_Credit_Card_total +=creditCard
-                
+
                 checkpayment  = float(payment.get("checkpayment",0.0))
                 Payment_Check_total+=checkpayment
-                
+
                 invoiceCustomer = float(payment.get("invoiceCustomer",0.0))
                 Payment_Invoice_total+=invoiceCustomer
-                
-                
+
+
                 ach = float(payment.get("ach",0.0))
                 Payment_ACH_total +=ach
-                
+
                 total_payment = sum([cash,creditCard,checkpayment,invoiceCustomer,ach])
                 Payment_Total_total+=total_payment
-                
+
                 payment_structure["Payment_Location"] = payment.get("locationName")
                 payment_structure["Payment_Cash"]     = locale.currency(float(cash), grouping=True)
                 payment_structure["Payment_Credit_Card"]  = locale.currency(float(creditCard), grouping=True)
@@ -1347,10 +1345,10 @@ class washifyClient():
                 payment_structure["Payment_Invoice"]   = locale.currency(float(invoiceCustomer), grouping=True)
                 payment_structure["Payment_ACH"]       = locale.currency(float(ach), grouping=True)
                 payment_structure["Payment_Total ($)"] = locale.currency(float(total_payment), grouping=True)  ##payment
-                
+
                 payment_data_all.append(payment_structure)
-                  
-            #total payments row 
+
+            #total payments row
             payment_total_structure = {
                 "Payment_Location":"Total Payments:",
                 "Payment_Cash":locale.currency(float(Payment_Cash_total), grouping=True),
@@ -1360,9 +1358,9 @@ class washifyClient():
                 "Payment_ACH":locale.currency(float(Payment_ACH_total), grouping=True),
                 "Payment_Total ($)":locale.currency(float(Payment_Total_total), grouping=True)
             }
-            
+
             payment_data_all.append(payment_total_structure)
-                  
+
         except Exception as e:
             print(f"Exception in GetRevenuReportFinancialPaymentNew_formatter()  {e}")
             logging.info(f"Exception in GetRevenuReportFinancialPaymentNew_formatter()  {e}")
@@ -1370,11 +1368,11 @@ class washifyClient():
 
         return payment_data_all
 
-   
+
     def get_club_plan_members(self,locationcode:int):
         "This function will give toital club plan memebers based on user lcoation"
         total_plan_members = 0
-       
+
         while True:
             total_plan_members = 0
             try:
@@ -1413,17 +1411,17 @@ class washifyClient():
             except Exception as e:
                 print(f"Exception in get_club_plan_mberbers() {e}")
                 logging.info(f"Exception in get_club_plan_mberbers() {e}")
-            
+
             logging.info("retrying after 5 secounds")
             time.sleep(5)
-            
-            
+
+
 
         return total_plan_members
-    
-    
+
+
 if __name__=="__main__":
-    
+
 # json_data = {
         #         'username': 'Cameron',
         #         'password': 'Password1',
@@ -1446,38 +1444,38 @@ if __name__=="__main__":
         # for location_name,location_id in client_locations.items():
         #     print(location_name,":",client.get_car_count_report([location_id,]))
         print(client_locations)
-        
+
         # response_reneue = client.GetRevenuReportFinancialWashPackage()
         # with open(f"{data_path}\GetRevenuReportFinancialWashPackage.json","w") as f:  #for wah package
         #     json.dump(response_reneue,f,indent=4)
-        
+
         # response_reneue = client.GetRevenuReportFinancialWashDiscounts()
         # with open(f"{data_path}\GetRevenuReportFinancialWashDiscounts.json","w") as f:  #for Discount
         #     json.dump(response_reneue,f,indent=4)
-            
+
         # response_reneue = client.GetRevenuReportFinancialPackagesDiscount()
         # with open(f"{data_path}\GetRevenuReportFinancialPackagesDiscount.json","w") as f:  #for Discount
         #     json.dump(response_reneue,f,indent=4)
         # response_reneue = client.GetRevenuReportFinancialUnlimitedSales()
         # with open(f"{data_path}\GetRevenuReportFinancialUnlimitedSales.json","w") as f:  #for Unlimited sales
         #     json.dump(response_reneue,f,indent=4)
-            
+
         # response_reneue = client.GetRevenuReportFinancialGiftcardsale()
         # with open(f"{data_path}\GetRevenuReportFinancialGiftcardsale.json","w") as f:  #for Gift card sale
         #     json.dump(response_reneue,f,indent=4)
         # response_reneue = client.GetRevenuReportFinancialRevenueSummary()
         # with open(f"{data_path}\GetRevenuReportFinancialRevenueSummary.json","w") as f:  #for Unlimited sales
         #     json.dump(response_reneue,f,indent=4)
-        
+
         # response_reneue = client.GetRevenuReportFinancialPaymentNew()
         # with open(f"{data_path}\GetRevenuReportFinancialPaymentNew.json","w") as f:  #for Payment
         #     json.dump(response_reneue,f,indent=4)
-            
-            
+
+
         ## Formatter logic
         # wash_packages_response = client.GetRevenuReportFinancialWashPackage()
-        # wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table 
-        
+        # wash_packages_data = client.GetRevenuReportFinancialWashPackage_formatter(wash_packages_response)  #first table
+
         # for index,data in enumerate(wash_packages_data):
         #     if index == 0:
         #         append_dict_to_excel(file_path,data,0)
@@ -1487,9 +1485,9 @@ if __name__=="__main__":
         # # print(json.dumps(formatted_response,indent=4))
 
         # wash_package_discount_response = client.GetRevenuReportFinancialWashDiscounts()
-        # washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table 
+        # washpack_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter(wash_package_discount_response)  #secound table
         # # print(json.dumps(formatted_response,indent=4))
-        
+
         # for index,data in enumerate(washpack_discount_data):
         #     if index == 0:
         #         append_dict_to_excel(file_path,data,2)
@@ -1497,7 +1495,7 @@ if __name__=="__main__":
         #         append_dict_to_excel(file_path,data,0,False)
 
         # wash_extra_response = client.GetRevenuReportFinancialPackagesDiscount()
-        # wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table 
+        # wash_extra_data = client.GetRevenuReportFinancialPackagesDiscount_formatter(wash_extra_response)  #3rd table
         # # print(json.dumps(formatted_response,indent=4))
         # for index,data in enumerate(wash_extra_data):
         #     if index == 0:
@@ -1514,30 +1512,30 @@ if __name__=="__main__":
         #         append_dict_to_excel(file_path,data,2)
         #     else:
         #         append_dict_to_excel(file_path,data,0,False)
-            
+
         # giftcard_sales_response = client.GetRevenuReportFinancialGiftcardsale()
         # giftcards_sales_data = client.GetRevenuReportFinancialGiftcardsale_formatter(giftcard_sales_response)  #4rd table  gift card sale
-        # # print(formatted_response) 
+        # # print(formatted_response)
         # # print(json.dumps(formatted_response,indent=4))
-        
+
         # for index,data in enumerate(giftcards_sales_data):
         #     if index == 0:
         #         append_dict_to_excel(file_path,data,2)
         #     else:
         #         append_dict_to_excel(file_path,data,0,False)
-        
-        
+
+
         # discount_discount_response = client.GetRevenuReportFinancialWashDiscounts()
         # discount_discount_data = client.GetRevenuReportFinancialWashDiscounts_formatter2(discount_discount_response)  #5rd table    Discount discount
         # # print(json.dumps(formatted_response,indent=4))
-        
+
         # for index,data in enumerate(discount_discount_data):
         #     if index == 0:
         #         append_dict_to_excel(file_path,data,2)
         #     else:
         #         append_dict_to_excel(file_path,data,0,False)
-        
-        
+
+
         # giftcard_reedemed_response = client.GetRevenuReportFinancialRevenueSummary()
         # giftcard_reedemed_data = client.GetRevenuReportFinancialRevenueSummary_formatted(giftcard_reedemed_response)  #6rd table   Discount discount
         # # print(json.dumps(formatted_response,indent=4))
@@ -1546,14 +1544,14 @@ if __name__=="__main__":
         #         append_dict_to_excel(file_path,data,2)
         #     else:
         #         append_dict_to_excel(file_path,data,0,False)
-        
-        
-        
+
+
+
         # # response = client.GetRevenuReportFinancialRevenueSummary()   #duplicate
         # # formatted_response = client.GetRevenuReportFinancialRevenueSummary_formatted(response)  #8rd table  gift card reedem
         # # print(json.dumps(formatted_response,indent=4))
-        
-        
+
+
         # payment_response  = client.GetRevenuReportFinancialPaymentNew()
         # payment_data = client.GetRevenuReportFinancialPaymentNew_formatter(payment_response)  #8rd table payment location
         # # print(json.dumps(payment_data,indent=4))
@@ -1562,12 +1560,12 @@ if __name__=="__main__":
         #         append_dict_to_excel(file_path,data,2)
         #     else:
         #         append_dict_to_excel(file_path,data,0,False)
-        
-        
+
+
         # monday_date_str, friday_date_str, saturday_date_str, sunday_date_str =  get_week_dates()
         # data = client.get_car_count_report([88],monday_date_str, friday_date_str)
         # print(data)
-        
+
         print(client.get_club_plan_members(90))
-        
+
 ## need to chanege site locations dynamic and and time stamp also dynamic and need to use type casting and need to write xl conversion code

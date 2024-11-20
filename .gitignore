@@ -1,4 +1,6 @@
 env
+venv
+.vscode
 logs/*
 **/__pycache__/
 *.pyc
